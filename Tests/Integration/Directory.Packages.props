@@ -1,0 +1,7 @@
+<Project>
+  <!-- This is a dummy file to prevent the integration tests from importing the root file -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally />
+    <CentralPackageTransitivePinningEnabled />
+  </PropertyGroup>
+</Project>

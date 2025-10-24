@@ -1,0 +1,37 @@
+<Project>
+
+  <!--
+  Workaround for https://github.com/dotnet/sdk/issues/51265
+  TODO: remove when issue is resolved
+  -->
+  <PropertyGroup>
+    <RestoreEnablePackagePruning>false</RestoreEnablePackagePruning>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <NuGetAudit>True</NuGetAudit>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Version)' == ''">
+    <Version>0.0.0.0-Dev-$(Configuration)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Product>Vilens</Product>
+    <Author>Philipp Naused</Author>
+    <Authors>$(Author)</Authors>
+    <Company>$(Author)</Company>
+    <Description>Vilens IS an option!</Description>
+    <PackageProjectUrl>https://github.com/PhilippNaused/Vilens</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/PhilippNaused/Vilens</RepositoryUrl>
+    <Copyright>© $(Authors)</Copyright>
+  </PropertyGroup>
+
+</Project>

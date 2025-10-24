@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csdevkit",
+        "editorconfig.editorconfig",
+        "eamodio.gitlens",
+        "ms-vscode.powershell",
+        "streetsidesoftware.code-spell-checker",
+        "davidanson.vscode-markdownlint",
+        "redhat.vscode-xml",
+        "icsharpcode.ilspy-vscode",
+        "soltys.vscode-il"
+    ]
+}

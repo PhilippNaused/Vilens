@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+  </Folder>
+  <Project Path="ClassLibrary1.Tests/ClassLibrary1.Tests.csproj" />
+  <Project Path="ClassLibrary1/ClassLibrary1.csproj" />
+  <Project Path="ClassLibrary2/ClassLibrary2.csproj" />
+  <Project Path="ICSharp.Tests/ICSharp.Tests.csproj" />
+</Solution>

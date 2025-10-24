@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dnlib" />
+    <PackageReference Include="NLog" />
+    <PackageReference Include="PolySharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable"
+                      VersionOverride="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Vilens.Tests" />
+    <InternalsVisibleTo Include="Vilens.MSBuild" />
+    <InternalsVisibleTo Include="Vilens.Lab" />
+    <InternalsVisibleTo Include="Vilens.Tool" />
+  </ItemGroup>
+
+  <Target Name="CleanLogs"
+          AfterTargets="Clean">
+    <ItemGroup>
+      <LogFiles Include="$(TargetDir)Vilens.log" />
+    </ItemGroup>
+    <Delete Files="@(LogFiles)" />
+  </Target>
+
+</Project>

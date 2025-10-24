@@ -1,0 +1,2 @@
+# disable persistent build servers since Vilens.MSBuild.dll would get locked by the process otherwise.
+-nodeReuse:false

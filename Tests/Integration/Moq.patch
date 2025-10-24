@@ -1,0 +1,54 @@
+diff --git a/global.json b/global.json
+new file mode 100644
+index 00000000..2134ed94
+--- /dev/null
++++ b/global.json
+@@ -0,0 +1,6 @@
++{
++  "sdk": {
++    "version": "8.0.400",
++    "rollForward": "latestFeature"
++  }
++}
+\ No newline at end of file
+diff --git a/src/Directory.Build.props b/src/Directory.Build.props
+index b0b9d94d..6ac5bfd2 100644
+--- a/src/Directory.Build.props
++++ b/src/Directory.Build.props
+@@ -115,4 +115,8 @@
+   </PropertyGroup>
+ 
++  <PropertyGroup Label="Version">
++    <NoWarn>$(NoWarn);NU1903</NoWarn>
++  </PropertyGroup>
++
+   <PropertyGroup Label="Version" Condition="$(VersionLabel) != ''">
+     <_VersionLabel>$(VersionLabel.Replace('refs/heads/', ''))</_VersionLabel>
+diff --git a/src/Moq/It.cs b/src/Moq/It.cs
+index d6c81f23..27f36287 100644
+--- a/src/Moq/It.cs
++++ b/src/Moq/It.cs
+@@ -22,4 +22,5 @@ namespace Moq
+     ///   with a value in a specified range, or even one that matches a given predicate.
+     /// </remarks>
++    [Obfuscation(Feature = "AttributeCleaning")] // Moq.Tests.MatchFixture+Equality.It_IsRegex_with_equal_arguments fails due to a missing CompilerGeneratedAttribute.
+     public static class It
+     {
+diff --git a/src/Moq/Moq.csproj b/src/Moq/Moq.csproj
+index b7bd529a..caca6884 100644
+--- a/src/Moq/Moq.csproj
++++ b/src/Moq/Moq.csproj
+@@ -2,5 +2,5 @@
+ 
+ 	<PropertyGroup>
+-		<TargetFrameworks>net462;netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
++		<TargetFrameworks>net462;netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
+ 		<AssemblyName>Moq</AssemblyName>
+ 		<NoWarn>$(NoWarn);0419;CS8032</NoWarn>
+@@ -10,5 +10,5 @@
+ 	</PropertyGroup>
+ 
+-	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' Or '$(TargetFramework)' == 'net6.0' ">
++	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' Or '$(TargetFramework)' == 'net8.0' ">
+ 		<DefineConstants>$(DefineConstants);FEATURE_DEFAULT_INTERFACE_IMPLEMENTATIONS</DefineConstants>
+ 	</PropertyGroup>

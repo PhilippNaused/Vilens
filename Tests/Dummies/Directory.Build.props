@@ -1,0 +1,21 @@
+<Project>
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>13.0</LangVersion>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <Import Project="..\..\src\Vilens.MSBuild\build\Vilens.MSBuild.props"
+          Condition="'$(TestProject)' != 'true'" />
+
+  <PropertyGroup>
+    <VilensTasksPath>$(MSBuildThisFileDirectory)..\..\src\Vilens.MSBuild\bin\$(Configuration)\netstandard2.0\Vilens.MSBuild.dll</VilensTasksPath>
+    <VilensTasksPath Condition="'$(Configuration)' == ''">$(MSBuildThisFileDirectory)..\..\src\Vilens.MSBuild\bin\Debug\netstandard2.0\Vilens.MSBuild.dll</VilensTasksPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <VilensFeatures Include="All" />
+  </ItemGroup>
+
+</Project>

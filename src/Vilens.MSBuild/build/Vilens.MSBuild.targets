@@ -1,0 +1,53 @@
+<Project>
+
+  <UsingTask TaskName="Vilens.MSBuild.Scramble"
+             AssemblyFile="$(VilensTasksPath)" />
+
+  <Target Name="CommitVilens"
+          AfterTargets="CoreCompile"
+          Inputs="@(IntermediateAssembly)"
+          Outputs="@(IntermediateAssembly->'%(FullPath).vilens.done')"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+
+    <Delete Files="@(IntermediateAssembly->'%(FullPath).vilens.log')" />
+
+    <PropertyGroup>
+      <VilensScope Condition="'$(VilensScope)' == ''">Auto</VilensScope>
+      <_VilensFeatures>@(VilensFeatures, ',')</_VilensFeatures>
+      <_VilensFeatures Condition="'$(_VilensFeatures)' == ''">None</_VilensFeatures>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(AssemblyOriginatorKeyFile)' != '' AND '$(SignAssembly)' == 'True'">
+      <_StrongNamingKey>$(AssemblyOriginatorKeyFile)</_StrongNamingKey>
+    </PropertyGroup>
+
+    <Error Text="'VilensTasksPath' is not set."
+           Condition="'$(VilensTasksPath)' == ''" />
+    <Error Text="'$(VilensTasksPath)' does not exist."
+           Condition="!Exists('$(VilensTasksPath)')" />
+    <Copy SourceFiles="@(IntermediateAssembly)"
+          DestinationFiles="$(IntermediateOutputPath)$(TargetName).unobfuscated$(TargetExt)" />
+    <Copy SourceFiles="@(_DebugSymbolsIntermediatePath)"
+          DestinationFiles="$(IntermediateOutputPath)$(TargetName).unobfuscated.pdb" />
+    <Vilens.MSBuild.Scramble Features="$(_VilensFeatures)"
+                                   Scope="$(VilensScope)"
+                                   Assembly="@(IntermediateAssembly)"
+                                   PdbFile="@(_DebugSymbolsIntermediatePath)"
+                                   StrongNamingKey="$(_StrongNamingKey)"
+                                   LogFile="@(IntermediateAssembly->'%(FullPath).vilens.log')"
+                                   DelaySign="$(DelaySign)" />
+
+    <Error Text="Vilens failed. See @(IntermediateAssembly->'%(FullPath).vilens.log') for details."
+           Condition="!Exists(@(IntermediateAssembly->'%(FullPath).vilens.done'))" />
+
+  </Target>
+
+  <Target Name="CleanVilens"
+          AfterTargets="CoreClean">
+    <Delete Files="@(IntermediateAssembly->'%(FullPath).vilens.log')" />
+    <Delete Files="@(IntermediateAssembly->'%(FullPath).vilens.done')" />
+    <Delete Files="$(IntermediateOutputPath)$(TargetName).unobfuscated$(TargetExt)" />
+    <Delete Files="$(IntermediateOutputPath)$(TargetName).unobfuscated.pdb" />
+  </Target>
+
+</Project>

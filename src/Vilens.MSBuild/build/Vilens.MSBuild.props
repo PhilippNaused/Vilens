@@ -1,0 +1,7 @@
+<Project>
+
+  <PropertyGroup>
+    <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\tasks\netstandard2.0\Vilens.MSBuild.dll</VilensTasksPath>
+  </PropertyGroup>
+
+</Project>

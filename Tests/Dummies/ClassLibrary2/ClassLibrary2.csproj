@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net462;net472;net48;net8.0;net9.0;net10.0;netstandard2.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
+    <WarningLevel>1</WarningLevel>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+</Project>

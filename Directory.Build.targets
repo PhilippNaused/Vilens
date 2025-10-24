@@ -1,0 +1,8 @@
+<Project>
+
+  <ItemGroup>
+    <Compile Remove="Snapshots\**\*" />
+    <None Include="Snapshots\**\*" />
+  </ItemGroup>
+
+</Project>
