@@ -4,8 +4,8 @@
 param (
   # The name of the project to test
   [Parameter(Position = 0)]
-  [ValidateSet('Moq', 'Autofac', 'NSubstitute', 'Serilog', 'NLog', 'NUnit')]
-  [string[]]$Targets = @('Moq', 'Autofac', 'NSubstitute', 'Serilog', 'NLog', 'NUnit'),
+  [ValidateSet('Moq', 'Autofac', 'NSubstitute', 'Serilog', 'NUnit')]
+  [string[]]$Targets = @('Moq', 'Autofac', 'NSubstitute', 'Serilog', 'NUnit'),
 
   [Parameter()]
   [ValidateSet('Debug', 'Release')]

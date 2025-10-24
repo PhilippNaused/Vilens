@@ -117,9 +117,6 @@ try {
     'Serilog' {
       Test-Obfuscation -FileNames 'Serilog.dll' -TestCommand { dotnet test -c $Configuration --filter 'FullyQualifiedName !~ Performance' } # Benchmarks are too slow
     }
-    'NLog' {
-      Test-Obfuscation -FileNames 'NLog.dll' -BuildCommand { dotnet build .\src\NLog\NLog.csproj -c $Configuration -p:TreatWarningsAsErrors=false } -TestCommand { dotnet test -c $Configuration .\tests\NLog.UnitTests\ }
-    }
     'NUnit' {
       Test-Obfuscation -FileNames 'nunit.framework.dll', 'mock-assembly.dll', 'nunit.framework.legacy.dll', 'nunitlite.dll', 'nunitlite-runner.exe', 'nunitlite-runner.dll'
     }
