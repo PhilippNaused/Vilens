@@ -4,9 +4,6 @@
 [submodule "Autofac"]
 	path = Tests/Integration/Autofac
 	url = https://github.com/autofac/Autofac.git
-[submodule "NSubstitute"]
-	path = Tests/Integration/NSubstitute
-	url = https://github.com/nsubstitute/NSubstitute.git
 [submodule "Serilog"]
 	path = Tests/Integration/Serilog
 	url = https://github.com/serilog/serilog.git

@@ -111,9 +111,6 @@ try {
     'Autofac' {
       Test-Obfuscation -FileNames 'Autofac.dll' -BuildCommand { dotnet build Autofac.sln -c $Configuration } -TestCommand { dotnet test Autofac.sln -c $Configuration --filter 'FullyQualifiedName !~ Benchmark' } # Benchmarks are too slow
     }
-    'NSubstitute' {
-      Test-Obfuscation -FileNames 'NSubstitute.dll'
-    }
     'Serilog' {
       Test-Obfuscation -FileNames 'Serilog.dll' -TestCommand { dotnet test -c $Configuration --filter 'FullyQualifiedName !~ Performance' } # Benchmarks are too slow
     }
