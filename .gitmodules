@@ -1,0 +1,3 @@
+[submodule "Moq"]
+	path = Tests/Integration/Moq
+	url = https://github.com/moq/moq.git
