@@ -1,5 +1,5 @@
 diff --git a/src/NUnitFramework/Directory.Build.props b/src/NUnitFramework/Directory.Build.props
-index 9e8ddfcba..c76d34225 100644
+index 7cb2816b6..e3eff0e59 100644
 --- a/src/NUnitFramework/Directory.Build.props
 +++ b/src/NUnitFramework/Directory.Build.props
 @@ -9,5 +9,5 @@
@@ -10,7 +10,7 @@ index 9e8ddfcba..c76d34225 100644
      <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
      <!--<OutputPath>..\..\..\bin\$(Configuration)\</OutputPath>-->
 diff --git a/src/NUnitFramework/Directory.Packages.props b/src/NUnitFramework/Directory.Packages.props
-index cf0d561b2..6685d8318 100644
+index a41eab305..b00b06517 100644
 --- a/src/NUnitFramework/Directory.Packages.props
 +++ b/src/NUnitFramework/Directory.Packages.props
 @@ -4,4 +4,7 @@

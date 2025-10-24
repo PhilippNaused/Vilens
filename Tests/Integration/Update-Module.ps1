@@ -18,10 +18,9 @@ $TargetDir = Join-Path $PSScriptRoot $TargetName
 $Script = Join-Path $PSScriptRoot Apply-Patch.ps1
 & $Script $TargetName -IgnoreMissingPatch -Clean
 
-git -C $TargetDir stash push -m "Stash before update"
-git -C $TargetDir checkout $BranchName
-git -C $TargetDir pull --ff-only
-git -C $TargetDir stash pop
+git -C $TargetDir switch $BranchName --merge
+git -C $TargetDir pull --ff-only --autostash
+git -C $TargetDir add .
 
 $Script = Join-Path $PSScriptRoot Create-Patch.ps1
 & $Script $TargetName

@@ -1,8 +1,8 @@
 diff --git a/src/Autofac/Autofac.csproj b/src/Autofac/Autofac.csproj
-index 41a6e998..3c875310 100644
+index e22b318c..05298f8b 100644
 --- a/src/Autofac/Autofac.csproj
 +++ b/src/Autofac/Autofac.csproj
-@@ -16,5 +16,5 @@
+@@ -13,5 +13,5 @@
      <NeutralLanguage>en-US</NeutralLanguage>
      <!-- Frameworks and language features -->
 -    <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.1;netstandard2.0</TargetFrameworks>
@@ -10,7 +10,7 @@ index 41a6e998..3c875310 100644
      <LangVersion>latest</LangVersion>
      <Nullable>enable</Nullable>
 diff --git a/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs b/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
-index bd0a9426..0b9cc2f5 100644
+index 6d842273..b7fc22f1 100644
 --- a/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
 +++ b/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
 @@ -17,4 +17,5 @@ internal class OpenGenericRegistrationSource : IRegistrationSource
@@ -53,7 +53,7 @@ index 46ffeb77..9fd68010 100644
      <NoWarn>$(NoWarn);CS1591</NoWarn>
      <GenerateDocumentationFile>true</GenerateDocumentationFile>
 diff --git a/test/Autofac.Test/Autofac.Test.csproj b/test/Autofac.Test/Autofac.Test.csproj
-index add60dc7..50f830ff 100644
+index aeb1f755..7e54308f 100644
 --- a/test/Autofac.Test/Autofac.Test.csproj
 +++ b/test/Autofac.Test/Autofac.Test.csproj
 @@ -1,5 +1,5 @@
