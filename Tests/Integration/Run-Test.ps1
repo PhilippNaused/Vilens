@@ -105,6 +105,9 @@ function Test-Obfuscation {
 Push-Location $PSScriptRoot
 try {
   switch ($TargetName) {
+    'Bshox' {
+      Test-Obfuscation -FileNames 'Bshox.dll', 'Bshox.Generator.dll', 'Bshox.Utils.dll' -BuildCommand { dotnet build .\src\Packages.slnf } -TestCommand { .\Test.ps1 -Configuration $Configuration }
+    }
     'Moq' {
       Test-Obfuscation -FileNames 'Moq.dll'
     }

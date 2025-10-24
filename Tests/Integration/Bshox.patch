@@ -1,0 +1,23 @@
+diff --git a/.config/dicts/project-words.txt b/.config/dicts/project-words.txt
+index 58f0fec..6f0c7ba 100644
+--- a/.config/dicts/project-words.txt
++++ b/.config/dicts/project-words.txt
+@@ -6,3 +6,4 @@ varint
+ unflushed
+ Reentrancy
+-sharpfuzz
+\ No newline at end of file
++sharpfuzz
++Vilens
+\ No newline at end of file
+diff --git a/Test.ps1 b/Test.ps1
+index d6dc9a9..f617e8f 100644
+--- a/Test.ps1
++++ b/Test.ps1
+@@ -15,5 +15,5 @@ cspell lint $PSScriptRoot
+ 
+ # Run regular tests using MTP
+-dotnet test --disable-logo --configuration $Configuration
++dotnet test --disable-logo --configuration $Configuration --solution "$PSScriptRoot\tests\UnitTests.slnf"
+ 
+ # Publish AOT tests

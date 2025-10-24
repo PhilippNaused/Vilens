@@ -10,3 +10,6 @@
 [submodule "NUnit"]
 	path = Tests/Integration/NUnit
 	url = https://github.com/nunit/nunit.git
+[submodule "Bshox"]
+	path = Tests/Integration/Bshox
+	url = https://github.com/PhilippNaused/Bshox.git
