@@ -55,7 +55,7 @@ $SourceFile = Join-Path $PSScriptRoot ".\Tests\Performance\TestAssemblies\$Targe
 $SourcePdb = Join-Path $PSScriptRoot ".\Tests\Performance\TestAssemblies\$Target.pdb"
 
 $TempFolder = Join-Path $PSScriptRoot ".\Tests\Performance\Temp"
-if (-Not (Test-Path $TempFolder)) {
+if (-not (Test-Path $TempFolder)) {
   New-Item $TempFolder -ItemType Directory
 }
 else {
@@ -87,16 +87,18 @@ try {
     }
     $StartTime = Get-Date
     if ($Aot) {
-      & $VilensConsole $TargetFile --scope $Scope --features $Features
+      & $VilensConsole $TargetFile --scope $Scope --features $Features | Out-Null
     }
     else {
-      & dotnet $VilensConsole $TargetFile --scope $Scope --features $Features
+      & dotnet $VilensConsole $TargetFile --scope $Scope --features $Features | Out-Null
     }
     # skip the first iteration
     if ($i -gt 0) {
       $Times += ((Get-Date) - $StartTime)
     }
+    Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
   }
+  Write-Progress -Activity "Running performance tests" -Completed
   $Times | Measure-Object -AllStats -Property TotalMilliseconds # ~790ms (~270 AOT)
 }
 finally {

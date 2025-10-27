@@ -26,7 +26,7 @@ $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 Set-StrictMode -Version 3.0
 
-if (-Not $Targets) {
+if (-not $Targets) {
   throw "No targets specified"
 }
 

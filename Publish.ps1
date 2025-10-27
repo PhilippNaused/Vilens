@@ -49,7 +49,7 @@ else {
   $Vilens = Get-Item '.\Publish\Vilens.Tool.dll'
 }
 
-if (-Not $NoSelfObfuscate -And (-Not $Aot)) {
+if (-not $NoSelfObfuscate -and (-not $Aot)) {
   $VilensDll = Get-Item '.\Publish\Vilens.dll'
   $VilensToolDll = Get-Item '.\Publish\Vilens.Tool.dll'
   dotnet run --project ./src/Vilens.Tool -c $Configuration -f $Framework -- $VilensDll --scope 'Auto' --features $Features | Out-Host

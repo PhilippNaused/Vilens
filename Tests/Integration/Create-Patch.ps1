@@ -23,6 +23,6 @@ if ($Update) {
 
 git -C $TargetDir diff --binary -U2 HEAD > $PatchFile
 # Delete file if empty
-if (-Not (Get-Content $PatchFile)) {
+if (-not (Get-Content $PatchFile)) {
   Remove-Item $PatchFile
 }
