@@ -93,7 +93,8 @@ internal readonly struct NamingHelper
             PropertyDef property => type.FindProperty(newName, property.PropertySig) != null,
             EventDef @event => type.FindEvent(newName, @event.EventType) != null,
             TypeDef type2 => IsTypeNameInUse(type2, newName),
-            _ => throw new ArgumentException("Unknown type", nameof(member)),
+            GenericParam genericParam => type.GenericParameters.Any(gp => gp.Name.Equals(newName)),
+            _ => throw new ArgumentException($"Unknown type: {member.GetType()}", nameof(member)),
         };
     }
 

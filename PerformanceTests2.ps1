@@ -22,9 +22,11 @@ dotnet publish ./src/Vilens.MSBuild --output 'publish' -c 'Release'
 
 $VilensTasksPath = Join-Path $PSScriptRoot 'publish\Vilens.MSBuild.dll'
 
+$arguments = @('.\Tests\Performance\Test.proj', '-tl:off', '-v:m', '-clp:PerformanceSummary', "-p:VilensTasksPath=$VilensTasksPath")
+# dotnet build $arguments # uncomment to test dotnet build
+
 $Times = @()
 for ($i = 0; $i -lt $Iteration; $i++) {
-  $arguments = @('.\Tests\Performance\Test.proj', '-tl:off', '-v:m', '-clp:PerformanceSummary', "-p:VilensTasksPath=$VilensTasksPath")
   if ($MSBuild) {
     $Text = msbuild @arguments
   }
