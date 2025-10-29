@@ -3,7 +3,11 @@
 [CmdletBinding()]
 param (
   [Parameter()]
-  [switch]$MSBuild
+  [switch]$MSBuild,
+
+  [Parameter()]
+  [ValidateRange(1, [int]::MaxValue)]
+  [int]$Iteration = 10
 )
 
 $ErrorActionPreference = "Stop"
@@ -17,8 +21,6 @@ if (Test-Path 'publish') {
 dotnet publish ./src/Vilens.MSBuild --output 'publish' -c 'Release'
 
 $VilensTasksPath = Join-Path $PSScriptRoot 'publish\Vilens.MSBuild.dll'
-
-$Iteration = 25
 
 $Times = @()
 for ($i = 0; $i -lt $Iteration; $i++) {

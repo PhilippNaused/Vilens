@@ -21,7 +21,11 @@ param (
 
   [ValidateSet('net9.0', 'net10.0')]
   [Parameter()]
-  [string]$Framework = 'net9.0'
+  [string]$Framework = 'net9.0',
+
+  [Parameter()]
+  [ValidateRange(2, [int]::MaxValue)]
+  [int]$Iteration = 20
 )
 
 $ErrorActionPreference = "Stop"
@@ -41,8 +45,6 @@ else {
 }
 
 $VilensConsole = .\Publish.ps1 -Configuration $Configuration -NoSelfObfuscate:$NoSelfObfuscate -Aot:$Aot -Framework $Framework
-
-$Iteration = 25
 
 $Times = @()
 for ($i = 0; $i -lt $Iteration; $i++) {
