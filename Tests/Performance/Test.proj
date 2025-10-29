@@ -1,0 +1,40 @@
+<Project DefaultTargets="CommitVilens">
+
+  <PropertyGroup>
+    <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\..\publish\Vilens.MSBuild.dll</VilensTasksPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <VilensFeatures Include="All" />
+  </ItemGroup>
+
+  <Import Project="..\..\src\Vilens.MSBuild\build\Vilens.MSBuild.props" />
+  <Import Project="..\..\src\Vilens.MSBuild\build\Vilens.MSBuild.targets" />
+
+  <Target Name="PrepareTestVilens"
+          BeforeTargets="CommitVilens">
+
+    <ItemGroup>
+      <TestAssemblies Include="TestAssemblies/*" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <TempFiles Include="Temp/*" />
+    </ItemGroup>
+
+    <Delete Files="@(TempFiles)" />
+    <Copy SourceFiles="@(TestAssemblies)"
+          DestinationFolder="Temp" />
+
+    <ItemGroup>
+      <IntermediateAssembly Include="Temp/*.dll" />
+      <_DebugSymbolsIntermediatePath Include="Temp/*.pdb" />
+    </ItemGroup>
+    <PropertyGroup>
+      <IntermediateOutputPath>Temp\</IntermediateOutputPath>
+      <TargetName>nunit.framework</TargetName>
+    </PropertyGroup>
+
+  </Target>
+
+</Project>
