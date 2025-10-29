@@ -1,5 +1,12 @@
 <Project>
 
+  <PropertyGroup>
+    <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/tutorial-custom-task-code-generation?view=visualstudio#changes-required-to-multitarget -->
+    <VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Full' ">net472</VilensTasks_TFM>
+    <VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Core' ">net8.0</VilensTasks_TFM>
+    <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\tasks\$(VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTasksPath>
+  </PropertyGroup>
+
   <UsingTask TaskName="Vilens.MSBuild.Scramble"
              AssemblyFile="$(VilensTasksPath)" />
 
@@ -22,7 +29,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <_VilensPdbFile Include="@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).pdb')" />
+      <_VilensPdbFile Include="@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).pdb')"
+                      Condition="Exists('@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).pdb')')" />
     </ItemGroup>
 
     <Error Text="'VilensTasksPath' is not set."
