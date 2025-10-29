@@ -10,8 +10,10 @@
           Condition="'$(TestProject)' != 'true'" />
 
   <PropertyGroup>
-    <VilensTasksPath>$(MSBuildThisFileDirectory)..\..\src\Vilens.MSBuild\bin\$(Configuration)\netstandard2.0\Vilens.MSBuild.dll</VilensTasksPath>
-    <VilensTasksPath Condition="'$(Configuration)' == ''">$(MSBuildThisFileDirectory)..\..\src\Vilens.MSBuild\bin\Debug\netstandard2.0\Vilens.MSBuild.dll</VilensTasksPath>
+    <VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Full' ">net472</VilensTasks_TFM>
+    <VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Core' ">net8.0</VilensTasks_TFM>
+    <VilensTasksPath>$(MSBuildThisFileDirectory)..\..\src\Vilens.MSBuild\bin\$(Configuration)\$(VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTasksPath>
+    <VilensTasksPath Condition="'$(Configuration)' == ''">$(MSBuildThisFileDirectory)..\..\src\Vilens.MSBuild\bin\Debug\$(VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTasksPath>
   </PropertyGroup>
 
   <ItemGroup>

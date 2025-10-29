@@ -66,4 +66,4 @@ for ($i = 0; $i -lt $Iteration; $i++) {
   Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
-$Times | Measure-Object -AllStats -Property TotalMilliseconds # ~361 ms (~40 AOT)
+$Times | Measure-Object -AllStats -Property TotalMilliseconds # ~355 ms (~40 AOT)

@@ -7,7 +7,7 @@ param (
 
   [Parameter()]
   [ValidateRange(1, [int]::MaxValue)]
-  [int]$Iteration = 10
+  [int]$Iteration = 25
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,7 +18,9 @@ if (Test-Path 'publish') {
   Remove-Item 'publish/*' -Recurse -Force
 }
 
-dotnet publish ./src/Vilens.MSBuild --output 'publish' -c 'Release'
+$TFM = $MSBuild ? 'net472' : 'net8.0'
+
+dotnet publish ./src/Vilens.MSBuild --output 'publish' -c 'Release' -f $TFM
 
 $VilensTasksPath = Join-Path $PSScriptRoot 'publish\Vilens.MSBuild.dll'
 
@@ -43,6 +45,6 @@ for ($i = 0; $i -lt $Iteration; $i++) {
 Write-Progress -Activity "Running performance tests" -Completed
 $Times | Measure-Object -AllStats
 
-# 338 ms (dotnet.exe, Windows)
-# 394 ms (dotnet.exe, Linux)
-# 740 ms (MSBuild.exe)
+# 326 ms (dotnet.exe, Windows)
+# 361 ms (dotnet.exe, Linux)
+# 733 ms (MSBuild.exe)

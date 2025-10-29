@@ -72,7 +72,12 @@ public sealed class Scramble : Microsoft.Build.Utilities.Task, ICancelableTask, 
         Logger.SetTargetFile(LogFile.ItemSpec);
 
         var features = FeatureExtensions.Parse(Features);
-        var scope = (Visibility)Enum.Parse(typeof(Visibility), Scope.Trim(), true);
+        var scope =
+#if NETCOREAPP
+            Enum.Parse<Visibility>(Scope.Trim(), true);
+#else
+            (Visibility)Enum.Parse(typeof(Visibility), Scope.Trim(), true);
+#endif
 
         Log.LogMessage($"Features: {features:F}");
         Log.LogMessage($"Scope: {scope:G}");
