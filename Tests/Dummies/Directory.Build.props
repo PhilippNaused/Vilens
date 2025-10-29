@@ -4,6 +4,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>13.0</LangVersion>
     <IsPackable>false</IsPackable>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\..\Vilens.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <Import Project="..\..\src\Vilens.MSBuild\build\Vilens.MSBuild.props"

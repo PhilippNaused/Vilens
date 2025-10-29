@@ -35,6 +35,7 @@ Set-StrictMode -Version 3.0
 $Target = 'Bshox'
 $SourceFile = Join-Path $PSScriptRoot ".\Tests\Performance\TestAssemblies\$Target.dll"
 $SourcePdb = Join-Path $PSScriptRoot ".\Tests\Performance\TestAssemblies\$Target.pdb"
+$StrongNamingKey = Join-Path $PSScriptRoot "Vilens.snk"
 
 $TempFolder = Join-Path $PSScriptRoot ".\Tests\Performance\Temp"
 if (-not (Test-Path $TempFolder)) {
@@ -54,10 +55,10 @@ for ($i = 0; $i -lt $Iteration; $i++) {
   }
   $StartTime = Get-Date
   if ($Aot) {
-    & $VilensConsole $TargetFile --scope $Scope --features $Features | Out-Null
+    & $VilensConsole $TargetFile --scope $Scope --features $Features --strongNamingKey $StrongNamingKey | Out-Null
   }
   else {
-    & dotnet $VilensConsole $TargetFile --scope $Scope --features $Features | Out-Null
+    & dotnet $VilensConsole $TargetFile --scope $Scope --features $Features --strongNamingKey $StrongNamingKey | Out-Null
   }
   # skip the first iteration
   if ($i -gt 0) {
@@ -66,4 +67,4 @@ for ($i = 0; $i -lt $Iteration; $i++) {
   Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
-$Times | Measure-Object -AllStats -Property TotalMilliseconds # ~355 ms (~40 AOT)
+$Times | Measure-Object -AllStats -Property TotalMilliseconds # ~355 ms (~35 AOT)

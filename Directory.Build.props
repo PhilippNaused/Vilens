@@ -17,6 +17,11 @@
     <LangVersion>13.0</LangVersion>
     <Nullable>enable</Nullable>
     <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Vilens.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Version)' == ''">

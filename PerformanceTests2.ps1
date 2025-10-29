@@ -23,8 +23,9 @@ $TFM = $MSBuild ? 'net472' : 'net8.0'
 dotnet publish ./src/Vilens.MSBuild --output 'publish' -c 'Release' -f $TFM
 
 $VilensTasksPath = Join-Path $PSScriptRoot 'publish\Vilens.MSBuild.dll'
+$StrongNamingKey = Join-Path $PSScriptRoot "Vilens.snk"
 
-$arguments = @('.\Tests\Performance\Test.proj', '-tl:off', '-v:m', '-clp:PerformanceSummary', "-p:VilensTasksPath=$VilensTasksPath")
+$arguments = @('.\Tests\Performance\Test.proj', '-tl:off', '-v:m', '-clp:PerformanceSummary', "-p:VilensTasksPath=$VilensTasksPath", "-p:AssemblyOriginatorKeyFile=$StrongNamingKey", '-p:SignAssembly=true')
 # dotnet build $arguments -v:diag -m:1 | Out-File vilens.log # uncomment to test dotnet build
 
 $Times = @()
