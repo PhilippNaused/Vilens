@@ -2,11 +2,6 @@
 
 [CmdletBinding()]
 param (
-  # The name of file to test
-  [Parameter()]
-  [ValidateSet('nunit.framework')]
-  [string]$Target = 'nunit.framework',
-
   [Parameter()]
   [ValidateSet('Debug', 'Release')]
   [string]$Configuration = 'Release',
@@ -26,13 +21,14 @@ param (
 
   [ValidateSet('net9.0', 'net10.0')]
   [Parameter()]
-  [string]$Framework = 'net10.0'
+  [string]$Framework = 'net9.0'
 )
 
 $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 Set-StrictMode -Version 3.0
 
+$Target = 'Bshox'
 $SourceFile = Join-Path $PSScriptRoot ".\Tests\Performance\TestAssemblies\$Target.dll"
 $SourcePdb = Join-Path $PSScriptRoot ".\Tests\Performance\TestAssemblies\$Target.pdb"
 
@@ -68,4 +64,4 @@ for ($i = 0; $i -lt $Iteration; $i++) {
   Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
-$Times | Measure-Object -AllStats -Property TotalMilliseconds # ~790ms (~270 AOT)
+$Times | Measure-Object -AllStats -Property TotalMilliseconds # ~361 ms (~40 AOT)

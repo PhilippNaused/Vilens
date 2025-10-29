@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\..\publish\Vilens.MSBuild.dll</VilensTasksPath>
+    <VilensScope>Internal</VilensScope>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,7 +33,7 @@
     </ItemGroup>
     <PropertyGroup>
       <IntermediateOutputPath>Temp\</IntermediateOutputPath>
-      <TargetName>nunit.framework</TargetName>
+      <TargetName>Bshox</TargetName>
     </PropertyGroup>
 
   </Target>

@@ -39,6 +39,6 @@ for ($i = 0; $i -lt $Iteration; $i++) {
 Write-Progress -Activity "Running performance tests" -Completed
 $Times | Measure-Object -AllStats
 
-# 775 ms (dotnet.exe, Windows)
-# 836 ms (dotnet.exe, Linux)
-# 1032 ms (MSBuild.exe)
+# 338 ms (dotnet.exe, Windows)
+# 394 ms (dotnet.exe, Linux)
+# 740 ms (MSBuild.exe)
