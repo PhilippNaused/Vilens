@@ -33,8 +33,8 @@ internal sealed class PropertyInline : FeatureBase
         _ = Parallel.ForEach(_methods, method =>
         {
             Cancellation.ThrowIfCancellationRequested();
-            var instrs = method.Body.Instructions;
-            foreach (var instr in instrs)
+            var instructions = method.Body.Instructions;
+            foreach (var instr in instructions)
             {
                 if (!(instr.OpCode == OpCodes.Call || instr.OpCode == OpCodes.Callvirt) || instr.Operand is not MethodDef called)
                 {

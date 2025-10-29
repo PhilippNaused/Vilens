@@ -8,7 +8,6 @@ internal readonly struct NamingHelper
 {
     private static readonly ImmutableArray<char> IllegalChars = [.. " .:!?&()`'\"*/\x037E;\e"];
     private static readonly ImmutableArray<char> LegalChars = [.. "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"];
-#pragma warning disable IDISP006 // Implement IDisposable
     private readonly IEnumerator<string> m_Enumerator;
     private readonly HashSet<string>? m_UsedTypeNames;
     private readonly ImmutableArray<char> m_Chars;

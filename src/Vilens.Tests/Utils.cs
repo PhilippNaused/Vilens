@@ -21,8 +21,8 @@ internal static class Utils
             newData: out var newData,
             newPdbData: out _,
             TestContext.CurrentContext.CancellationToken);
-        var decomp = ICSharpCodeExtensions.GetDecompiler(newData, "Test.dll").GetCode();
-        return decomp;
+        var decompiled = ICSharpCodeExtensions.GetDecompiler(newData, "Test.dll").GetCode();
+        return decompiled;
     }
 
     public static void Test(string sourceCode, Action<Scrambler> action, bool cil = false)
@@ -47,7 +47,7 @@ internal static class Utils
 
     public static void Validate(string sourceCode, VilensFeature features)
     {
-        string decomp = TestObfuscate(sourceCode, out var framework, features);
-        Validation.Validate(decomp, "cs", framework);
+        string decompiled = TestObfuscate(sourceCode, out var framework, features);
+        Validation.Validate(decompiled, "cs", framework);
     }
 }

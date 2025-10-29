@@ -19,6 +19,7 @@ public class Strings
         return "_Invoke1";
     }
 
+    // cspell:ignore Invokeÿǿ
     public string Invokeÿǿ()
     {
         return "_Invokeÿǿ";

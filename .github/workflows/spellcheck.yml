@@ -1,0 +1,16 @@
+name: 'Check spelling'
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          lfs: false
+          submodules: false
+      - uses: streetsidesoftware/cspell-action@v7

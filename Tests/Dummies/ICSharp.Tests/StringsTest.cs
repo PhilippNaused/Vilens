@@ -8,7 +8,7 @@ namespace ICSharp.Tests;
 internal static class StringsTest
 {
     [Test]
-    public static void Decomp()
+    public static void Decompile()
     {
         var str = typeof(Strings).Decompile();
         Validation.Validate(str, "cs");
@@ -25,6 +25,7 @@ internal static class StringsTest
         Assert.That(val.Prop2, Is.EqualTo("_Prop2"));
         Assert.That(val.Prop4, Is.EqualTo("_Pr\0p4"));
         Assert.That(val.Invoke1(), Is.EqualTo("_Invoke1"));
+        // cspell:ignore Invokeÿǿ
         Assert.That(val.Invokeÿǿ().ToCharArray(), Has.Some.GreaterThan((char)128));
         Assert.That(val.Invokeÿǿ(), Is.EqualTo("_Invokeÿǿ"));
     }

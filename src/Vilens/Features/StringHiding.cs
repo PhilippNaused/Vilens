@@ -273,9 +273,7 @@ internal sealed class StringHiding : FeatureBase
     {
         using var compressStream = new MemoryStream();
         using var compressor = new DeflateStream(compressStream, CompressionLevel.Optimal);
-#pragma warning disable IDISP004 // Don't ignore created IDisposable
         new MemoryStream(data).CopyTo(compressor);
-#pragma warning restore IDISP004 // Don't ignore created IDisposable
         compressor.Close();
         return compressStream.ToArray();
     }

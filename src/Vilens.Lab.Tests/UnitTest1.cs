@@ -48,6 +48,7 @@ public class Tests
     public void Test4()
     {
         string str = Class4.Get();
+        // cspell:ignore Invokÿǿ
         Assert.That(str, Is.EqualTo("_Invokÿǿ"));
     }
 

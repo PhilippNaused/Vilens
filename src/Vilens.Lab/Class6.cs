@@ -17,13 +17,13 @@ public static class Class6b
     {
         var class6 = mod.FindNormalThrow(typeof(Class6).FullName);
         var method = class6.Methods.Single(m => m.Name == nameof(Class6.Get));
-        var insts = method.Body.Instructions;
-        insts.Clear();
-        insts.Add(Emit.Load(method.Parameters[0]));
-        insts.Add(Emit.ArgList());
-        insts.Add(Emit.Load(method.Parameters[1]));
-        insts.Add(Emit.CopyBlock());
-        insts.Add(Emit.Return());
-        insts.Optimize();
+        var instructions = method.Body.Instructions;
+        instructions.Clear();
+        instructions.Add(Emit.Load(method.Parameters[0]));
+        instructions.Add(Emit.ArgList());
+        instructions.Add(Emit.Load(method.Parameters[1]));
+        instructions.Add(Emit.CopyBlock());
+        instructions.Add(Emit.Return());
+        instructions.Optimize();
     }
 }

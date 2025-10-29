@@ -33,7 +33,7 @@ public class Class5
         var body = method.Body;
         var inst = body.Instructions;
 
-        var ldstf = inst.Where(i => i.OpCode == OpCodes.Ldsfld).Skip(1).Single();
+        var ldsfld = inst.Where(i => i.OpCode == OpCodes.Ldsfld).Skip(1).Single();
         var ldftn = inst.Single(i => i.OpCode == OpCodes.Ldftn);
         var newobj = inst.Single(i => i.OpCode == OpCodes.Newobj);
         var call = inst.Single(i => i.OpCode == OpCodes.Call);

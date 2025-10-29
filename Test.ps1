@@ -11,6 +11,8 @@ Set-StrictMode -Version 3.0
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $true
 
+cspell lint $PSScriptRoot
+
 dotnet build --configuration $Configuration
 dotnet test --configuration $Configuration
 

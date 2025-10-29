@@ -34,9 +34,9 @@ for ($i = 0; $i -lt $Iteration; $i++) {
     $Text = dotnet build $arguments
   }
   $Text | Where-Object { $_ -match '\b(\d+) ms +CommitVilens\b' }
-  $Millis = $Matches[1] | ForEach-Object { [int]$_ }
+  $Time = $Matches[1] | ForEach-Object { [int]$_ }
 
-  $Times += $Millis
+  $Times += $Time
 
   Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
 }

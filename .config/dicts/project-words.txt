@@ -1,0 +1,16 @@
+Autofac
+Bshox
+NUnit
+Naused
+NestedFamANDAssem
+NestedFamORAssem
+Philipp
+ReconfigExistingLoggers
+Serilog
+VeriGit
+Vilens
+Xoshiro
+autostash # git command
+dnlib
+nunitlite
+unobfuscated

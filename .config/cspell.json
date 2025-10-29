@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en-US",
+  "useGitignore": true,
+  "words": [],
+  "flagWords": [],
+  "ignorePaths": [
+    "Tests/Dummies/**/Snapshots/**",
+    "Tests/Integration/*/**",
+    "Tests/Integration/*.patch",
+    "*.svg",
+    "*.DotSettings",
+    ".config/cspell.json",
+    ".config/dotnet-tools.json",
+    ".config/dicts/**"
+  ],
+  "dictionaries": [
+    "project-words",
+    "ilcodes",
+    "dotnet-ext"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      "path": "./dicts/project-words.txt",
+      "addWords": true
+    },
+    {
+      "name": "ilcodes",
+      "path": "./dicts/ilcodes.txt",
+      "addWords": true
+    },
+    {
+      "name": "dotnet-ext",
+      "path": "./dicts/dotnet-ext.txt",
+      "addWords": true
+    }
+  ],
+  "overrides": [
+    {
+      "filename": "*.tt",
+      "dictionaries": [
+        "csharp"
+      ]
+    }
+  ]
+}

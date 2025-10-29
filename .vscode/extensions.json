@@ -8,6 +8,7 @@
         "davidanson.vscode-markdownlint",
         "redhat.vscode-xml",
         "icsharpcode.ilspy-vscode",
-        "soltys.vscode-il"
+        "soltys.vscode-il",
+        "github.vscode-github-actions"
     ]
 }

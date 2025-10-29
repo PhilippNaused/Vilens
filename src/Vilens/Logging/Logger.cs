@@ -9,11 +9,11 @@ internal sealed class Logger(string name)
     public string Name => name;
 
 #if DEBUG
-    private const string FileLayout = "${longdate} [${processid}:${pad:padding=2:padcharacter=0:${threadid}}] ${level:uppercase=true} ${logger} - ${message:withexception=true}";
-    private const string ConsoleLayout = "${when:when=level<=LogLevel.Info:inner=:else=${level:format=FullName}\\: }${logger:shortName=true} - ${message:withexception=true}";
+    private const string FileLayout = "${LongDate} [${processid}:${pad:padding=2:PadCharacter=0:${ThreadID}}] ${level:uppercase=true} ${logger} - ${message:WithException=true}";
+    private const string ConsoleLayout = "${when:when=level<=LogLevel.Info:inner=:else=${level:format=FullName}\\: }${logger:shortName=true} - ${message:WithException=true}";
 #else
-    private const string FileLayout = "${longdate} [${processid}] ${level:uppercase=true} ${message:withexception=true}";
-    private const string ConsoleLayout = "${when:when=level<=LogLevel.Info:inner=:else=${level:format=FullName}\\: }${message:withexception=true}";
+    private const string FileLayout = "${LongDate} [${processid}] ${level:uppercase=true} ${message:WithException=true}";
+    private const string ConsoleLayout = "${when:when=level<=LogLevel.Info:inner=:else=${level:format=FullName}\\: }${message:WithException=true}";
 #endif
 
     private readonly NLog.Logger _logger = LogManager.GetLogger(name);

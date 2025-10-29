@@ -12,6 +12,7 @@ public static class Class4
 {
     public static string Get()
     {
+        // cspell:ignore Invokÿǿ
         return "_Invokÿǿ";
     }
 }
@@ -49,7 +50,7 @@ public static class Class4b
 
         var cctor = newClass.FindOrCreateStaticConstructor();
 
-        var sfield = new FieldDefUser(string.Empty, new FieldSig(mod.CorLibTypes.String))
+        var stringField = new FieldDefUser(string.Empty, new FieldSig(mod.CorLibTypes.String))
         {
             Access = FieldAttributes.Assembly,
             DeclaringType = newClass,
@@ -86,7 +87,7 @@ public static class Class4b
         body.Instructions.Add(Emit.Load(ptr));
         body.Instructions.Add(Emit.Call(deflate));
 
-        // sfield = new string((char*)ptr, 0, bytes.Length / 2)
+        // stringField = new string((char*)ptr, 0, bytes.Length / 2)
         body.Instructions.Add(Emit.Load(ptr));
         body.Instructions.Add(Emit.Load(0));
         body.Instructions.Add(Emit.Load(bytes.Length / 2));
@@ -95,14 +96,14 @@ public static class Class4b
         var intSig = mod.CorLibTypes.Int32;
         var methodRef = new MemberRefUser(mod, ".ctor", MethodSig.CreateInstance(mod.CorLibTypes.Void, charPtrSig, intSig, intSig), stringRef);
         body.Instructions.Add(Emit.NewObject(methodRef));
-        body.Instructions.Add(Emit.Store(sfield));
+        body.Instructions.Add(Emit.Store(stringField));
 
         // Marshal.FreeHGlobal(ptr);
         body.Instructions.Add(Emit.Load(ptr));
         body.Instructions.Add(Emit.Call(free));
         body.Instructions.Add(Emit.Return());
 
-        instr.Replace(Emit.Load(sfield));
+        instr.Replace(Emit.Load(stringField));
 
         body.Instructions.Optimize();
 
