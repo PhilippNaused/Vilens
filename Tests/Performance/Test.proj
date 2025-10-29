@@ -3,6 +3,7 @@
   <PropertyGroup>
     <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\..\publish\Vilens.MSBuild.dll</VilensTasksPath>
     <VilensScope>Internal</VilensScope>
+    <VilensBackup>false</VilensBackup>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,12 +30,7 @@
 
     <ItemGroup>
       <IntermediateAssembly Include="Temp/*.dll" />
-      <_DebugSymbolsIntermediatePath Include="Temp/*.pdb" />
     </ItemGroup>
-    <PropertyGroup>
-      <IntermediateOutputPath>Temp\</IntermediateOutputPath>
-      <TargetName>Bshox</TargetName>
-    </PropertyGroup>
 
   </Target>
 

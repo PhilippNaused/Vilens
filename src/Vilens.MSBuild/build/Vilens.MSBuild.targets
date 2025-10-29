@@ -5,7 +5,7 @@
 
   <Target Name="CommitVilens"
           AfterTargets="CoreCompile"
-          Inputs="@(IntermediateAssembly)"
+          Inputs="@(IntermediateAssembly);@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).pdb')"
           Outputs="@(IntermediateAssembly->'%(FullPath).vilens.done')"
           Condition="'$(DesignTimeBuild)' != 'true'">
 
@@ -21,21 +21,27 @@
       <_StrongNamingKey>$(AssemblyOriginatorKeyFile)</_StrongNamingKey>
     </PropertyGroup>
 
+    <ItemGroup>
+      <_VilensPdbFile Include="@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).pdb')" />
+    </ItemGroup>
+
     <Error Text="'VilensTasksPath' is not set."
            Condition="'$(VilensTasksPath)' == ''" />
     <Error Text="'$(VilensTasksPath)' does not exist."
            Condition="!Exists('$(VilensTasksPath)')" />
     <Copy SourceFiles="@(IntermediateAssembly)"
-          DestinationFiles="$(IntermediateOutputPath)$(TargetName).unobfuscated$(TargetExt)" />
-    <Copy SourceFiles="@(_DebugSymbolsIntermediatePath)"
-          DestinationFiles="$(IntermediateOutputPath)$(TargetName).unobfuscated.pdb" />
+          Condition="'$(VilensBackup)' != 'false'"
+          DestinationFiles="@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).unobfuscated%(Extension)')" />
+    <Copy SourceFiles="@(_VilensPdbFile)"
+          Condition="'$(VilensBackup)' != 'false'"
+          DestinationFiles="@(_VilensPdbFile->'%(RootDir)%(Directory)%(Filename).unobfuscated.pdb')" />
     <Vilens.MSBuild.Scramble Features="$(_VilensFeatures)"
-                                   Scope="$(VilensScope)"
-                                   Assembly="@(IntermediateAssembly)"
-                                   PdbFile="@(_DebugSymbolsIntermediatePath)"
-                                   StrongNamingKey="$(_StrongNamingKey)"
-                                   LogFile="@(IntermediateAssembly->'%(FullPath).vilens.log')"
-                                   DelaySign="$(DelaySign)" />
+                             Scope="$(VilensScope)"
+                             Assembly="@(IntermediateAssembly)"
+                             PdbFile="@(_VilensPdbFile)"
+                             StrongNamingKey="$(_StrongNamingKey)"
+                             LogFile="@(IntermediateAssembly->'%(FullPath).vilens.log')"
+                             DelaySign="$(DelaySign)" />
 
     <Error Text="Vilens failed. See @(IntermediateAssembly->'%(FullPath).vilens.log') for details."
            Condition="!Exists(@(IntermediateAssembly->'%(FullPath).vilens.done'))" />
@@ -46,8 +52,8 @@
           AfterTargets="CoreClean">
     <Delete Files="@(IntermediateAssembly->'%(FullPath).vilens.log')" />
     <Delete Files="@(IntermediateAssembly->'%(FullPath).vilens.done')" />
-    <Delete Files="$(IntermediateOutputPath)$(TargetName).unobfuscated$(TargetExt)" />
-    <Delete Files="$(IntermediateOutputPath)$(TargetName).unobfuscated.pdb" />
+    <Delete Files="@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).unobfuscated%(Extension)')" />
+    <Delete Files="@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).unobfuscated.pdb')" />
   </Target>
 
 </Project>
