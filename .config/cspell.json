@@ -6,19 +6,20 @@
   "words": [],
   "flagWords": [],
   "ignorePaths": [
-    "Tests/Dummies/**/Snapshots/**",
-    "Tests/Integration/*/**",
-    "Tests/Integration/*.patch",
-    "*.svg",
     "*.DotSettings",
+    "*.svg",
     ".config/cspell.json",
+    ".config/dicts/**",
     ".config/dotnet-tools.json",
-    ".config/dicts/**"
+    ".vscode/*",
+    "Tests/Dummies/**/Snapshots/**",
+    "Tests/Integration/*.patch",
+    "Tests/Integration/*/**"
   ],
   "dictionaries": [
-    "project-words",
+    "dotnet-ext",
     "ilcodes",
-    "dotnet-ext"
+    "project-words"
   ],
   "dictionaryDefinitions": [
     {
