@@ -12,7 +12,7 @@
 
   <Target Name="CommitVilens"
           AfterTargets="CoreCompile"
-          Inputs="@(IntermediateAssembly);@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).pdb')"
+          Inputs="@(IntermediateAssembly)"
           Outputs="@(IntermediateAssembly->'%(FullPath).vilens.done')"
           Condition="'$(DesignTimeBuild)' != 'true'">
 
