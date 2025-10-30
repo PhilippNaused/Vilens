@@ -8,12 +8,12 @@ public class NestingClass
         public class b
         {
             public int a;
-            public long a;
+            public long b;
             public int a()
             {
                 return 1;
             }
-            public long a()
+            public long b()
             {
                 return 1L;
             }
@@ -24,12 +24,12 @@ public class NestingClass
         private class a
         {
             private int m_a;
-            private long m_a;
+            private long m_b;
             private int a()
             {
                 return 1;
             }
-            private long a()
+            private long b()
             {
                 return 1L;
             }
@@ -43,12 +43,12 @@ public class NestingClass
             private int a;
         }
         private int m_a;
-        private long m_a;
+        private long m_b;
         private int a()
         {
             return 1;
         }
-        private long a()
+        private long b()
         {
             return 1L;
         }

@@ -87,12 +87,12 @@ internal readonly struct NamingHelper
         TypeDef type = member.DeclaringType;
         return member switch
         {
-            MethodDef method => type.FindMethod(newName, method.MethodSig) != null,
-            FieldDef field => type.FindField(newName, field.FieldSig) != null,
+            MethodDef method => type.Methods.Any(m => m != member && m.Name.Equals(newName)), // TODO: overloads
+            FieldDef field => type.Fields.Any(m => m != member && m.Name.Equals(newName)), // TODO: overloads
             PropertyDef property => type.FindProperty(newName, property.PropertySig) != null,
             EventDef @event => type.FindEvent(newName, @event.EventType) != null,
             TypeDef type2 => IsTypeNameInUse(type2, newName),
-            GenericParam genericParam => type.GenericParameters.Any(gp => gp.Name.Equals(newName)),
+            GenericParam genericParam => genericParam.Owner.GenericParameters.Any(gp => gp != genericParam && gp.Name.Equals(newName)),
             _ => throw new ArgumentException($"Unknown type: {member.GetType()}", nameof(member)),
         };
     }
