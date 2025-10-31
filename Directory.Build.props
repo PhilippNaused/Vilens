@@ -13,8 +13,9 @@
     <NuGetAudit>True</NuGetAudit>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <AnalysisLevel>latest-all</AnalysisLevel>
-    <LangVersion>13.0</LangVersion>
+    <AnalysisLevel>10.0</AnalysisLevel>
+    <AnalysisMode>All</AnalysisMode>
+    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
     <InvariantGlobalization>true</InvariantGlobalization>

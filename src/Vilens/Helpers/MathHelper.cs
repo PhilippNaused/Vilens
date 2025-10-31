@@ -11,8 +11,12 @@ internal static class MathHelper
     /// <returns>A prime <c>&gt;=</c> <paramref name="min"/></returns>
     public static int GetPrime(int min)
     {
+#if NETCOREAPP
+        ArgumentOutOfRangeException.ThrowIfNegative(min);
+#else
         if (min < 0)
-            throw new ArgumentOutOfRangeException(nameof(min));
+            throw new ArgumentOutOfRangeException(nameof(min), "Value must be non-negative.");
+#endif
         return min switch
         {
             0 => 2,
@@ -48,8 +52,12 @@ internal static class MathHelper
 
     public static bool IsPrime(int p)
     {
+#if NETCOREAPP
+        ArgumentOutOfRangeException.ThrowIfNegative(p);
+#else
         if (p < 0)
             throw new ArgumentOutOfRangeException(nameof(p));
+#endif
         switch (p)
         {
             case 0:
@@ -80,18 +88,26 @@ internal static class MathHelper
     /// <param name="inc">The increment of each cycle (0 &lt; <paramref name="inc"/> &lt; <paramref name="p"/>)</param>
     public static void ReOrder<T>(IList<T> list, int p, uint start, uint inc)
     {
+#if NETCOREAPP
+        ArgumentNullException.ThrowIfNull(list);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(inc);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(start, (uint)int.MaxValue);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(inc, (uint)p);
+        ArgumentOutOfRangeException.ThrowIfNotEqual(list.Count, p);
+#else
         if (list is null)
             throw new ArgumentNullException(nameof(list));
-        if (!IsPrime(p))
-            throw new ArgumentOutOfRangeException(nameof(p), "Value must be a prime.");
-        if (list.Count != p)
-            throw new ArgumentException($"List must have '{p}' elements", nameof(list));
         if (inc <= 0)
-            throw new ArgumentOutOfRangeException(nameof(inc));
-        if (inc >= p)
             throw new ArgumentOutOfRangeException(nameof(inc));
         if (start >= int.MaxValue)
             throw new ArgumentOutOfRangeException(nameof(start));
+        if (inc >= p)
+            throw new ArgumentOutOfRangeException(nameof(inc));
+        if (list.Count != p)
+            throw new ArgumentException($"List must have '{p}' elements", nameof(list));
+#endif
+        if (!IsPrime(p))
+            throw new ArgumentOutOfRangeException(nameof(p), "Value must be a prime.");
 
         Debug.Assert(inc % (uint)p != 0);
         var copy = new Queue<T>(list);
@@ -114,8 +130,12 @@ internal static class MathHelper
     /// and <c>x &lt; <see cref="int.MaxValue"/></c></returns>
     public static uint FindCongruent(uint i, int p, Random random)
     {
+#if NETCOREAPP
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(p);
+#else
         if (p <= 0)
             throw new ArgumentOutOfRangeException(nameof(p));
+#endif
 
         uint ip = i % (uint)p;
         Debug.Assert(ip < p);
