@@ -10,13 +10,6 @@
     <PublishAot Condition="'$(Aot)' != ''">true</PublishAot>
   </PropertyGroup>
 
-  <Target Name="CleanLogs" AfterTargets="Clean">
-    <ItemGroup>
-      <LogFiles Include="$(TargetDir)Vilens.log" />
-    </ItemGroup>
-    <Delete Files="@(LogFiles)" />
-  </Target>
-
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />
   </ItemGroup>
