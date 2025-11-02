@@ -14,9 +14,6 @@ param (
   [string]$Features = 'All',
 
   [Parameter()]
-  [switch]$NoSelfObfuscate,
-
-  [Parameter()]
   [switch]$Aot,
 
   [ValidateSet('net9.0', 'net10.0')]
@@ -45,7 +42,7 @@ else {
   Remove-Item $TempFolder\* -Recurse
 }
 
-$VilensConsole = .\Publish.ps1 -Configuration $Configuration -NoSelfObfuscate:$NoSelfObfuscate -Aot:$Aot -Framework $Framework
+$VilensConsole = .\Publish.ps1 -Configuration $Configuration -NoSelfObfuscate -Aot:$Aot -Framework $Framework
 
 $Times = @()
 for ($i = 0; $i -lt $Iteration; $i++) {
@@ -67,4 +64,6 @@ for ($i = 0; $i -lt $Iteration; $i++) {
   Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
-$Times | Measure-Object -AllStats -Property TotalMilliseconds # ~355 ms (~35 AOT)
+$Times | Measure-Object -AllStats -Property TotalMilliseconds
+# Windows: ~345 ms (~35 AOT)
+# Linux: ~400 ms (~77 AOT)
