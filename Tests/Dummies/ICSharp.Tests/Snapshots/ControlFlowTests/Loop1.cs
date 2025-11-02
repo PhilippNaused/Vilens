@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-public static void Loop1(IList<int> list)
+public static void Loop1(System.Collections.Generic.IList<int> list)
 {
     uint num = 100271843u;
     int num2 = 1466146002;

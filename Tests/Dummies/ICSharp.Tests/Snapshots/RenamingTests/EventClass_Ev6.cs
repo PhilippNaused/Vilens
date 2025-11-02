@@ -1,32 +1,28 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Threading;
-
-private event EventHandler? c
+private event System.EventHandler? c
 {
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     add
     {
-        EventHandler eventHandler = f;
-        EventHandler eventHandler2;
+        System.EventHandler eventHandler = f;
+        System.EventHandler eventHandler2;
         do
         {
             eventHandler2 = eventHandler;
-            EventHandler value2 = (EventHandler)Delegate.Combine(eventHandler2, value);
-            eventHandler = Interlocked.CompareExchange(ref f, value2, eventHandler2);
+            System.EventHandler value2 = (System.EventHandler)System.Delegate.Combine(eventHandler2, value);
+            eventHandler = System.Threading.Interlocked.CompareExchange(ref f, value2, eventHandler2);
         }
         while ((object)eventHandler != eventHandler2);
     }
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     remove
     {
-        EventHandler eventHandler = f;
-        EventHandler eventHandler2;
+        System.EventHandler eventHandler = f;
+        System.EventHandler eventHandler2;
         do
         {
             eventHandler2 = eventHandler;
-            EventHandler value2 = (EventHandler)Delegate.Remove(eventHandler2, value);
-            eventHandler = Interlocked.CompareExchange(ref f, value2, eventHandler2);
+            System.EventHandler value2 = (System.EventHandler)System.Delegate.Remove(eventHandler2, value);
+            eventHandler = System.Threading.Interlocked.CompareExchange(ref f, value2, eventHandler2);
         }
         while ((object)eventHandler != eventHandler2);
     }

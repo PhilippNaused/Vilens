@@ -1,13 +1,11 @@
-using System.Runtime.CompilerServices;
-
 private int c
 {
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     get
     {
         return f;
     }
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     set
     {
         f = value;

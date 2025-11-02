@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-public static void TryCatch3(IList<int> list)
+public static void TryCatch3(System.Collections.Generic.IList<int> list)
 {
     uint num = 100282826u;
     int num2 = 1380354022;

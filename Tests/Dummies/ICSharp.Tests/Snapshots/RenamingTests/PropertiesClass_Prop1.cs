@@ -1,13 +1,11 @@
-using System.Runtime.CompilerServices;
-
 public int Prop1
 {
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     get
     {
         return this.a;
     }
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     set
     {
         this.a = value;

@@ -146,7 +146,7 @@ public sealed class Scramble : Microsoft.Build.Utilities.Task, ICancelableTask, 
         // make sure the timestamp of the tag file is newer than the assembly
         var assemblyTime = File.GetLastWriteTimeUtc(Assembly.ItemSpec);
         var tagTime = File.GetLastWriteTimeUtc(tagFile);
-        Debug.Assert(tagTime > assemblyTime, "tagTime > assemblyTime");
+        Debug.Assert(tagTime > assemblyTime, $"tagTime > assemblyTime {tagTime} > {assemblyTime}");
 #endif
 
         Log.LogMessage("Task completed in {0}", sw.Elapsed);

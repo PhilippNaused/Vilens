@@ -1,19 +1,14 @@
 // Test, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 // Reference: System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
-[assembly: CompilationRelaxations(8)]
-[assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
-[assembly: Debuggable(DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
-[assembly: TargetFramework(".NETCoreApp,Version=v9.0", FrameworkDisplayName = ".NET 9.0")]
-[assembly: AssemblyVersion("0.0.0.0")]
-[module: RefSafetyRules(11)]
+[assembly: System.Runtime.CompilerServices.CompilationRelaxations(8)]
+[assembly: System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows = true)]
+[assembly: System.Diagnostics.Debuggable(System.Diagnostics.DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v9.0", FrameworkDisplayName = ".NET 9.0")]
+[assembly: System.Reflection.AssemblyVersion("0.0.0.0")]
+[module: System.Runtime.CompilerServices.RefSafetyRules(11)]
 public class ControlFlowClass
 {
-    public static void Loop1(IList<int> list)
+    public static void Loop1(System.Collections.Generic.IList<int> list)
     {
         uint num = 100233400u;
         int num2 = 1499553607;

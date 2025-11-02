@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-
 public class ControlFlowClass2
 {
-    public static IEnumerable<int> Test1(IList<int> list)
+    public static System.Collections.Generic.IEnumerable<int> Test1(System.Collections.Generic.IList<int> list)
     {
         uint num = 100192212u;
         int num2 = 375760892;

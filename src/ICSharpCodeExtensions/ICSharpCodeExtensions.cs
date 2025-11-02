@@ -29,13 +29,17 @@ public static class ICSharpCodeExtensions
 
         _compilerSettings = new DecompilerSettings(LanguageVersion.Latest)
         {
+            UsingDeclarations = false, // always use fully qualified names
             AlwaysShowEnumMemberValues = true, // changes to enum values are breaking changes => always show them
             ShowXmlDocumentation = false, // the docs are not part of the API
             AutoLoadAssemblyReferences = false, // we don't need the references
+            UsePrimaryConstructorSyntax = false, // primary constructors make the API less readable
+            UsePrimaryConstructorSyntaxForNonRecordTypes = false,
             UseDebugSymbols = false, // we don't need the debug symbols
             ShowDebugInfo = false, // we don't need the debug info
             LoadInMemory = true, // faster than loading from disk
-            FileScopedNamespaces = true
+            FileScopedNamespaces = true,
+            SortCustomAttributes = true, // sort attributes by name
         };
         var format = _compilerSettings.CSharpFormattingOptions;
         format.IndentationString = "    "; // 4 spaces is the de facto standard for C#

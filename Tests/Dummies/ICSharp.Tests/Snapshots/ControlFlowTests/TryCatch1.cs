@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-public static void TryCatch1(IList<int> list)
+public static void TryCatch1(System.Collections.Generic.IList<int> list)
 {
     uint num = 100282826u;
     int num2 = 1965290142;
@@ -27,12 +23,12 @@ public static void TryCatch1(IList<int> list)
             {
                 list.Add(num3);
             }
-            catch (InvalidOperationException ex) when (ex.InnerException != null)
+            catch (System.InvalidOperationException ex) when (ex.InnerException != null)
             {
                 list.Add(ex.Message.Length);
                 goto IL_00b2;
             }
-            catch (TaskCanceledException)
+            catch (System.Threading.Tasks.TaskCanceledException)
             {
                 list.Add(num3 + 7);
                 goto IL_003f;

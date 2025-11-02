@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-public unsafe static int Test(IList<int> list)
+public unsafe static int Test(System.Collections.Generic.IList<int> list)
 {
-    return list.Single((Func<int, bool>)global::<Module>.((nint)__ldftn(.)));
+    return System.Linq.Enumerable.Single(list, (System.Func<int, bool>)global::<Module>.((nint)__ldftn(Vilens.Lab.Class5..)));
 }

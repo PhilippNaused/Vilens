@@ -1,44 +1,40 @@
-using System;
-using dnlib.DotNet;
-using dnlib.DotNet.Emit;
-
-[Serializable]
+[System.Serializable]
 protected internal sealed class 
 {
-    public static readonly   = new ();
-    public static Func<int, bool> ;
-    public static Func<MethodDef, bool> ;
-    public static Func<FieldDef, bool> ;
-    public static Func<Instruction, bool> ;
-    public static Func<Instruction, bool> ;
-    public static Func<Instruction, bool> ;
-    public static Func<Instruction, bool> ;
+    public static readonly Vilens.Lab.Class5.  = new Vilens.Lab.Class5.();
+    public static System.Func<int, bool> ;
+    public static System.Func<dnlib.DotNet.MethodDef, bool> ;
+    public static System.Func<dnlib.DotNet.FieldDef, bool> ;
+    public static System.Func<dnlib.DotNet.Emit.Instruction, bool> ;
+    public static System.Func<dnlib.DotNet.Emit.Instruction, bool> ;
+    public static System.Func<dnlib.DotNet.Emit.Instruction, bool> ;
+    public static System.Func<dnlib.DotNet.Emit.Instruction, bool> ;
     internal bool (int i)
     {
         return i == 7;
     }
-    internal bool (MethodDef m)
+    internal bool (dnlib.DotNet.MethodDef m)
     {
         return !m.IsRuntimeSpecialName;
     }
-    internal bool (FieldDef m)
+    internal bool (dnlib.DotNet.FieldDef m)
     {
         return !m.IsRuntimeSpecialName;
     }
-    internal bool (Instruction i)
+    internal bool (dnlib.DotNet.Emit.Instruction i)
     {
-        return i.OpCode == OpCodes.Ldsfld;
+        return i.OpCode == dnlib.DotNet.Emit.OpCodes.Ldsfld;
     }
-    internal bool (Instruction i)
+    internal bool (dnlib.DotNet.Emit.Instruction i)
     {
-        return i.OpCode == OpCodes.Ldftn;
+        return i.OpCode == dnlib.DotNet.Emit.OpCodes.Ldftn;
     }
-    internal bool (Instruction i)
+    internal bool (dnlib.DotNet.Emit.Instruction i)
     {
-        return i.OpCode == OpCodes.Newobj;
+        return i.OpCode == dnlib.DotNet.Emit.OpCodes.Newobj;
     }
-    internal bool (Instruction i)
+    internal bool (dnlib.DotNet.Emit.Instruction i)
     {
-        return i.OpCode == OpCodes.Call;
+        return i.OpCode == dnlib.DotNet.Emit.OpCodes.Call;
     }
 }

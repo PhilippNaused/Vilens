@@ -1,27 +1,25 @@
-using System.Runtime.CompilerServices;
-
 public class PropertiesClass
 {
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     private int m_a;
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     private int m_b;
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     private int m_c;
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     private int d;
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     private int e;
-    [CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     private int f;
     public int Prop1
     {
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         get
         {
             return this.m_a;
         }
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         set
         {
             this.m_a = value;
@@ -29,12 +27,12 @@ public class PropertiesClass
     }
     internal int a
     {
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         get
         {
             return this.m_b;
         }
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         set
         {
             this.m_b = value;
@@ -42,12 +40,12 @@ public class PropertiesClass
     }
     protected int Prop3
     {
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         get
         {
             return this.m_c;
         }
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         set
         {
             this.m_c = value;
@@ -55,12 +53,12 @@ public class PropertiesClass
     }
     protected internal int Prop4
     {
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         get
         {
             return d;
         }
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         set
         {
             d = value;
@@ -68,12 +66,12 @@ public class PropertiesClass
     }
     private protected int b
     {
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         get
         {
             return e;
         }
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         set
         {
             e = value;
@@ -81,12 +79,12 @@ public class PropertiesClass
     }
     private int c
     {
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         get
         {
             return f;
         }
-        [CompilerGenerated]
+        [System.Runtime.CompilerServices.CompilerGenerated]
         set
         {
             f = value;

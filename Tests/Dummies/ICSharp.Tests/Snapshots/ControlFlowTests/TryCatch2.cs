@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-
-public static void TryCatch2(IList<int> list)
+public static void TryCatch2(System.Collections.Generic.IList<int> list)
 {
     try
     {
@@ -10,7 +7,7 @@ public static void TryCatch2(IList<int> list)
             list.Add(i);
         }
     }
-    catch (InvalidOperationException ex) when (ex.InnerException != null)
+    catch (System.InvalidOperationException ex) when (ex.InnerException != null)
     {
         list.Add(ex.Message.Length);
     }

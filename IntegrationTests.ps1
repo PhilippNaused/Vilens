@@ -49,6 +49,7 @@ finally {
   $GlobalNuGetCache = Get-Item $GlobalNuGetCache.Substring("global-packages: ".Length)
   $PackageDir = Join-Path $GlobalNuGetCache "vilens.msbuild"
   if (Test-Path $PackageDir) {
-    Remove-Item $PackageDir -Recurse -Force
+    $Packages = Get-ChildItem -Path $PackageDir -Filter "0.0.0-Dev.*" -Directory
+    $Packages | Remove-Item -Recurse -Force
   }
 }
