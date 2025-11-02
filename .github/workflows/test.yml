@@ -1,0 +1,46 @@
+name: Unit Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        - windows-latest
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: ⤵️ Checkout Source
+      uses: actions/checkout@v5
+
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        global-json-file: global.json
+        dotnet-version: |
+          8.0.x
+          9.0.x
+
+    # cspell:ignore devel
+    - name: 🛠️ Install mono
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mono-devel
+
+    - name: 🛠️ Restore dependencies
+      run: dotnet restore
+
+    - name: 🔨 Build
+      run: dotnet build
+
+    - name: 🔨 Build Dummy projects
+      run: dotnet build Tests/Dummies/Dummies.slnx
+
+    - name: 🧪 Test
+      run: dotnet test --no-progress --no-build
