@@ -23,6 +23,7 @@
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Vilens.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Version)' == ''">
