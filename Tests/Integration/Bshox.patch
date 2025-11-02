@@ -1,5 +1,5 @@
 diff --git a/.config/dicts/project-words.txt b/.config/dicts/project-words.txt
-index 58f0fec..cc83d64 100644
+index 58f0fec..e796a2a 100644
 --- a/.config/dicts/project-words.txt
 +++ b/.config/dicts/project-words.txt
 @@ -6,3 +6,4 @@ varint
@@ -9,26 +9,17 @@ index 58f0fec..cc83d64 100644
 \ No newline at end of file
 +sharpfuzz
 +Vilens
-\ No newline at end of file
 diff --git a/Test.ps1 b/Test.ps1
-index d6dc9a9..77e65e4 100644
+index d6dc9a9..ea4d299 100644
 --- a/Test.ps1
 +++ b/Test.ps1
-@@ -15,5 +15,5 @@ cspell lint $PSScriptRoot
+@@ -12,8 +12,7 @@ $ErrorActionPreference = 'Stop'
+ $PSNativeCommandUseErrorActionPreference = $true
+ 
+-cspell lint $PSScriptRoot
  
  # Run regular tests using MTP
 -dotnet test --disable-logo --configuration $Configuration
 +dotnet test --disable-logo --configuration $Configuration --solution "$PSScriptRoot/tests/UnitTests.slnf"
  
  # Publish AOT tests
-diff --git a/tests/UnitTests.slnf b/tests/UnitTests.slnf
-index c7e1d23..bf4994b 100644
---- a/tests/UnitTests.slnf
-+++ b/tests/UnitTests.slnf
-@@ -1,5 +1,5 @@
- {
-   "solution": {
--    "path": "..\\Bshox.slnx",
-+    "path": "../Bshox.slnx",
-     "projects": [
-       "tests\\Bshox.Generator.Tests\\Bshox.Generator.Tests.csproj",
