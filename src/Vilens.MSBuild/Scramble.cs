@@ -136,18 +136,17 @@ public sealed class Scramble : Microsoft.Build.Utilities.Task, ICancelableTask, 
         }
 
         var tagFile = Assembly.ItemSpec + ".vilens.done";
-        Thread.Sleep(1);
         Log.LogMessage($"Creating tag file: {tagFile}");
-        File.WriteAllBytes(tagFile, []); // touch
-                                         // we need to touch the tag file to indicate that the assembly has been processed
-                                         // normally, we would do this using the Touch task of MSBuild, but that only uses second precision on linux for some reason (bug?)
-
-#if DEBUG
-        // make sure the timestamp of the tag file is newer than the assembly
+        File.WriteAllBytes(tagFile, []);
         var assemblyTime = File.GetLastWriteTimeUtc(Assembly.ItemSpec);
-        var tagTime = File.GetLastWriteTimeUtc(tagFile);
-        Debug.Assert(tagTime > assemblyTime, $"tagTime > assemblyTime {tagTime} > {assemblyTime}");
-#endif
+        while (File.GetLastWriteTimeUtc(tagFile) <= assemblyTime)
+        {
+            cts.Token.ThrowIfCancellationRequested();
+            Thread.Sleep(5);
+            File.WriteAllBytes(tagFile, []); // touch
+                                             // we need to touch the tag file to indicate that the assembly has been processed
+                                             // normally, we would do this using the Touch task of MSBuild, but that only uses second precision on linux for some reason (bug?)
+        }
 
         Log.LogMessage("Task completed in {0}", sw.Elapsed);
         Log.LogMessage(MessageImportance.High, "Obfuscated {0}", Assembly.ItemSpec);
