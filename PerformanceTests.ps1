@@ -22,7 +22,7 @@ param (
 
   [Parameter()]
   [ValidateRange(2, [int]::MaxValue)]
-  [int]$Iteration = 20
+  [int]$Iterations = 20
 )
 
 $ErrorActionPreference = "Stop"
@@ -45,7 +45,7 @@ else {
 $VilensConsole = .\Publish.ps1 -Configuration $Configuration -NoSelfObfuscate -Aot:$Aot -Framework $Framework
 
 $Times = @()
-for ($i = 0; $i -lt $Iteration; $i++) {
+for ($i = 1; $i -le $Iterations; $i++) {
   $TargetFile = Copy-Item $SourceFile -Destination $TempFolder -PassThru -Force
   if (Test-Path $SourcePdb) {
     Copy-Item $SourcePdb -Destination $TempFolder -Force | Out-Null
@@ -58,10 +58,10 @@ for ($i = 0; $i -lt $Iteration; $i++) {
     & dotnet $VilensConsole $TargetFile --scope $Scope --features $Features --strongNamingKey $StrongNamingKey | Out-Null
   }
   # skip the first iteration
-  if ($i -gt 0) {
+  if ($i -gt 1) {
     $Times += ((Get-Date) - $StartTime)
   }
-  Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
+  Write-Progress -Activity "Running performance tests" -Status ("Iteration {0}/{1}" -f $i, $Iterations) -PercentComplete (($i / $Iterations) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
 $Times | Measure-Object -AllStats -Property TotalMilliseconds

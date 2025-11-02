@@ -7,7 +7,7 @@ param (
 
   [Parameter()]
   [ValidateRange(1, [int]::MaxValue)]
-  [int]$Iteration = 25
+  [int]$Iterations = 25
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,7 +29,7 @@ $arguments = @('.\Tests\Performance\Test.proj', '-tl:off', '-v:m', '-clp:Perform
 dotnet build $arguments -v:diag -m:1 | Out-File vilens.log
 
 $Times = @()
-for ($i = 0; $i -lt $Iteration; $i++) {
+for ($i = 1; $i -le $Iterations; $i++) {
   if ($MSBuild) {
     $Text = msbuild @arguments
   }
@@ -41,7 +41,7 @@ for ($i = 0; $i -lt $Iteration; $i++) {
 
   $Times += $Time
 
-  Write-Progress -Activity "Running performance tests" -Status ("Iterations remaining: {0}" -f ($Iteration - $i)) -PercentComplete (($i / $Iteration) * 100)
+  Write-Progress -Activity "Running performance tests" -Status ("Iteration {0}/{1}" -f $i, $Iterations) -PercentComplete (($i / $Iterations) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
 $Times | Measure-Object -AllStats
