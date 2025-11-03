@@ -1,0 +1,53 @@
+name: Integration Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+  # TODO: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        - windows-latest
+        repo:
+        - Autofac
+        - Bshox
+        # - Moq # TODO: fix on linux
+        # - NUnit # TODO: fix on linux
+        # - Serilog # TODO: fix
+    runs-on: ${{ matrix.os }}
+
+    name: Integration Tests - ${{ matrix.repo }} on ${{ matrix.os }}
+
+    steps:
+    - name: ⤵️ Checkout Source
+      uses: actions/checkout@v5
+
+    - name: ⤵️ Checkout ${{ matrix.repo }} Submodule
+      run: git submodule update --init --recursive Tests/Integration/${{ matrix.repo }}
+
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        global-json-file: global.json
+        dotnet-version: |
+          8.0.x
+          9.0.x
+
+    # cspell:ignore devel
+    - name: 🛠️ Install mono
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mono-devel
+
+    - name: 🛠️ Restore dependencies
+      run: dotnet restore src/Vilens.MSBuild
+
+    - name: 🧪 Test
+      shell: pwsh
+      run: ./IntegrationTests.ps1 ${{ matrix.repo }}
