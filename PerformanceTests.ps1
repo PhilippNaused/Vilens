@@ -65,5 +65,5 @@ for ($i = 1; $i -le $Iterations; $i++) {
 }
 Write-Progress -Activity "Running performance tests" -Completed
 $Times | Measure-Object -AllStats -Property TotalMilliseconds
-# Windows: ~345 ms (~35 AOT)
-# Linux: ~400 ms (~77 AOT)
+# Windows: ~305 ms (~32 AOT)
+# Linux: ~348 ms (~64 AOT)
