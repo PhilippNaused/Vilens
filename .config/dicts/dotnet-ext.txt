@@ -15,6 +15,7 @@ msbuild
 mscorlib
 nameof
 netstandard
+pwsh
 slnf
 slnx
 snupkg

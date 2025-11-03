@@ -59,7 +59,7 @@ function Test-Obfuscation {
     # Apply the patch
     & $PatchScript -TargetName $TargetName -IgnoreMissingPatch
 
-    $NuGetSource = Join-Path $PSScriptRoot ..\..\Publish
+    $NuGetSource = Join-Path $PSScriptRoot '..\..\publish'
     $NuGetSource = Get-Item $NuGetSource
 
     dotnet nuget add source $NuGetSource -n LocalVilens
