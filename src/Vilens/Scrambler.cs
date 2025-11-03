@@ -36,17 +36,17 @@ public sealed class Scrambler
             throw new NotSupportedException("Assemblies containing unmanaged code are not supported.");
         }
 
-        Log.Debug("Loaded assembly in {time}", sw.Elapsed);
+        Log.Debug("Loaded assembly in {0}", sw.Elapsed);
         sw.Restart();
         Log.Debug("Preparing data");
         if (Scope == Visibility.Auto)
         {
             bool v = Module.Assembly.CustomAttributes.Any(c => c.TypeFullName == typeof(InternalsVisibleToAttribute).FullName);
             Settings.Scope = v ? Visibility.Private : Visibility.Internal;
-            Log.Info("Setting Scope to {Scope}", Scope);
+            Log.Info("Setting Scope to {0}", Scope);
         }
         Database = new Database(Module, Settings.Features, cancellation);
-        Log.Debug("Prepared data in {time}", sw.Elapsed);
+        Log.Debug("Prepared data in {0}", sw.Elapsed);
     }
 
     private static Logger Log { get; } = new(nameof(Scrambler));
@@ -105,10 +105,10 @@ public sealed class Scrambler
         {
             Cancellation.ThrowIfCancellationRequested();
             FeatureBase feature = func();
-            Log.Debug("Starting {f}", feature.Log.Name);
+            Log.Debug("Starting {0}", feature.Log.Name);
             sw.Restart();
             feature.Execute();
-            Log.Debug("Finished {f} in {time}", feature.Log.Name, sw.Elapsed);
+            Log.Debug("Finished {0} in {1}", feature.Log.Name, sw.Elapsed);
         }
 
         Database.FeatureMap.Cleanup();

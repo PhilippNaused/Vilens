@@ -137,7 +137,7 @@ internal static class CommandLineSetup
         file.Refresh();
         long deltaSize = file.Length - oldSize;
         double percent = (double)deltaSize / oldSize;
-        Log.Info("File size changed by {percent:p}", percent);
+        Log.Info("File size changed by {0:p}", percent);
 
         if (pdbFile.Exists)
         {
@@ -146,7 +146,7 @@ internal static class CommandLineSetup
             pdbFile.Refresh();
             long deltaPdbSize = pdbFile.Length - oldPdbSize;
             double percentPdb = (double)deltaPdbSize / oldPdbSize;
-            Log.Debug("PDB size changed by {percent:p}", percentPdb);
+            Log.Debug("PDB size changed by {0:p}", percentPdb);
         }
     }
 

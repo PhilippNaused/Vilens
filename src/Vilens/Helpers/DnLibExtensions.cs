@@ -52,20 +52,20 @@ internal static class DnLibExtensions
 
     public static TypeRef AddCoreRef(this ModuleDef module, Type type)
     {
-        Log.Debug("Getting reference to {type}", type);
+        Log.Debug("Getting reference to {0}", type);
         return module.CorLibTypes.GetTypeRef(type.Namespace, type.Name);
     }
 
     public static TypeRef AddRef(this ModuleDef module, Type type, IResolutionScope scope)
     {
-        Log.Debug("Getting reference to {type} in {scope}", type, scope);
+        Log.Debug("Getting reference to {0} in {1}", type, scope);
         var typeRef = module.GetTypeRefs().FirstOrDefault(t => t.FullName == type.FullName && t.ResolutionScope == scope);
         if (typeRef is not null)
         {
-            Log.Trace("Using existing reference to {type} in {scope}", type, scope);
+            Log.Trace("Using existing reference to {0} in {1}", type, scope);
             return typeRef;
         }
-        Log.Debug("Adding reference to {type} from {scope}", type, scope);
+        Log.Debug("Adding reference to {0} from {1}", type, scope);
         return new TypeRefUser(module, type.Namespace, type.Name, scope);
     }
 
@@ -76,13 +76,13 @@ internal static class DnLibExtensions
         var pkt = asmName.GetPublicKeyToken();
         if (pkt is null || pkt.Length == 0)
             pkt = null;
-        Log.Debug("Adding reference to {assemblyName}", asmName);
+        Log.Debug("Adding reference to {0}", asmName);
         return module.UpdateRowId(new AssemblyRefUser(asmName.Name, asmName.Version, PublicKeyBase.CreatePublicKeyToken(pkt), asmName.CultureInfo?.Name ?? string.Empty));
     }
 
     public static TypeRef AddReference(this ModuleDef module, Type type, string netStandard, string netCore, string netFramework)
     {
-        Log.Debug("Getting reference to {type}", type);
+        Log.Debug("Getting reference to {0}", type);
         var systemRef = module.CorLibTypes.AssemblyRef;
 
         var shortName = systemRef.Name.String switch
@@ -95,7 +95,7 @@ internal static class DnLibExtensions
 
         if (shortName == systemRef.Name)
         {
-            Log.Trace("Using core reference for {type}", type);
+            Log.Trace("Using core reference for {0}", type);
             return module.AddCoreRef(type);
         }
 
@@ -103,7 +103,7 @@ internal static class DnLibExtensions
         {
             Name = shortName,
         };
-        Log.Debug("Adding reference to {type} from {assemblyName}", type, assemblyName);
+        Log.Debug("Adding reference to {0} from {1}", type, assemblyName);
         var asmRef = module.AddAssemblyRef(assemblyName);
         return module.AddRef(type, asmRef);
     }

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Vilens.Logging;
@@ -30,7 +31,7 @@ internal sealed class Logger(string name)
         _file = null;
     }
 
-    private void Log<T>(LogLevel level, string message, Exception? exception, params ReadOnlySpan<T> args)
+    private void Log(LogLevel level, string message, Exception? exception, params ReadOnlySpan<object?> args)
     {
         if (level < LogLevel)
         {
@@ -48,6 +49,10 @@ internal sealed class Logger(string name)
             else if (args.Length == 2)
             {
                 message = string.Format(CultureInfo.InvariantCulture, message, args[0], args[1]);
+            }
+            else if (args.Length == 3)
+            {
+                message = string.Format(CultureInfo.InvariantCulture, message, args[0], args[1], args[2]);
             }
             else if (args.Length > 0)
             {
@@ -83,26 +88,26 @@ internal sealed class Logger(string name)
     }
 
     [Conditional("DEBUG")]
-    public void Trace<T>(string message, T arg1) => Log(LogLevel.Trace, message, null, arg1);
+    public void Trace<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Trace, message, null, arg1);
     [Conditional("DEBUG")]
-    public void Trace(string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Trace, message, null, args);
+    public void Trace([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Trace, message, null, args);
 
     [Conditional("DEBUG")]
-    public void Debug<T>(string message, T arg1) => Log(LogLevel.Debug, message, null, arg1);
+    public void Debug<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Debug, message, null, arg1);
     [Conditional("DEBUG")]
-    public void Debug(string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Debug, message, null, args);
+    public void Debug([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Debug, message, null, args);
 
-    public void Info<T>(string message, T arg1) => Log(LogLevel.Info, message, null, arg1);
-    public void Info(string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Info, message, null, args);
+    public void Info<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Info, message, null, arg1);
+    public void Info([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Info, message, null, args);
 
-    public void Warn<T>(string message, T arg1) => Log(LogLevel.Warn, message, null, arg1);
-    public void Warn(string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Warn, message, null, args);
+    public void Warn<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Warn, message, null, arg1);
+    public void Warn([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Warn, message, null, args);
 
-    public void Error<T>(string message, T arg1) => Log(LogLevel.Error, message, null, arg1);
-    public void Error(string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Error, message, null, args);
-    public void Error(Exception ex, string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Error, message, ex, args);
+    public void Error<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Error, message, null, arg1);
+    public void Error([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Error, message, null, args);
+    public void Error(Exception ex, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Error, message, ex, args);
 
-    public void Fatal(string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Fatal, message, null, args);
-    public void Fatal(Exception ex, string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Fatal, message, ex, args);
-    public void Fatal(Exception ex) => Log<string>(LogLevel.Fatal, "", ex);
+    public void Fatal([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Fatal, message, null, args);
+    public void Fatal(Exception ex, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Fatal, message, ex, args);
+    public void Fatal(Exception ex) => Log(LogLevel.Fatal, "", ex);
 }

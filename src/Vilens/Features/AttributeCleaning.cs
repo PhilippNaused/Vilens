@@ -91,7 +91,7 @@ internal sealed class AttributeCleaning : FeatureBase
             }
         }
 
-        Log.Info("Removed {count} attributes", AttributesRemoved);
+        Log.Info("Removed {0} attributes", AttributesRemoved);
     }
 
     private void ClearCustomAttributes(IHasCustomAttribute obj, ImmutableHashSet<ITypeDefOrRef> attributes)
@@ -101,7 +101,7 @@ internal sealed class AttributeCleaning : FeatureBase
         {
             if (attributes.Contains(coll[i].AttributeType))
             {
-                Log.Trace("Removing [{attribute}] from [{obj}]", coll[i], obj);
+                Log.Trace("Removing [{0}] from [{1}]", coll[i], obj);
                 coll.RemoveAt(i);
                 AttributesRemoved++;
             }
@@ -113,7 +113,7 @@ internal sealed class AttributeCleaning : FeatureBase
         if (!member.HasFeatures(VilensFeature.AttributeCleaning, Database.FeatureMap))
             return;
 
-        Log.Trace("Processing [{member}]", member);
+        Log.Trace("Processing [{0}]", member);
         ClearCustomAttributes(member, _removableAttributes);
         if (IsInScope(member))
         {

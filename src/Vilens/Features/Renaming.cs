@@ -22,7 +22,7 @@ internal sealed class Renaming : FeatureBase
         // Non-tested types
         _unnestedTypes = _groups.SingleOrDefault(group => group.Key is null)?.Cast<ITypeData>().OrderBy(t => t.Item.Rid).ToList() ?? [];
         _usedTypeNames = [];
-        Log.Debug("Filtered data in {time}.", sw.Elapsed);
+        Log.Debug("Filtered data in {0}.", sw.Elapsed);
     }
 
     public override Logger Log { get; } = new Logger(nameof(Renaming));
@@ -32,7 +32,7 @@ internal sealed class Renaming : FeatureBase
     public override void Execute()
     {
         var removed = _unnestedTypes.RemoveAll(t => t.WasTrimmed());
-        Log.Debug("Removed {count} trimmed types", removed);
+        Log.Debug("Removed {0} trimmed types", removed);
         // must be initialized here since previous steps may have added another type
         _usedTypeNames = [.. Module.Types.Select(t => t.FullName)];
         Debug.Assert(_usedTypeNames.Count >= _unnestedTypes.Count);
@@ -62,7 +62,7 @@ internal sealed class Renaming : FeatureBase
 
         Debug.Assert(result.IsCompleted);
 
-        Log.Info("Renamed {count} members", MembersRenamed);
+        Log.Info("Renamed {0} members", MembersRenamed);
     }
 
     private void ProcessMember(IMemberData<IMemberDef> member)
@@ -72,7 +72,7 @@ internal sealed class Renaming : FeatureBase
             Log.Trace("Skipping [{0}] because it was trimmed", member);
             return;
         }
-        Log.Trace("Processing {type} [{0}]", member.Kind, member);
+        Log.Trace("Processing {0} [{1}]", member.Kind, member);
 
         Debug.Assert(member.Item is not TypeDef { IsNested: false });
 
@@ -106,7 +106,7 @@ internal sealed class Renaming : FeatureBase
     {
         NamingHelper.Rename(member.Item, Scrambler.Settings.NamingScheme, _usedTypeNames);
 
-        Log.Trace(@"Renaming {kind} [{old}] to ""{new}""", member.Kind, member, member.Item.Name);
+        Log.Trace(@"Renaming {0} [{1}] to ""{2}""", member.Kind, member, member.Item.Name);
 
         _ = Interlocked.Increment(ref _membersRenamed);
 
@@ -114,12 +114,12 @@ internal sealed class Renaming : FeatureBase
         {
             foreach (var memberRef in refData.Refs)
             {
-                Log.Trace("Renaming member reference {MDToken}", memberRef.MDToken);
+                Log.Trace("Renaming member reference {0}", memberRef.MDToken);
                 memberRef.Name = member.Item.Name;
                 var resolved = memberRef.Resolve();
                 if (resolved != member.Item)
                 {
-                    Log.Error("member ref {typeRef} resolved to [{resolved}] ({token1}) instead of [{member}] ({token2})", memberRef.MDToken, resolved, resolved?.MDToken, member, member.Item.MDToken);
+                    Log.Error("member ref {0} resolved to [{1}] ({2}) instead of [{3}] ({4})", memberRef.MDToken, resolved, resolved?.MDToken, member, member.Item.MDToken);
                     throw new InvalidOperationException("member ref resolve failed");
                 }
             }
@@ -129,12 +129,12 @@ internal sealed class Renaming : FeatureBase
         {
             foreach (var typeRef in type.Refs)
             {
-                Log.Trace("Renaming type reference {MDToken}", typeRef.MDToken);
+                Log.Trace("Renaming type reference {0}", typeRef.MDToken);
                 typeRef.Name = member.Item.Name;
                 var resolved = typeRef.Resolve();
                 if (resolved != type.Item)
                 {
-                    Log.Error("member ref {typeRef} resolved to [{resolved}] ({token1}) instead of [{member}] ({token2})", typeRef.MDToken, resolved, resolved?.MDToken, type, type.Item.MDToken);
+                    Log.Error("member ref {0} resolved to [{1}] ({2}) instead of [{3}] ({4})", typeRef.MDToken, resolved, resolved?.MDToken, type, type.Item.MDToken);
                     throw new InvalidOperationException("member ref resolve failed");
                 }
             }
@@ -175,7 +175,7 @@ internal sealed class Renaming : FeatureBase
 
         NamingHelper.Rename(type.Item, Scrambler.Settings.NamingScheme, _usedTypeNames);
         string newFullName = type.Item.FullName;
-        Log.Trace("Renamed {old} to {new}", type, newFullName);
+        Log.Trace("Renamed {0} to {1}", type, newFullName);
 
         var b = _usedTypeNames.Remove(oldFullName);
         Debug.Assert(b);
@@ -186,19 +186,19 @@ internal sealed class Renaming : FeatureBase
 
         foreach (var typeRef in type.Refs)
         {
-            Log.Trace("Renaming type reference {MDToken}", typeRef.MDToken);
+            Log.Trace("Renaming type reference {0}", typeRef.MDToken);
             typeRef.Name = type.Item.Name;
             var resolved = typeRef.Resolve();
             if (resolved != type.Item)
             {
-                Log.Error("type ref resolved to [{resolved}] ({token1}) instead of [{member}] ({token2})", resolved, resolved.MDToken, type.Item, type.Item.MDToken);
+                Log.Error("type ref resolved to [{0}] ({1}) instead of [{2}] ({3})", resolved, resolved.MDToken, type.Item, type.Item.MDToken);
                 Debug.Fail("type ref resolve failed");
             }
         }
 
         foreach (var genericParam in type.Item.GenericParameters)
         {
-            Log.Trace(@"Renaming generic parameter ""{old}"" to ""{new}""", genericParam.Name, UTF8String.Empty);
+            Log.Trace(@"Renaming generic parameter ""{0}"" to ""{1}""", genericParam.Name, UTF8String.Empty);
             genericParam.Name = UTF8String.Empty;
         }
     }

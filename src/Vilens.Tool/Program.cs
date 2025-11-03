@@ -10,15 +10,15 @@ try
     using var cts = new CancellationTokenSource();
     Console.CancelKeyPress += (_, args) =>
     {
-        log.Debug("{key} was pressed", args.SpecialKey);
+        log.Debug("{0} was pressed", args.SpecialKey);
         log.Info("Canceling...");
         args.Cancel = true;
         cts.Cancel();
     };
-    log.Debug("Starting command line: '{CommandLine}'", Environment.CommandLine);
+    log.Debug("Starting command line: '{0}'", Environment.CommandLine);
     var command = CommandLineSetup.SetUpCommand(cts.Token);
     var exitCode = await command.Parse(args).InvokeAsync();
-    log.Debug("Finished in {time}", stopWatch.Elapsed);
+    log.Debug("Finished in {0}", stopWatch.Elapsed);
     return exitCode;
 }
 #pragma warning disable CA1031 // Do not catch general exception types
