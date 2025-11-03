@@ -14,9 +14,9 @@ $PSNativeCommandUseErrorActionPreference = $true
 Set-StrictMode -Version 3.0
 
 $InjectedXml = @"
-  <ItemGroup>
-    <VilensFeatures Include="$Features" />
-  </ItemGroup>
+  <PropertyGroup>
+    <VilensFeatures>$Features</VilensFeatures>
+  </PropertyGroup>
 "@
 
 [xml]$xml = [xml]::new()

@@ -10,10 +10,17 @@ internal static class FeatureExtensions
 
     public static VilensFeature Parse(string value)
     {
-        return value.Split([';', ','], StringSplitOptions.RemoveEmptyEntries).Select(ParseOne).Aggregate((a, b) => a | b);
+        string[] segments = value.Split([';', ',', ' ', '\n'], StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 0)
+            return VilensFeature.None;
+        return segments.Select(ParseOne).Aggregate((a, b) => a | b);
 
         static VilensFeature ParseOne(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return VilensFeature.None;
+            }
             if (Enum.TryParse<VilensFeature>(value.Trim(), true, out var feature))
             {
                 return feature;

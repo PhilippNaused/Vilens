@@ -18,8 +18,8 @@
     <VilensTasksPath Condition="'$(Configuration)' == ''">$(MSBuildThisFileDirectory)..\..\src\Vilens.MSBuild\bin\Debug\$(VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTasksPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <VilensFeatures Include="All" />
-  </ItemGroup>
+  <PropertyGroup>
+    <VilensFeatures Condition="'$(VilensFeatures)' == ''">All</VilensFeatures>
+  </PropertyGroup>
 
 </Project>
