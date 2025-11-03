@@ -12,7 +12,7 @@ internal sealed class DisOptimize : FeatureBase
         var stateMachines = Database.Types.Where(t => t.Item.IsNestedPrivate && t.Item.Interfaces.Any(i => i.Interface.FullName == asyncStateMachineName)).ToList();
         foreach (var type in stateMachines)
         {
-            Log.Trace("Found {type}", type);
+            Log.Trace("Found {0}", type);
         }
     }
 

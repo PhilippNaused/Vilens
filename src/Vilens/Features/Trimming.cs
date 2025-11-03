@@ -28,11 +28,11 @@ internal sealed class Trimming : FeatureBase
             || !member.HasFeatures(VilensFeature.Trimming)
             || member.IsVirtual() // fix this
         ).Select(x => x.Item).ToList();
-        Log.Debug("Found {count} members that need to be kept", toKeep.Count);
+        Log.Debug("Found {0} members that need to be kept", toKeep.Count);
         var entryPoint = Module.EntryPoint;
         if (entryPoint is not null)
         {
-            Log.Debug("Excluding entrypoint {entryPoint}", entryPoint);
+            Log.Debug("Excluding entrypoint {0}", entryPoint);
             Exclude(entryPoint);
         }
         Exclude(Module.GlobalType);
@@ -42,7 +42,7 @@ internal sealed class Trimming : FeatureBase
             Exclude(member);
         }
         int c = _toRemove.RemoveWhere(m => m is not IMemberDef);
-        Log.Trace("Removed {count} extra elements that are not IMemberDef", c);
+        Log.Trace("Removed {0} extra elements that are not IMemberDef", c);
 
         foreach (var member in _toRemove.ToImmutableList()) // create copy to avoid modification during enumeration
         {
@@ -53,8 +53,8 @@ internal sealed class Trimming : FeatureBase
             }
         }
 
-        Log.Debug("Found {count} members that can be removed", _toRemove.Count);
-        Log.Debug("Filtered data in {time}.", sw.Elapsed);
+        Log.Debug("Found {0} members that can be removed", _toRemove.Count);
+        Log.Debug("Filtered data in {0}.", sw.Elapsed);
     }
 
     private void Exclude3(MemberRef memberRef)
@@ -63,7 +63,7 @@ internal sealed class Trimming : FeatureBase
         {
             return;
         }
-        Log.Trace("Excluding non-module ref {ref}", memberRef);
+        Log.Trace("Excluding non-module ref {0}", memberRef);
     }
 
     private void Exclude2(IHasCustomAttribute? attribute)
@@ -132,7 +132,7 @@ internal sealed class Trimming : FeatureBase
             // short circuit to prevent infinite recursion.
             return;
         }
-        Log.Trace("{type} [{member}] will not be trimmed", member.GetType().Name, member);
+        Log.Trace("{0} [{1}] will not be trimmed", member.GetType().Name, member);
         Exclude(member.DeclaringType);
         switch (member)
         {
@@ -183,7 +183,7 @@ internal sealed class Trimming : FeatureBase
                 }
                 if (type.HasCustomAttribute("System.Runtime.CompilerServices.InlineArrayAttribute"))
                 {
-                    Log.Trace("Type [{type}] has the InlineArrayAttribute, so the fields cannot be trimmed", type);
+                    Log.Trace("Type [{0}] has the InlineArrayAttribute, so the fields cannot be trimmed", type);
                     // don't remove the fields because of:
                     // System.TypeLoadException: InlineArrayAttribute requires that the target type has a single instance field.
                     foreach (var field in type.Fields)
@@ -291,7 +291,7 @@ internal sealed class Trimming : FeatureBase
         foreach (var member in _toRemove)
         {
             Cancellation.ThrowIfCancellationRequested();
-            Log.Trace("Removing {kind} [{name}]", member.GetType().Name, member);
+            Log.Trace("Removing {0} [{1}]", member.GetType().Name, member);
 
             switch (member)
             {
@@ -318,7 +318,7 @@ internal sealed class Trimming : FeatureBase
             }
         }
 
-        Log.Info("Removed {count} members", _toRemove.Count);
+        Log.Info("Removed {0} members", _toRemove.Count);
 
         //foreach (var type in Database.Types.Select(x => x.Item).Where(Module.GetTypes().Contains))
         //{
@@ -326,7 +326,7 @@ internal sealed class Trimming : FeatureBase
         //    {
         //        if (!type.FindInstanceConstructors().Any())
         //        {
-        //            Log.Warn("type {name} has no instance constructors", type);
+        //            Log.Warn("type {0} has no instance constructors", type);
         //        }
         //    }
         //}

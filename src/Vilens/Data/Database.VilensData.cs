@@ -27,7 +27,7 @@ internal sealed partial class Database
                 _ => MemberKind.Unknown,
             };
             Debug.Assert(Kind is not MemberKind.Unknown);
-            Log.Trace("{kind} [{name}] has visibility {visibility} and features: {features}", Kind, Item, Visibility, Features);
+            Log.Trace("{0} [{1}] has visibility {2} and features: {3}", Kind, Item, Visibility, Features);
         }
 
         public T Item { get; }

@@ -23,7 +23,7 @@ internal sealed partial class Database
         _memberRefMap = MemberFinder.MemberRefs.Keys.ToLookup(memberRef => memberRef.Resolve() as IMemberDef);
         _typeRefMap = MemberFinder.TypeRefs.Keys.ToLookup(typeRef => typeRef.Resolve())!;
         UserStrings = module.USStream.ToHashSet();
-        Log.Debug("Found {c} strings in the #US stream", UserStrings.Count);
+        Log.Debug("Found {0} strings in the #US stream", UserStrings.Count);
         cancellation.ThrowIfCancellationRequested();
         Fields = MemberFinder.FieldDefs.Keys.Select(d => new FieldData(d, this)).ToImmutableList<IFieldData>();
         Methods = MemberFinder.MethodDefs.Keys.Select(d => new MethodData(d, this)).ToImmutableList<IMethodData>();
@@ -31,15 +31,15 @@ internal sealed partial class Database
         Events = MemberFinder.EventDefs.Keys.Select(d => new EventData(d, this)).ToImmutableList<IEventData>();
         Types = MemberFinder.TypeDefs.Keys.Select(d => new TypeData(d, this)).ToImmutableList<ITypeData>();
         cancellation.ThrowIfCancellationRequested();
-        Log.Debug("Found {c} fields", Fields.Count);
-        Log.Debug("Found {c} methods", Methods.Count);
-        Log.Debug("Found {c} properties", Properties.Count);
-        Log.Debug("Found {c} events", Events.Count);
-        Log.Debug("Found {c} types", Types.Count);
+        Log.Debug("Found {0} fields", Fields.Count);
+        Log.Debug("Found {0} methods", Methods.Count);
+        Log.Debug("Found {0} properties", Properties.Count);
+        Log.Debug("Found {0} events", Events.Count);
+        Log.Debug("Found {0} types", Types.Count);
 
         Members = [.. Types, .. Fields, .. Methods, .. Properties, .. Events];
 
-        Log.Debug("Found {c} members", Members.Count);
+        Log.Debug("Found {0} members", Members.Count);
 
         foreach (var data in Methods)
         {
@@ -57,7 +57,7 @@ internal sealed partial class Database
                         constant.Value is not null &&
                         constant.Value is not byte[])
                     {
-                        Log.Debug("Removing PDB constant {constant} from {method}", constant, method);
+                        Log.Debug("Removing PDB constant {0} from {1}", constant, method);
                         constants.RemoveAt(i);
                     }
                 }

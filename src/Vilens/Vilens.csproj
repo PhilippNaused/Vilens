@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="dnlib" />
-    <PackageReference Include="NLog" />
     <PackageReference Include="PolySharp">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

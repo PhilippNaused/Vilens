@@ -18,7 +18,7 @@ internal sealed class PropertyInline : FeatureBase
     public PropertyInline(Scrambler scrambler) : base(scrambler)
     {
         _methods = Database.Methods.AsParallel().Where(m => m.Item.HasBody && m.HasFeatures(VilensFeature.PropertyInline)).Select(m => m.Item).ToImmutableList();
-        Log.Debug("Filtered {count} methods", _methods.Count);
+        Log.Debug("Filtered {0} methods", _methods.Count);
     }
 
     public override Logger Log { get; } = new Logger(nameof(PropertyInline));
@@ -28,7 +28,7 @@ internal sealed class PropertyInline : FeatureBase
     {
         Log.Debug("Finding auto-properties");
         var dict = GetReplacements(Database.MemberFinder.PropertyDefs.Keys);
-        Log.Debug("Found {count} auto-properties", dict.Count);
+        Log.Debug("Found {0} auto-properties", dict.Count);
 
         _ = Parallel.ForEach(_methods, method =>
         {
@@ -55,13 +55,13 @@ internal sealed class PropertyInline : FeatureBase
                     instr.OpCode = code;
                     instr.Operand = field;
 
-                    Log.Trace("Replaced {old} with {new} in {method}", old, instr, method);
+                    Log.Trace("Replaced {0} with {1} in {2}", old, instr, method);
                     _ = Interlocked.Increment(ref _propertiesInlined);
                 }
             }
         });
 
-        Log.Info("In-lined {old} calls to auto-properties", _propertiesInlined);
+        Log.Info("In-lined {0} calls to auto-properties", _propertiesInlined);
     }
 
     private Dictionary<MethodDef, (OpCode, FieldDef)> GetReplacements(IReadOnlyCollection<PropertyDef> properties)
@@ -96,7 +96,7 @@ internal sealed class PropertyInline : FeatureBase
         backingField = default;
         if (property.GetMethod is null)
         {
-            Log.Trace("Property {prop} has no getter", property);
+            Log.Trace("Property {0} has no getter", property);
             return false;
         }
 
@@ -105,7 +105,7 @@ internal sealed class PropertyInline : FeatureBase
 
         if (hasSetter && property.SetMethod!.IsStatic != isStatic)
         {
-            Log.Error("Property {prop} has a static getter and a instance setter.", property);
+            Log.Error("Property {0} has a static getter and a instance setter.", property);
             return false;
         }
 

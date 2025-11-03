@@ -53,7 +53,7 @@ internal sealed class StringHiding : FeatureBase
         UTF16CtorNull = new MemberRefUser(Module, ".ctor", MethodSig.CreateInstance(Module.CorLibTypes.Void, charPtr), stringRef); // new string(char*)
 
         _methods = Database.Methods.AsParallel().Where(m => m.Item.HasBody && m.HasFeatures(VilensFeature.StringHiding)).ToList();
-        Log.Debug("Filtered {count} methods", _methods.Count);
+        Log.Debug("Filtered {0} methods", _methods.Count);
     }
 
     public override Logger Log { get; } = new Logger(nameof(StringHiding));
@@ -63,11 +63,11 @@ internal sealed class StringHiding : FeatureBase
     public override void Execute()
     {
         var removed = _methods.RemoveAll(m => m.WasTrimmed());
-        Log.Debug("Removed {count} methods that were trimmed", removed);
+        Log.Debug("Removed {0} methods that were trimmed", removed);
 
         Log.Debug("Searching for strings");
         var strings = _methods.SelectMany(m => m.Item.Body.Instructions.Where(i => i.Operand is string).Select(i => (string)i.Operand)).Distinct(StringComparer.Ordinal).ToList();
-        Log.Debug("Found {count} unique strings", strings.Count);
+        Log.Debug("Found {0} unique strings", strings.Count);
         Cancellation.ThrowIfCancellationRequested();
         if (strings.Count == 0)
         {
@@ -217,13 +217,13 @@ internal sealed class StringHiding : FeatureBase
             {
                 if (instr.Operand is string str && dict.TryGetValue(str, out var eString))
                 {
-                    Log.Trace("Replacing {instr} in {method} using {encoding} encoding", instr, method, eString.IsAscii ? "ASCII" : "UTF16");
+                    Log.Trace("Replacing {0} in {1} using {2} encoding", instr, method, eString.IsAscii ? "ASCII" : "UTF16");
                     instr.Replace(Emit.Load(eString.Field!));
                     count++;
                 }
             }
         }
-        Log.Info("Encoded {count} instructions with {count2} unique strings into {bytes} bytes of data.", count, encoded.Count, compressedData.Length);
+        Log.Info("Encoded {0} instructions with {1} unique strings into {2} bytes of data.", count, encoded.Count, compressedData.Length);
     }
 
     private static void Encode(List<string> strings, out byte[] data, out Dictionary<string, EncodedString> values)

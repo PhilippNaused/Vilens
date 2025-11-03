@@ -26,7 +26,7 @@ internal sealed class Corruption : FeatureBase
         _enumType = Module.CorLibTypes.GetTypeRef(nameof(System), nameof(Enum));
         _methods = Database.Methods.Where(data => data.HasFeatures(VilensFeature.Corruption) && data is { Item.Body.HasVariables: true }).ToImmutableList();
         _voidPtr = new FnPtrSig(MethodSig.CreateStatic(Module.CorLibTypes.Void));
-        Log.Debug("Found {count} methods in {time}.", _methods.Count, sw.Elapsed);
+        Log.Debug("Found {0} methods in {1}.", _methods.Count, sw.Elapsed);
         _invalidSignature = new FieldSig(new ArraySig(Module.CorLibTypes.Void, 0u));
         if (_methods.Count > 0)
         {
@@ -47,7 +47,7 @@ internal sealed class Corruption : FeatureBase
     {
         var types = Module.GetTypes().ToList();
         int count = types.AsParallel().Where(t => t.HasFeatures(VilensFeature.Corruption, Database.FeatureMap)).Count(Infect);
-        Log.Info("Invalid code added to {count} types.", count);
+        Log.Info("Invalid code added to {0} types.", count);
 
         foreach (var method in _methods)
         {
@@ -57,13 +57,13 @@ internal sealed class Corruption : FeatureBase
                 var replacement = GetReplacementType(arg.Type);
                 if (replacement != null)
                 {
-                    Log.Trace("Changing type of variable '{arg}' from [{type}] to [{replacement}] in [{method}]", arg, arg.Type, replacement, method);
+                    Log.Trace("Changing type of variable '{0}' from [{1}] to [{2}] in [{3}]", arg, arg.Type, replacement, method);
                     arg.Type = replacement;
                     _variablesProcessed++;
                 }
             }
         }
-        Log.Info("Replaced {count} local variable types", _variablesProcessed);
+        Log.Info("Replaced {0} local variable types", _variablesProcessed);
     }
 
     private bool Infect(TypeDef type)

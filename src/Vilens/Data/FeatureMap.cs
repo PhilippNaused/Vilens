@@ -32,7 +32,7 @@ internal class FeatureMap
         {
             var b = pair.Value.CustomAttributes.Remove(pair.Key);
             Debug.Assert(b);
-            Log.Trace("Removed ObfuscationAttribute from [{def}]", pair.Value);
+            Log.Trace("Removed ObfuscationAttribute from [{0}]", pair.Value);
         }
 
         Log.Debug("Found {0} ObfuscationAttributes. {1} were removed.", _attributesRead, _toRemove.Count);
@@ -92,7 +92,7 @@ internal class FeatureMap
             case IMemberDef member:
                 return GetFeaturesMember(member);
             default:
-                Log.Error("Unknown IDnlibDef [{def}] of type [{type}]", def, def.GetType());
+                Log.Error("Unknown IDnlibDef [{0}] of type [{1}]", def, def.GetType());
                 Debug.Fail("Unknown Type");
                 return VilensFeature.None;
         }
@@ -139,12 +139,12 @@ internal class FeatureMap
         {
             Debug.Assert(attribute != null);
             ObfuscationAttribute obfuscationAttribute = Parse(attribute!);
-            Log.Trace("[{def}] has ObfuscationAttribute with ApplyToMembers={ApplyToMembers}, Exclude={Exclude}, Feature={Feature}, StripAfterObfuscation={StripAfterObfuscation}",
+            Log.Trace("[{0}] has ObfuscationAttribute with ApplyToMembers={1}, Exclude={2}, Feature={3}, StripAfterObfuscation={4}",
                 def, obfuscationAttribute.ApplyToMembers, obfuscationAttribute.Exclude, obfuscationAttribute.Feature, obfuscationAttribute.StripAfterObfuscation);
             _ = Interlocked.Increment(ref _attributesRead);
             if (obfuscationAttribute.StripAfterObfuscation && _toRemove.TryAdd(attribute!, def))
             {
-                Log.Trace("ObfuscationAttribute will be removed from [{def}]", def);
+                Log.Trace("ObfuscationAttribute will be removed from [{0}]", def);
             }
             list.Add(obfuscationAttribute);
         }

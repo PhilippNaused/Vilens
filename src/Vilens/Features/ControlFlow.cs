@@ -30,7 +30,7 @@ internal sealed class ControlFlow : FeatureBase
             Cancellation.ThrowIfCancellationRequested();
             if (method.WasTrimmed())
             {
-                Log.Trace("Skipping [{method}] because it was trimmed", method);
+                Log.Trace("Skipping [{0}] because it was trimmed", method);
                 return;
             }
             CilBody body = method.Item.Body;
@@ -38,13 +38,13 @@ internal sealed class ControlFlow : FeatureBase
             if (body.ExceptionHandlers.Any(eh => eh.HandlerEnd is null))
             {
                 // TODO: remove
-                Log.Warn("Skipping [{method}] because of unknown exception handler end", method);
+                Log.Warn("Skipping [{0}] because of unknown exception handler end", method);
                 return;
             }
 
             AddPadding(method); // TODO: revert if not needed
 
-            Log.Trace("Calculating [{m}]", method);
+            Log.Trace("Calculating [{0}]", method);
             List<List<Instruction>> blocks;
 
             try
@@ -53,12 +53,12 @@ internal sealed class ControlFlow : FeatureBase
             }
             catch (dnlib.DotNet.Emit.InvalidMethodException)
             {
-                Log.Fatal("Failed to get stack height for {m}", method);
+                Log.Fatal("Failed to get stack height for {0}", method);
                 throw;
             }
 
             Debug.Assert(blocks.Sum(b => b.Count) == body.Instructions.Count);
-            Log.Trace("[{method}] has {i} instructions in {b} block(s)", method, body.Instructions.Count, blocks.Count);
+            Log.Trace("[{0}] has {1} instructions in {2} block(s)", method, body.Instructions.Count, blocks.Count);
             if (blocks.Count < 5)
             {
                 // not worth it
@@ -70,7 +70,7 @@ internal sealed class ControlFlow : FeatureBase
             // update max stack height
             if (!MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out _))
             {
-                Log.Trace("Cannot determine max stack size of [{method}]", method);
+                Log.Trace("Cannot determine max stack size of [{0}]", method);
 
                 body.KeepOldMaxStack = true;
                 if (body.MaxStack < 2)
@@ -81,11 +81,11 @@ internal sealed class ControlFlow : FeatureBase
             }
 
             _ = Interlocked.Increment(ref _counter);
-            Log.Trace("[{m}] has been obfuscated", method);
+            Log.Trace("[{0}] has been obfuscated", method);
         });
 
         Debug.Assert(result.IsCompleted);
-        Log.Info("Obfuscated {c} methods", _counter);
+        Log.Info("Obfuscated {0} methods", _counter);
     }
 
     private static List<List<Instruction>> GetBlocks(CilBody body)
@@ -132,7 +132,7 @@ internal sealed class ControlFlow : FeatureBase
             int iStart = body.Instructions.IndexOf(eh.TryStart);
             if (iStart <= 0 || body.Instructions[iStart - 1].OpCode != OpCodes.Nop)// Don't add padding if the block is already a no-op
             {
-                Log.Trace("Adding padding to ExceptionHandler TryStart ({start}) in [{method}]", eh.TryStart, method);
+                Log.Trace("Adding padding to ExceptionHandler TryStart ({0}) in [{1}]", eh.TryStart, method);
                 body.Instructions.Insert(iStart, Emit.NoOp());
             }
 
@@ -148,7 +148,7 @@ internal sealed class ControlFlow : FeatureBase
                     // multiple handlers in a row => no padding
                     continue;
                 }
-                Log.Trace("Adding padding to ExceptionHandler HandlerEnd ({end}) in [{method}]", eh.HandlerEnd, method);
+                Log.Trace("Adding padding to ExceptionHandler HandlerEnd ({0}) in [{1}]", eh.HandlerEnd, method);
                 var end = Emit.NoOp();
                 body.Instructions.Insert(iEnd, end);
                 eh.HandlerEnd = end;
