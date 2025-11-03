@@ -148,7 +148,8 @@ public sealed class Scramble : Microsoft.Build.Utilities.Task, ICancelableTask, 
                                              // normally, we would do this using the Touch task of MSBuild, but that only uses second precision on linux for some reason (bug?)
         }
 
-        Log.LogMessage("Task completed in {0}", sw.Elapsed);
+        Logger.CloseTargetFile();
         Log.LogMessage(MessageImportance.High, "Obfuscated {0}", Assembly.ItemSpec);
+        Log.LogMessage("Task completed in {0}", sw.Elapsed);
     }
 }

@@ -3,6 +3,7 @@ using Vilens;
 using Vilens.Logging;
 
 var stopWatch = Stopwatch.StartNew();
+Logger.ConsoleEnabled = true;
 var log = new Logger(nameof(Vilens));
 try
 {
@@ -14,7 +15,6 @@ try
         args.Cancel = true;
         cts.Cancel();
     };
-    Logger.EnableLog();
     log.Debug("Starting command line: '{CommandLine}'", Environment.CommandLine);
     var command = CommandLineSetup.SetUpCommand(cts.Token);
     var exitCode = await command.Parse(args).InvokeAsync();
@@ -30,6 +30,5 @@ catch (Exception ex)
 #pragma warning restore CA1031 // Do not catch general exception types
 finally
 {
-    NLog.LogManager.Flush();
-    NLog.LogManager.Shutdown();
+    Logger.CloseTargetFile();
 }
