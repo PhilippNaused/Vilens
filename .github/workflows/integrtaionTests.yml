@@ -21,7 +21,7 @@ jobs:
         # - Serilog # TODO: fix
     runs-on: ${{ matrix.os }}
 
-    name: Integration Tests - ${{ matrix.repo }} on ${{ matrix.os }}
+    name: Testing ${{ matrix.repo }} on ${{ matrix.os }}
 
     steps:
     - name: ⤵️ Checkout Source
@@ -39,11 +39,12 @@ jobs:
           9.0.x
 
     # cspell:ignore devel
-    - name: 🛠️ Install mono
+    - name: 🛠️ Install mono and nuget
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y mono-devel
+        sudo apt-get install -y nuget
 
     - name: 🛠️ Restore dependencies
       run: dotnet restore src/Vilens.MSBuild
