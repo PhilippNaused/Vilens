@@ -20,8 +20,7 @@
 
     <PropertyGroup>
       <VilensScope Condition="'$(VilensScope)' == ''">Auto</VilensScope>
-      <_VilensFeatures>@(VilensFeatures, ',')</_VilensFeatures>
-      <_VilensFeatures Condition="'$(_VilensFeatures)' == ''">None</_VilensFeatures>
+      <VilensFeatures Condition="'$(VilensFeatures)' == ''">None</VilensFeatures>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(AssemblyOriginatorKeyFile)' != '' AND '$(SignAssembly)' == 'True'">
@@ -43,7 +42,7 @@
     <Copy SourceFiles="@(_VilensPdbFile)"
           Condition="'$(VilensBackup)' != 'false'"
           DestinationFiles="@(_VilensPdbFile->'%(RootDir)%(Directory)%(Filename).unobfuscated.pdb')" />
-    <Vilens.MSBuild.Scramble Features="$(_VilensFeatures)"
+    <Vilens.MSBuild.Scramble Features="$(VilensFeatures)"
                              Scope="$(VilensScope)"
                              Assembly="@(IntermediateAssembly)"
                              PdbFile="@(_VilensPdbFile)"

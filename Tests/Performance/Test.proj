@@ -4,11 +4,8 @@
     <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\..\publish\Vilens.MSBuild.dll</VilensTasksPath>
     <VilensScope>Internal</VilensScope>
     <VilensBackup>false</VilensBackup>
+    <VilensFeatures>All</VilensFeatures>
   </PropertyGroup>
-
-  <ItemGroup>
-    <VilensFeatures Include="All" />
-  </ItemGroup>
 
   <Import Project="..\..\src\Vilens.MSBuild\build\Vilens.MSBuild.props" />
   <Import Project="..\..\src\Vilens.MSBuild\build\Vilens.MSBuild.targets" />
