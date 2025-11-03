@@ -45,7 +45,7 @@ try {
   Write-Output "Tests completed in $Time"
 }
 finally {
-  $GlobalNuGetCache = nuget locals global-packages -List -ForceEnglishOutput
+  $GlobalNuGetCache = dotnet nuget locals -l global-packages
   $GlobalNuGetCache = Get-Item $GlobalNuGetCache.Substring("global-packages: ".Length)
   $PackageDir = Join-Path $GlobalNuGetCache "vilens.msbuild"
   if (Test-Path $PackageDir) {

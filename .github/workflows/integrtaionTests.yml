@@ -39,14 +39,11 @@ jobs:
           9.0.x
 
     # cspell:ignore devel
-    - name: 🛠️ Install mono and nuget
+    - name: 🛠️ Install mono
       if: matrix.os == 'ubuntu-latest'
       run: |
-        # Workaround for https://github.com/actions/runner-images/issues/10631
-        sudo sh -c 'echo "deb http://archive.ubuntu.com/ubuntu jammy main universe" > /etc/apt/sources.list.d/jammy.list'
         sudo apt-get update
         sudo apt-get install -y mono-devel
-        sudo apt-get install -y nuget
 
     - name: 🛠️ Restore dependencies
       run: dotnet restore src/Vilens.MSBuild
