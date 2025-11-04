@@ -2,14 +2,33 @@
 
   <PropertyGroup>
     <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/tutorial-custom-task-code-generation?view=visualstudio#changes-required-to-multitarget -->
+    <_VilensTasks_NetTaskHost>false</_VilensTasks_NetTaskHost>
+    <!--
+    NetTaskHost is only supported in MSBuild 18+ when Microsoft.NET.SDK is used
+    See: https://github.com/dotnet/msbuild/issues/12723#issuecomment-3493247680
+    -->
+    <_VilensTasks_NetTaskHost Condition=" ('$(MSBuildVersion)' &gt;= '18.0.0') AND ('$(MSBuildRuntimeType)' == 'Full') AND ('$(UsingMicrosoftNETSdk)' == 'true')">true</_VilensTasks_NetTaskHost>
     <_VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Full' ">net472</_VilensTasks_TFM>
-    <_VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Core' ">net8.0</_VilensTasks_TFM>
+    <_VilensTasks_TFM Condition=" ('$(MSBuildRuntimeType)' == 'Core') OR $(_VilensTasks_NetTaskHost) ">net8.0</_VilensTasks_TFM>
     <VilensTasksBasePath Condition=" '$(VilensTasksBasePath)' == '' ">$(MSBuildThisFileDirectory)..\tasks\</VilensTasksBasePath>
     <VilensTaskPath Condition=" '$(VilensTaskPath)' == '' ">$(VilensTasksBasePath)\$(_VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTaskPath>
     <VilensTaskPath>$([System.IO.Path]::GetFullPath('$(VilensTaskPath)'))</VilensTaskPath>
   </PropertyGroup>
 
+  <!--
+  Use this only when in VS18 or later
+  VS18 can run the .NET MSBuild tasks even when running under .NET Framework MSBuild by running it in a separate process.
+  See: https://aka.ms/nettaskhost
+  -->
   <UsingTask TaskName="Vilens.MSBuild.Scramble"
+             Condition="$(_VilensTasks_NetTaskHost)"
+             Runtime="NET"
+             TaskFactory="TaskHostFactory"
+             AssemblyFile="$(VilensTaskPath)" />
+
+  <!-- Use this when in VS17 and earlier OR dotnet cli -->
+  <UsingTask TaskName="Vilens.MSBuild.Scramble"
+             Condition="!$(_VilensTasks_NetTaskHost)"
              AssemblyFile="$(VilensTaskPath)" />
 
   <Target Name="CommitVilens"
