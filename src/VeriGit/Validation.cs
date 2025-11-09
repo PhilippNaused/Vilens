@@ -7,33 +7,44 @@ using NUnit.Framework;
 namespace VeriGit;
 
 #pragma warning disable CA2007 // Consider calling ConfigureAwait on the awaited task
-#pragma warning disable CA1849 // Call async methods when in an async method
 
 public static class Validation
 {
     public static void Validate(string actual, string extension = "txt", string? targetName = null, [CallerFilePath] string callerFilePath = "")
     {
-        string sourceDir = Directory.GetParent(callerFilePath)?.FullName ?? throw new InvalidOperationException();
-        var ctx = TestContext.CurrentContext;
+        ValidateAsync(actual, extension, targetName, callerFilePath).ConfigureAwait(false).GetAwaiter().GetResult();
+    }
+
+    public static Task ValidateAsync(string actual, string extension = "txt", string? targetName = null, [CallerFilePath] string callerFilePath = "")
+    {
+        string sourceDir = Directory.GetParent(callerFilePath)?.FullName ?? throw new InvalidOperationException("Caller file path directory is null");
+        string fileName = GetFilename();
+        if (targetName is not null)
+        {
+            char sep = Path.DirectorySeparatorChar;
+            fileName = $"{fileName}{sep}{targetName}";
+        }
+        fileName = $"{fileName}.{extension}";
+        var filePath = Path.Combine(sourceDir, "Snapshots", fileName);
+        return DiffFile(actual, filePath);
+    }
+
+    private static string GetFilename()
+    {
+        var ctx = TestContext.CurrentContext ?? throw new InvalidOperationException("TestContext.CurrentContext is null");
         var test = ctx.Test;
         var fileName = test.FullName;
         fileName = FileNameEscape(fileName);
-        char sep = Path.DirectorySeparatorChar;
         if (test.ClassName is not null && fileName.StartsWith(test.ClassName + "."))
         {
+            char sep = Path.DirectorySeparatorChar;
             fileName = $"{test.ClassName}{sep}{fileName.Substring(test.ClassName!.Length + 1)}";
         }
         if (test.Namespace is not null && fileName.StartsWith(test.Namespace + "."))
         {
             fileName = fileName.Substring(test.Namespace!.Length + 1);
         }
-        if (targetName is not null)
-        {
-            fileName = $"{fileName}{sep}{targetName}";
-        }
-        fileName = $"{fileName}.{extension}";
-        var filePath = Path.Combine(sourceDir, "Snapshots", fileName);
-        DiffFile(actual, filePath);
+        return fileName;
     }
 
     private static readonly Regex invalidPathChars = new($"[{Regex.Escape(new string(Path.GetInvalidFileNameChars()))}]", RegexOptions.Compiled);
@@ -53,90 +64,100 @@ public static class Validation
 
     private static readonly Encoding encoding = new UTF8Encoding(false); // no BOM
 
-    private static void DiffFile(string actual, string path)
+    private static async Task DiffFile(string actual, string path)
     {
         bool overwrite;
         if (File.Exists(path))
         {
+#if NETCOREAPP
+            var before = await File.ReadAllTextAsync(path, encoding);
+#else
             var before = File.ReadAllText(path, encoding);
+#endif
             overwrite = before != actual;
         }
         else
         {
-            Directory.GetParent(path)!.Create();
+            var dir = Directory.GetParent(path)!;
+            if (!dir.Exists)
+            {
+                dir.Create();
+            }
             overwrite = true;
         }
 
         if (overwrite)
         {
+#if NETCOREAPP
+            await File.WriteAllTextAsync(path, actual, encoding);
+#else
             File.WriteAllText(path, actual, encoding);
+#endif
         }
 
-        var status = GetFileStatus(path);
-        var text = path;
+        var status = await GetFileStatus(path);
         if (status is FileStatus.Modified)
         {
-            text = RunCommand("git", $"diff \"{path}\"");
+            string diff = await RunGitCommandAsync(path, $"diff \"{path}\"");
+            throw new ValidationFailedException($"Validation failed for '{path}':{Environment.NewLine}{diff}", path, actual, diff);
         }
-        Assert.That(status, Is.EqualTo(FileStatus.Unmodified), text);
+        if (status is not FileStatus.Unmodified)
+        {
+            throw new ValidationFailedException($"Validation failed for '{path}' (status: {status})", path, actual, null);
+        }
     }
 
-    private static FileStatus GetFileStatus(string path)
+    private static async Task<FileStatus> GetFileStatus(string path)
     {
         if (!File.Exists(path))
         {
             return FileStatus.Missing;
         }
-        var status = RunCommand("git", $"status -z --no-renames \"{path}\"");
+        var status = await RunGitCommandAsync(path, $"status -z --no-renames \"{path}\"");
         if (string.IsNullOrWhiteSpace(status))
         {
             return FileStatus.Unmodified;
         }
         Debug.Assert(status.Length >= 2, "status.Length >= 2");
-        //char x = status[0];
-        char y = status[1];
-
         // https://git-scm.com/docs/git-status#_output
-        if (y == ' ')
-            return FileStatus.Unmodified;
-        if (y == '?')
-            return FileStatus.Untracked;
-        if (y == 'D') // deleted
-            return FileStatus.Missing;
-        if (y == 'M')
-            return FileStatus.Modified;
-        Debug.Fail($"Unexpected git status:\n{status}");
-        return FileStatus.Unknown;
+        //var x = (FileStatus)status[0]; // index status
+        var y = (FileStatus)status[1]; // working tree status
+#if NETCOREAPP
+        Debug.Assert(Enum.IsDefined(y));
+#else
+        Debug.Assert(Enum.IsDefined(typeof(FileStatus), y));
+#endif
+        return y;
     }
 
-    private enum FileStatus
+    private enum FileStatus : ushort
     {
-        Unknown,
-        Missing,
-        Modified,
-        Untracked,
-        Unmodified
+        Missing = 'D',
+        Modified = 'M',
+        Untracked = '?',
+        Unmodified = ' '
     }
 
-    private const int MaxProcessCount = 1;
+    private const int MaxProcessCount = 2;
 
-    private static readonly Semaphore semaphore = new(MaxProcessCount, MaxProcessCount);
+    private static readonly SemaphoreSlim semaphore = new(MaxProcessCount, MaxProcessCount);
 
-    private static string RunCommand(string filePath, string arguments)
+    private static async Task<string> RunGitCommandAsync(string filePath, string arguments)
     {
-        return RunCommandAsync(filePath, arguments).Result;
-    }
-
-    private static async Task<string> RunCommandAsync(string filePath, string arguments)
-    {
-        semaphore.WaitOne();
+        var token = TestContext.CurrentContext.CancellationToken;
+        await semaphore.WaitAsync(token);
         try
         {
-            var token = TestContext.CurrentContext.CancellationToken;
-            var info = new ProcessStartInfo(filePath, arguments)
+            var info = new ProcessStartInfo("git", arguments)
             {
                 RedirectStandardOutput = true,
-                UseShellExecute = false
+                UseShellExecute = false,
+                EnvironmentVariables =
+                {
+                    ["GIT_OPTIONAL_LOCKS"] = "0", // avoid hanging due to lock contention
+                    // cspell:ignore PATHSPECS
+                    ["GIT_LITERAL_PATHSPECS"] = "0" // no globing
+                }
             };
             var process = Process.Start(info)!;
 #if NETCOREAPP
