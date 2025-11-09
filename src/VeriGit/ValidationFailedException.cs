@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace VeriGit;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
@@ -11,7 +9,6 @@ namespace VeriGit;
 /// <param name="filePath">The path to the file that was validated.</param>
 /// <param name="actualText">The actual text that was validated against the snapshot.</param>
 /// <param name="diffText">The diff text showing the differences between the actual text and the snapshot.</param>
-[ExcludeFromCodeCoverage]
 public sealed class ValidationFailedException(string message, string filePath, string? actualText, string? diffText) : Exception(message)
 {
     /// <summary>
