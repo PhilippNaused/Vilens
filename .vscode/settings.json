@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "Vilens.slnx"
+    "dotnet.defaultSolution": "Vilens.slnx",
+    "githubPullRequests.ignoreSubmodules": true
 }
