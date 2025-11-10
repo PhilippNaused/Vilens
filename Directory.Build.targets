@@ -5,4 +5,19 @@
     <None Include="Snapshots\**\*" />
   </ItemGroup>
 
+  <Target Name="PublishAll"
+          Condition=" '$(TargetFramework)' == '' ">
+    <!-- https://stackoverflow.com/questions/43947599/how-to-publish-for-all-target-frameworks -->
+    <ItemGroup>
+      <_PublishFramework Include="$(TargetFrameworks)" />
+    </ItemGroup>
+    <ItemGroup>
+      <_Project Include="$(MSBuildProjectFile)"
+                AdditionalProperties="TargetFramework=%(_PublishFramework.Identity);PublishDir=$([System.IO.Path]::Combine('$(PublishDir)', '%(_PublishFramework.Identity)'))" />
+    </ItemGroup>
+    <MSBuild Projects="@(_Project)"
+             BuildInParallel="true"
+             Targets="Publish" />
+  </Target>
+
 </Project>

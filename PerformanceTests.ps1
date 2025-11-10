@@ -58,12 +58,14 @@ for ($i = 1; $i -le $Iterations; $i++) {
     & dotnet $VilensConsole $TargetFile --scope $Scope --features $Features --strongNamingKey $StrongNamingKey | Out-Null
   }
   # skip the first iteration
-  if ($i -gt 1) {
-    $Times += ((Get-Date) - $StartTime)
+  if ($i -eq 0) {
+    continue
   }
-  Write-Progress -Activity "Running performance tests" -Status ("Iteration {0}/{1}" -f $i, $Iterations) -PercentComplete (($i / $Iterations) * 100)
+  $Times += ((Get-Date) - $StartTime)
+  $Stats = $Times | Measure-Object -AllStats -Property TotalMilliseconds
+  Write-Progress -Activity "Running performance tests" -Status ("{0}±{1} ms" -f [int]$Stats.Average, [int]$Stats.StandardDeviation) -PercentComplete (($i / $Iterations) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
 $Times | Measure-Object -AllStats -Property TotalMilliseconds
-# Windows: ~305 ms (~32 AOT)
-# Linux: ~348 ms (~64 AOT)
+# Windows: ~325 ms (~32 AOT)
+# Linux: ~363 ms (~64 AOT)

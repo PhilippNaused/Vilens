@@ -14,19 +14,32 @@ $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 Set-StrictMode -Version 3.0
 
-if (Test-Path 'publish') {
-  Remove-Item 'publish/*' -Recurse -Force
+$PublishDir = Join-Path $PSScriptRoot 'publish'
+
+if (Test-Path $PublishDir) {
+  Remove-Item $PublishDir/* -Recurse -Force
 }
 
-$TFM = $MSBuild ? 'net472' : 'net8.0'
+dotnet build ./src/Vilens.MSBuild -c 'Release' -t:PublishAll -p:PublishDir=$PublishDir
 
-dotnet publish ./src/Vilens.MSBuild --output 'publish' -c 'Release' -f $TFM
-
-$VilensTasksPath = Join-Path $PSScriptRoot 'publish\Vilens.MSBuild.dll'
 $StrongNamingKey = Join-Path $PSScriptRoot "Vilens.snk"
 
-$arguments = @('.\Tests\Performance\Test.proj', '-tl:off', '-v:m', '-clp:PerformanceSummary', "-p:VilensTasksPath=$VilensTasksPath", "-p:AssemblyOriginatorKeyFile=$StrongNamingKey", '-p:SignAssembly=true')
-dotnet build $arguments -v:diag -m:1 | Out-File vilens.log
+if ($MSBuild) {
+  $MSBuildVersion = msbuild -version -noLogo
+  Write-Output "Using MSBuild version: $MSBuildVersion"
+}
+
+$Project = Get-Item '.\Tests\Performance\Test.proj'
+
+if ($MSBuild) {
+  msbuild $Project -t:Restore
+}
+else {
+  dotnet restore $Project
+}
+
+$arguments = @($Project, '-tl:off', '-v:m', '-m:1', '-clp:PerformanceSummary', "-p:AssemblyOriginatorKeyFile=$StrongNamingKey", '-p:SignAssembly=true', '-p:Configuration=Release')
+# dotnet build $arguments -v:diag | Out-File vilens.log
 
 $Times = @()
 for ($i = 1; $i -le $Iterations; $i++) {
@@ -34,18 +47,19 @@ for ($i = 1; $i -le $Iterations; $i++) {
     $Text = msbuild @arguments
   }
   else {
-    $Text = dotnet build $arguments
+    $Text = dotnet build $arguments --no-restore
   }
   $Text | Where-Object { $_ -match '\b(\d+) ms +CommitVilens\b' }
   $Time = $Matches[1] | ForEach-Object { [int]$_ }
 
   $Times += $Time
 
-  Write-Progress -Activity "Running performance tests" -Status ("Iteration {0}/{1}" -f $i, $Iterations) -PercentComplete (($i / $Iterations) * 100)
+  $Stats = $Times | Measure-Object -AllStats
+  Write-Progress -Activity "Running performance tests" -Status ("{0}±{1} ms" -f [int]$Stats.Average, [int]$Stats.StandardDeviation) -PercentComplete (($i / $Iterations) * 100)
 }
 Write-Progress -Activity "Running performance tests" -Completed
 $Times | Measure-Object -AllStats
 
-# 300 ms (dotnet.exe, Windows)
-# 332 ms (dotnet.exe, Linux)
-# 641 ms (MSBuild.exe)
+# 314 ms (dotnet.exe, Windows)
+# 345 ms (dotnet.exe, Linux)
+# 661 ms (MSBuild.exe)
