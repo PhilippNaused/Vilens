@@ -5,10 +5,10 @@
 
 version: 2
 updates:
-  - package-ecosystem: "nuget" # See documentation for possible values
+  - package-ecosystem: nuget # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: daily
     groups:
       NUnit:
         patterns:
@@ -17,7 +17,3 @@ updates:
         patterns:
           - "Microsoft.*"
           - "System.*"
-    ignore:
-      - dependency-name: "*" # Ignore all major version updates
-        update-types:
-          - "version-update:semver-major"
