@@ -10,7 +10,7 @@ index 58f0fec..e796a2a 100644
 +sharpfuzz
 +Vilens
 diff --git a/Test.ps1 b/Test.ps1
-index d6dc9a9..ea4d299 100644
+index effcc8a..93c0def 100644
 --- a/Test.ps1
 +++ b/Test.ps1
 @@ -12,8 +12,7 @@ $ErrorActionPreference = 'Stop'
