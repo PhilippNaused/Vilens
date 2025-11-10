@@ -1,7 +1,7 @@
 <Project DefaultTargets="CommitVilens">
 
   <PropertyGroup>
-    <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\..\publish\Vilens.MSBuild.dll</VilensTasksPath>
+    <VilensTasksBasePath Condition=" '$(VilensTasksBasePath)' == '' ">$(MSBuildThisFileDirectory)..\..\publish\</VilensTasksBasePath>
     <VilensScope>Internal</VilensScope>
     <VilensBackup>false</VilensBackup>
     <VilensFeatures>All</VilensFeatures>

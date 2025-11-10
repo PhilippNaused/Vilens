@@ -2,19 +2,23 @@
 
   <PropertyGroup>
     <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/tutorial-custom-task-code-generation?view=visualstudio#changes-required-to-multitarget -->
-    <VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Full' ">net472</VilensTasks_TFM>
-    <VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Core' ">net8.0</VilensTasks_TFM>
-    <VilensTasksPath Condition=" '$(VilensTasksPath)' == '' ">$(MSBuildThisFileDirectory)..\tasks\$(VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTasksPath>
+    <_VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Full' ">net472</_VilensTasks_TFM>
+    <_VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Core' ">net8.0</_VilensTasks_TFM>
+    <VilensTasksBasePath Condition=" '$(VilensTasksBasePath)' == '' ">$(MSBuildThisFileDirectory)..\tasks\</VilensTasksBasePath>
+    <VilensTaskPath Condition=" '$(VilensTaskPath)' == '' ">$(VilensTasksBasePath)\$(_VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTaskPath>
+    <VilensTaskPath>$([System.IO.Path]::GetFullPath('$(VilensTaskPath)'))</VilensTaskPath>
   </PropertyGroup>
 
   <UsingTask TaskName="Vilens.MSBuild.Scramble"
-             AssemblyFile="$(VilensTasksPath)" />
+             AssemblyFile="$(VilensTaskPath)" />
 
   <Target Name="CommitVilens"
           AfterTargets="CoreCompile"
           Inputs="@(IntermediateAssembly)"
           Outputs="@(IntermediateAssembly->'%(FullPath).vilens.done')"
           Condition="'$(DesignTimeBuild)' != 'true'">
+
+    <Message Text="Loaded task from '$(VilensTaskPath)'" />
 
     <Delete Files="@(IntermediateAssembly->'%(FullPath).vilens.log')" />
 
@@ -32,10 +36,10 @@
                       Condition="Exists('@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).pdb')')" />
     </ItemGroup>
 
-    <Error Text="'VilensTasksPath' is not set."
-           Condition="'$(VilensTasksPath)' == ''" />
-    <Error Text="'$(VilensTasksPath)' does not exist."
-           Condition="!Exists('$(VilensTasksPath)')" />
+    <Error Text="'VilensTaskPath' is not set."
+           Condition="'$(VilensTaskPath)' == ''" />
+    <Error Text="'$(VilensTaskPath)' does not exist."
+           Condition="!Exists('$(VilensTaskPath)')" />
     <Copy SourceFiles="@(IntermediateAssembly)"
           Condition="'$(VilensBackup)' != 'false'"
           DestinationFiles="@(IntermediateAssembly->'%(RootDir)%(Directory)%(Filename).unobfuscated%(Extension)')" />
