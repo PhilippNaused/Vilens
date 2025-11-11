@@ -1,13 +1,5 @@
 <Project>
 
-  <!--
-  Workaround for https://github.com/dotnet/sdk/issues/51265
-  TODO: remove when issue is resolved
-  -->
-  <PropertyGroup>
-    <RestoreEnablePackagePruning>false</RestoreEnablePackagePruning>
-  </PropertyGroup>
-
   <PropertyGroup>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <NuGetAudit>True</NuGetAudit>
