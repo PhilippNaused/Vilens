@@ -38,17 +38,17 @@ else {
   dotnet restore $Project
 }
 
-$arguments = @($Project, '-tl:off', '-v:m', '-m:1', '-clp:PerformanceSummary', "-p:AssemblyOriginatorKeyFile=$StrongNamingKey", '-p:SignAssembly=true', '-p:Configuration=Release')
-# dotnet build $arguments -v:diag | Out-File vilens.log
+$arguments = @($Project, '-tl:off', '-m:1', "-p:AssemblyOriginatorKeyFile=$StrongNamingKey", '-p:SignAssembly=true', '-p:Configuration=Release')
+
+$cmd = if ($MSBuild) { { msbuild $arguments } } else { { dotnet build $arguments --no-restore } }
+
+& $cmd
+
+$arguments += '-nologo', '-v:m', '-clp:PerformanceSummary'
 
 $Times = @()
 for ($i = 1; $i -le $Iterations; $i++) {
-  if ($MSBuild) {
-    $Text = msbuild @arguments
-  }
-  else {
-    $Text = dotnet build $arguments --no-restore
-  }
+  $Text = & $cmd
   $Text | Where-Object { $_ -match '\b(\d+) ms +CommitVilens\b' }
   $Time = $Matches[1] | ForEach-Object { [int]$_ }
 

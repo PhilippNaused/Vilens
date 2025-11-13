@@ -1,10 +1,13 @@
-<Project DefaultTargets="CommitVilens">
+<Project Sdk="Microsoft.Build.NoTargets">
 
   <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
     <VilensTasksBasePath Condition=" '$(VilensTasksBasePath)' == '' ">$(MSBuildThisFileDirectory)..\..\publish\</VilensTasksBasePath>
     <VilensScope>Internal</VilensScope>
     <VilensBackup>false</VilensBackup>
     <VilensFeatures>All</VilensFeatures>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <MSBuildTreatWarningsAsErrors>true</MSBuildTreatWarningsAsErrors>
   </PropertyGroup>
 
   <Import Project="..\..\src\Vilens.MSBuild\build\Vilens.MSBuild.props" />
