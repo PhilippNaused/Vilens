@@ -44,7 +44,7 @@ $cmd = if ($MSBuild) { { msbuild $arguments } } else { { dotnet build $arguments
 
 & $cmd
 
-$arguments += '-nologo', '-v:m', '-clp:PerformanceSummary'
+$arguments += '-noLogo', '-v:m', '-clp:PerformanceSummary'
 
 $Times = @()
 for ($i = 1; $i -le $Iterations; $i++) {
