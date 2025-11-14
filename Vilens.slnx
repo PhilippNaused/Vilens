@@ -1,5 +1,8 @@
 <Solution>
   <Folder Name="/Dummies/">
+    <File Path="Tests/Dummies/Directory.Build.props" />
+    <File Path="Tests/Dummies/Directory.Build.targets" />
+    <File Path="Tests/Dummies/Dummies.slnx" />
     <Project Path="Tests/Dummies/ClassLibrary1.Tests/ClassLibrary1.Tests.csproj">
       <Build Project="false" />
     </Project>
@@ -18,7 +21,6 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
-    <File Path="Tests/Dummies/Dummies.slnx" />
   </Folder>
   <Project Path="src/ICSharpCodeExtensions/ICSharpCodeExtensions.csproj" />
   <Project Path="src/VeriGit/VeriGit.csproj" />
