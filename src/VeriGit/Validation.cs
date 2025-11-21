@@ -17,7 +17,7 @@ public static class Validation
 
     public static Task ValidateAsync(string actual, string extension = "txt", string? targetName = null, [CallerFilePath] string callerFilePath = "")
     {
-        string sourceDir = Directory.GetParent(callerFilePath)?.FullName ?? throw new InvalidOperationException("Caller file path directory is null");
+        string sourceDir = Path.GetDirectoryName(callerFilePath) ?? throw new InvalidOperationException("Caller file path directory is null");
         string fileName = GetFilename();
         if (targetName is not null)
         {
@@ -67,10 +67,11 @@ public static class Validation
     private static async Task DiffFile(string actual, string path)
     {
         bool overwrite;
+        var token = TestContext.CurrentContext.CancellationToken;
         if (File.Exists(path))
         {
 #if NETCOREAPP
-            var before = await File.ReadAllTextAsync(path, encoding);
+            var before = await File.ReadAllTextAsync(path, encoding, token);
 #else
             var before = File.ReadAllText(path, encoding);
 #endif
@@ -89,7 +90,7 @@ public static class Validation
         if (overwrite)
         {
 #if NETCOREAPP
-            await File.WriteAllTextAsync(path, actual, encoding);
+            await File.WriteAllTextAsync(path, actual, encoding, token);
 #else
             File.WriteAllText(path, actual, encoding);
 #endif
