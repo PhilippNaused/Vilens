@@ -35,7 +35,7 @@ index d6c81f23..27f36287 100644
      public static class It
      {
 diff --git a/src/Moq/Moq.csproj b/src/Moq/Moq.csproj
-index b7bd529a..caca6884 100644
+index 10f63c3e..100d8eb7 100644
 --- a/src/Moq/Moq.csproj
 +++ b/src/Moq/Moq.csproj
 @@ -2,5 +2,5 @@

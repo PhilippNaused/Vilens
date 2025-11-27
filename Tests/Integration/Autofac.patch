@@ -1,14 +1,3 @@
-diff --git a/src/Autofac/Autofac.csproj b/src/Autofac/Autofac.csproj
-index e22b318c..05298f8b 100644
---- a/src/Autofac/Autofac.csproj
-+++ b/src/Autofac/Autofac.csproj
-@@ -13,5 +13,5 @@
-     <NeutralLanguage>en-US</NeutralLanguage>
-     <!-- Frameworks and language features -->
--    <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.1;netstandard2.0</TargetFrameworks>
-+    <TargetFrameworks>net8.0;netstandard2.1;netstandard2.0</TargetFrameworks>
-     <LangVersion>latest</LangVersion>
-     <Nullable>enable</Nullable>
 diff --git a/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs b/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
 index 6d842273..b7fc22f1 100644
 --- a/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
@@ -19,47 +8,3 @@ index 6d842273..b7fc22f1 100644
 +    [System.Reflection.Obfuscation(Feature = "Renaming")] // Is accessed via reflection.
      private readonly ReflectionActivatorData _activatorData;
  
-diff --git a/test/Autofac.Specification.Test/Autofac.Specification.Test.csproj b/test/Autofac.Specification.Test/Autofac.Specification.Test.csproj
-index a9d43dbb..7724c91c 100644
---- a/test/Autofac.Specification.Test/Autofac.Specification.Test.csproj
-+++ b/test/Autofac.Specification.Test/Autofac.Specification.Test.csproj
-@@ -1,5 +1,5 @@
- ﻿<Project Sdk="Microsoft.NET.Sdk">
-   <PropertyGroup>
--    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
-+    <TargetFrameworks>net8.0</TargetFrameworks>
-     <NoWarn>$(NoWarn);CS1591</NoWarn>
-     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-diff --git a/test/Autofac.Test.Compilation/Autofac.Test.Compilation.csproj b/test/Autofac.Test.Compilation/Autofac.Test.Compilation.csproj
-index c80a857b..5dacc128 100644
---- a/test/Autofac.Test.Compilation/Autofac.Test.Compilation.csproj
-+++ b/test/Autofac.Test.Compilation/Autofac.Test.Compilation.csproj
-@@ -1,5 +1,5 @@
- ﻿<Project Sdk="Microsoft.NET.Sdk">
-   <PropertyGroup>
--    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
-+    <TargetFrameworks>net8.0</TargetFrameworks>
-     <NoWarn>$(NoWarn);CS1591</NoWarn>
-     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-diff --git a/test/Autofac.Test.Scenarios.LoadContext/Autofac.Test.Scenarios.LoadContext.csproj b/test/Autofac.Test.Scenarios.LoadContext/Autofac.Test.Scenarios.LoadContext.csproj
-index 46ffeb77..9fd68010 100644
---- a/test/Autofac.Test.Scenarios.LoadContext/Autofac.Test.Scenarios.LoadContext.csproj
-+++ b/test/Autofac.Test.Scenarios.LoadContext/Autofac.Test.Scenarios.LoadContext.csproj
-@@ -1,5 +1,5 @@
- <Project Sdk="Microsoft.NET.Sdk">
-   <PropertyGroup>
--    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
-+    <TargetFrameworks>net8.0</TargetFrameworks>
-     <NoWarn>$(NoWarn);CS1591</NoWarn>
-     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-diff --git a/test/Autofac.Test/Autofac.Test.csproj b/test/Autofac.Test/Autofac.Test.csproj
-index aeb1f755..7e54308f 100644
---- a/test/Autofac.Test/Autofac.Test.csproj
-+++ b/test/Autofac.Test/Autofac.Test.csproj
-@@ -1,5 +1,5 @@
- ﻿<Project Sdk="Microsoft.NET.Sdk">
-   <PropertyGroup>
--    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
-+    <TargetFrameworks>net8.0</TargetFrameworks>
-     <NoWarn>$(NoWarn);CS1591</NoWarn>
-     <GenerateDocumentationFile>true</GenerateDocumentationFile>
