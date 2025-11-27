@@ -1,16 +1,16 @@
 diff --git a/src/NUnitFramework/Directory.Build.props b/src/NUnitFramework/Directory.Build.props
-index 7cb2816b6..e3eff0e59 100644
+index 028bc08eb..8b73d6fd9 100644
 --- a/src/NUnitFramework/Directory.Build.props
 +++ b/src/NUnitFramework/Directory.Build.props
 @@ -9,5 +9,5 @@
      <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
      <NUnitLibraryFrameworks>net462;net6.0;net8.0</NUnitLibraryFrameworks>
--    <NUnitRuntimeFrameworks>net462;net6.0;net8.0;net9.0</NUnitRuntimeFrameworks>
-+    <NUnitRuntimeFrameworks>net462;net8.0;net9.0</NUnitRuntimeFrameworks>
+-    <NUnitRuntimeFrameworks>net462;net6.0;net8.0;net9.0;net10.0</NUnitRuntimeFrameworks>
++    <NUnitRuntimeFrameworks>net462;net8.0;net9.0;net10.0</NUnitRuntimeFrameworks>
      <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
      <!--<OutputPath>..\..\..\bin\$(Configuration)\</OutputPath>-->
 diff --git a/src/NUnitFramework/Directory.Packages.props b/src/NUnitFramework/Directory.Packages.props
-index a41eab305..b00b06517 100644
+index 479af3827..dc707da16 100644
 --- a/src/NUnitFramework/Directory.Packages.props
 +++ b/src/NUnitFramework/Directory.Packages.props
 @@ -4,4 +4,7 @@
@@ -20,7 +20,7 @@ index a41eab305..b00b06517 100644
 +    <PackageVersion Include="Vilens.Build" Version="0.0.0" />
 +  </ItemGroup>
    <!-- Packages for used features -->
-   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
 diff --git a/src/NUnitFramework/tests/Internal/TestNameGeneratorTests.cs b/src/NUnitFramework/tests/Internal/TestNameGeneratorTests.cs
 index 978f009d3..14ca8f6ab 100644
 --- a/src/NUnitFramework/tests/Internal/TestNameGeneratorTests.cs

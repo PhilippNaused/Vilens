@@ -1,12 +1,12 @@
 diff --git a/src/Serilog/Serilog.csproj b/src/Serilog/Serilog.csproj
-index e68b346f..b83fc9e9 100644
+index 64ccaa2c..ac64ec38 100644
 --- a/src/Serilog/Serilog.csproj
 +++ b/src/Serilog/Serilog.csproj
 @@ -10,5 +10,5 @@
      all active LTS versions, and optionally the latest RTM version, when releasing new
      major Serilog versions. -->
--    <TargetFrameworks>$(TargetFrameworks);net9.0;net8.0;net6.0;netstandard2.0</TargetFrameworks>
-+    <TargetFrameworks>$(TargetFrameworks);net9.0;net8.0;netstandard2.0</TargetFrameworks>
+-    <TargetFrameworks>$(TargetFrameworks);net10.0;net9.0;net8.0;net6.0;netstandard2.0</TargetFrameworks>
++    <TargetFrameworks>$(TargetFrameworks);net10.0;net9.0;net8.0;netstandard2.0</TargetFrameworks>
      <PackageTags>serilog;logging;semantic;structured</PackageTags>
      <PackageIcon>icon.png</PackageIcon>
 diff --git a/test/Serilog.ApprovalTests/ApiApprovalTests.cs b/test/Serilog.ApprovalTests/ApiApprovalTests.cs
