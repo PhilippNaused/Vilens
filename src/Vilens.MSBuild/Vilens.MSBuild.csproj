@@ -25,6 +25,7 @@
                       ExcludeAssets="Runtime"
                       PrivateAssets="all" />
     <PackageReference Include="System.Collections.Immutable"
+                      Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))"
                       VersionOverride="8.0.0" />
   </ItemGroup>
 
