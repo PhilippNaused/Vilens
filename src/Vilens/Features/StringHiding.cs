@@ -1,7 +1,6 @@
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO.Compression;
 using System.Text;
 using Vilens.Data;
@@ -14,42 +13,11 @@ internal sealed class StringHiding : FeatureBase
 {
     private readonly List<IMethodData> _methods;
 
-    /// <summary>
-    /// new string(sbyte*, int, int)
-    /// </summary>
-    private readonly MemberRef ASCIICtor;
-
-    /// <summary>
-    /// new string(sbyte*)
-    /// </summary>
-    private readonly MemberRef ASCIICtorNull;
-
-    /// <summary>
-    /// new string(char*, int, int)
-    /// </summary>
-    private readonly MemberRef UTF16Ctor;
-
-    /// <summary>
-    /// new string(char*)
-    /// </summary>
-    private readonly MemberRef UTF16CtorNull;
-
     private readonly TypeSig voidPtr;
 
     public StringHiding(Scrambler scrambler) : base(scrambler)
     {
-        var stringRef = Module.CorLibTypes.String.TypeRef;
-
-        var sBytePtr = new PtrSig(Module.CorLibTypes.SByte);
         voidPtr = new FnPtrSig(MethodSig.CreateStatic(Module.CorLibTypes.Void));
-        var charPtr = new PtrSig(Module.CorLibTypes.Char);
-        var intSig = Module.CorLibTypes.Int32;
-
-        // TODO: Add UTF8 support (Encoding.UTF8.GetString(byte*, int))
-        ASCIICtor = new MemberRefUser(Module, ".ctor", MethodSig.CreateInstance(Module.CorLibTypes.Void, sBytePtr, intSig, intSig), stringRef); // new string(sbyte*, int, int)
-        UTF16Ctor = new MemberRefUser(Module, ".ctor", MethodSig.CreateInstance(Module.CorLibTypes.Void, charPtr, intSig, intSig), stringRef); // new string(char*, int, int)
-        ASCIICtorNull = new MemberRefUser(Module, ".ctor", MethodSig.CreateInstance(Module.CorLibTypes.Void, sBytePtr), stringRef); // new string(sbyte*)
-        UTF16CtorNull = new MemberRefUser(Module, ".ctor", MethodSig.CreateInstance(Module.CorLibTypes.Void, charPtr), stringRef); // new string(char*)
 
         _methods = Database.Methods.AsParallel().Where(m => m.Item.HasBody && m.HasFeatures(VilensFeature.StringHiding)).ToList();
         Log.Debug("Filtered {0} methods", _methods.Count);
@@ -73,7 +41,6 @@ internal sealed class StringHiding : FeatureBase
         }
 
         Encode(strings, out var data, out var dict);
-        var encoded = dict.Select(p => p.Value).ToImmutableList();
         var valueType = Module.AddCoreRef(typeof(ValueType));
         var compressedData = Compress(data);
 
@@ -91,7 +58,7 @@ internal sealed class StringHiding : FeatureBase
         var naming = new NamingHelper(Scrambler.Settings.NamingScheme);
 
         // init-only field that holds the compressed data
-        var initField = new FieldDefUser(string.Empty, new FieldSig(newClass.ToTypeSig()))
+        var compressedDataField = new FieldDefUser(string.Empty, new FieldSig(newClass.ToTypeSig()))
         {
             Name = naming.GetNextName(),
             DeclaringType = newClass,
@@ -103,18 +70,15 @@ internal sealed class StringHiding : FeatureBase
         };
         Cancellation.ThrowIfCancellationRequested();
 
-        // add an init-only string field for each string
-        foreach (var eString in encoded)
+        // internal static readonly string[] strings;
+        var stringsField = new FieldDefUser(string.Empty, new FieldSig(new SZArraySig(Module.CorLibTypes.String)))
         {
-            eString.Field = new FieldDefUser(string.Empty, new FieldSig(Module.CorLibTypes.String))
-            {
-                Name = naming.GetNextName(),
-                Access = FieldAttributes.Assembly,
-                DeclaringType = newClass,
-                IsStatic = true,
-                IsInitOnly = true
-            };
-        }
+            Name = naming.GetNextName(),
+            Access = FieldAttributes.Assembly,
+            DeclaringType = newClass,
+            IsStatic = true,
+            IsInitOnly = true
+        };
 
         // use the static constructor to decode the data at runtime
         var cctor = newClass.FindOrCreateStaticConstructor();
@@ -127,70 +91,75 @@ internal sealed class StringHiding : FeatureBase
         //      [1] byte[] data (pinned)
         //  )
         var ptr = body.Variables.Add(new Local(voidPtr));
-        var localArray = body.Variables.Add(new Local(new PinnedSig(new SZArraySig(uint8))));
+        var decompressedDataArray = body.Variables.Add(new Local(new PinnedSig(new SZArraySig(uint8))));
 
         // fixed (byte[] data = new byte[outSize])
         body.Instructions.Add(Emit.Load(data.Length));
         body.Instructions.Add(Emit.NewArray(uint8.ToTypeDefOrRef()));
-        body.Instructions.Add(Emit.Store(localArray));
+        body.Instructions.Add(Emit.Store(decompressedDataArray));
 
-        Decompress(cctor, compressedData.LongLength, initField, localArray);
+        Decompress(cctor, compressedData.LongLength, compressedDataField, decompressedDataArray);
 
-        // ptr = &data[0]
-        body.Instructions.Add(Emit.Load(localArray));
+        // void* ptr = &data[0]
+        body.Instructions.Add(Emit.Load(decompressedDataArray));
         body.Instructions.Add(Emit.Load(0));
         body.Instructions.Add(Emit.LoadElementAddress(uint8.ToTypeDefOrRef()));
         body.Instructions.Add(Emit.Convert_U());
         body.Instructions.Add(Emit.Store(ptr));
 
-        int current = 0;
-        foreach (var eString in encoded)
-        {
-            Cancellation.ThrowIfCancellationRequested();
-            // ptr += offset - current
-            body.Instructions.Add(Emit.Load(ptr));
-            if (eString.Offset != current)
-            {
-                body.Instructions.Add(Emit.Load(eString.Offset - current));
-                body.Instructions.Add(Emit.Add());
-                body.Instructions.Add(Emit.Duplicate());
-                body.Instructions.Add(Emit.Store(ptr));
-                current = eString.Offset;
-            }
+        var encodingRef = Module.AddCoreRef(typeof(Encoding));
+        // get Property Encoding.UTF8
+        var get_UTF8Method = new MemberRefUser(Module, "get_UTF8", MethodSig.CreateStatic(encodingRef.ToTypeSig()), encodingRef);
+        // string Encoding.UTF8.GetString(ptr, length)
+        var GetStringMethod = new MemberRefUser(Module, "GetString", MethodSig.CreateInstance(Module.CorLibTypes.String, new PtrSig(uint8), Module.CorLibTypes.Int32), encodingRef);
 
-            if (eString.IsAscii)
-            {
-                if (eString.HasNull)
-                {
-                    // field = new string((sbyte*)ptr, 0, length)
-                    body.Instructions.Add(Emit.Load(0));
-                    body.Instructions.Add(Emit.Load(eString.Length));
-                    body.Instructions.Add(Emit.NewObject(ASCIICtor));
-                }
-                else
-                {
-                    // field = new string((sbyte*)ptr)
-                    body.Instructions.Add(Emit.NewObject(ASCIICtorNull));
-                }
-            }
-            else
-            {
-                Debug.Assert(eString.Length % 2 == 0);
-                if (eString.HasNull)
-                {
-                    // field = new string((char*)ptr, 0, length / 2)
-                    body.Instructions.Add(Emit.Load(0));
-                    body.Instructions.Add(Emit.Load(eString.Length / 2));
-                    body.Instructions.Add(Emit.NewObject(UTF16Ctor));
-                }
-                else
-                {
-                    // field = new string((char*)ptr)
-                    body.Instructions.Add(Emit.NewObject(UTF16CtorNull));
-                }
-            }
-            body.Instructions.Add(Emit.Store(eString.Field!));
-        }
+        // initialize the string array field
+        // strings = new string[encodedCount]
+        body.Instructions.Add(Emit.Load(dict.Count));
+        body.Instructions.Add(Emit.NewArray(Module.CorLibTypes.String.ToTypeDefOrRef()));
+        body.Instructions.Add(Emit.Store(stringsField));
+
+        // int index = 0
+        var index = body.Variables.Add(new Local(Module.CorLibTypes.Int32));
+        // TODO: do we need to initialize this?
+
+        // int length = *ptr;
+        var length = body.Variables.Add(new Local(Module.CorLibTypes.Int32));
+        var loopStart = body.Instructions.Append(Emit.Load(ptr));
+        body.Instructions.Add(Emit.LoadIndirect_U1());
+        body.Instructions.Add(Emit.Store(length));
+
+        // ptr++;
+        body.Instructions.Add(Emit.Load(ptr));
+        body.Instructions.Add(Emit.Load(1));
+        body.Instructions.Add(Emit.Add());
+        body.Instructions.Add(Emit.Store(ptr));
+
+        // strings[index] = encoding.GetString(ptr, length);
+        body.Instructions.Add(Emit.Load(stringsField));
+        body.Instructions.Add(Emit.Load(index));
+        body.Instructions.Add(Emit.Call(get_UTF8Method));
+        body.Instructions.Add(Emit.Load(ptr));
+        body.Instructions.Add(Emit.Load(length));
+        body.Instructions.Add(Emit.Call(GetStringMethod));
+        body.Instructions.Add(Emit.StoreElement_Ref());
+
+        // index++;
+        body.Instructions.Add(Emit.Load(index));
+        body.Instructions.Add(Emit.Load(1));
+        body.Instructions.Add(Emit.Add());
+        body.Instructions.Add(Emit.Store(index));
+
+        // ptr += length;
+        body.Instructions.Add(Emit.Load(ptr));
+        body.Instructions.Add(Emit.Load(length));
+        body.Instructions.Add(Emit.Add());
+        body.Instructions.Add(Emit.Store(ptr));
+
+        // if (index < encodedCount) goto loopStart;
+        body.Instructions.Add(Emit.Load(index));
+        body.Instructions.Add(Emit.Load(dict.Count));
+        body.Instructions.Add(Emit.GotoIfLess(loopStart));
 
         body.Instructions.Add(Emit.Return());
 
@@ -198,60 +167,48 @@ internal sealed class StringHiding : FeatureBase
         int count = 0;
         foreach (var method in _methods)
         {
-            foreach (var instr in method.Item.Body.Instructions)
+            bool updated = false;
+            var instructions = method.Item.Body.Instructions;
+            for (int i = 0; i < instructions.Count; i++)
             {
-                if (instr.Operand is string str && dict.TryGetValue(str, out var eString))
+                Instruction? instr = instructions[i];
+                if (instr.Operand is string str && dict.TryGetValue(str, out var sIndex))
                 {
-                    Log.Trace("Replacing {0} in {1} using {2} encoding", instr, method, eString.IsAscii ? "ASCII" : "UTF16");
-                    instr.Replace(Emit.Load(eString.Field!));
+                    Log.Trace("Replacing {0} in {1}", instr, method);
+                    // newClass.string[i];
+                    instr.Replace(Emit.Load(stringsField));
+                    instructions.Insert(i + 1, Emit.Load(sIndex));
+                    instructions.Insert(i + 2, Emit.LoadElement_Ref());
                     count++;
+                    updated = true;
                 }
             }
+            if (updated)
+            {
+                instructions.SimplifyBranches();
+                instructions.OptimizeBranches();
+            }
         }
-        Log.Info("Encoded {0} instructions with {1} unique strings into {2} bytes of data.", count, encoded.Count, compressedData.Length);
+        Log.Info("Encoded {0} instructions with {1} unique strings into {2} bytes of data.", count, dict.Count, compressedData.Length);
     }
 
-    private static void Encode(List<string> strings, out byte[] data, out Dictionary<string, EncodedString> values)
+    private static void Encode(List<string> strings, out byte[] data, out Dictionary<string, int> values)
     {
         values = [];
         using var stream = new MemoryStream();
+        int index = 0;
         foreach (var str in strings)
         {
-            bool ascii = IsAscii(str);
-            bool hasNull = str.Contains('\0');
-            var str2 = str;
-            if (!hasNull)
-            {
-                str2 += '\0';
-            }
-            byte[] buffer = ascii ? Encoding.ASCII.GetBytes(str2) : Encoding.Unicode.GetBytes(str2);
-            int offset = checked((int)stream.Position);
-            stream.Write(buffer, 0, buffer.Length);
-
-            var encoded = new EncodedString
-            {
-                IsAscii = ascii,
-                Offset = offset,
-                Length = buffer.Length,
-                HasNull = hasNull,
-            };
-            values.Add(str, encoded);
+            var buffer = Encoding.UTF8.GetBytes(str);
+            if (buffer.Length > byte.MaxValue)
+                continue; // TODO: remove this limitation
+            byte l = (byte)buffer.Length;
+            stream.WriteByte(l);
+            stream.Write(buffer, 0, l);
+            values.Add(str, index++);
         }
 
         data = stream.ToArray();
-    }
-
-    private static bool IsAscii(string str)
-    {
-        ReadOnlySpan<char> span = str.AsSpan();
-        foreach (var c in span)
-        {
-            if (c > 127)
-            {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static byte[] Compress(byte[] data)
@@ -310,14 +267,5 @@ internal sealed class StringHiding : FeatureBase
         // temp.Dispose()
         instr.Add(Emit.Load(deflateStream)); // DeflateStream temp
         instr.Add(Emit.CallVirtual(disposeMethod)); // temp.Dispose()
-    }
-
-    private sealed class EncodedString
-    {
-        public FieldDefUser? Field;
-        public required bool HasNull;
-        public required bool IsAscii;
-        public required int Length;
-        public required int Offset;
     }
 }
