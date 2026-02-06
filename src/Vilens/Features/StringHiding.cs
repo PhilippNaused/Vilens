@@ -1,10 +1,9 @@
+using dnlib.DotNet;
+using dnlib.DotNet.Emit;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO.Compression;
-using System.Runtime.InteropServices;
 using System.Text;
-using dnlib.DotNet;
-using dnlib.DotNet.Emit;
 using Vilens.Data;
 using Vilens.Helpers;
 using Vilens.Logging;
@@ -57,8 +56,6 @@ internal sealed class StringHiding : FeatureBase
     }
 
     public override Logger Log { get; } = new Logger(nameof(StringHiding));
-
-    internal bool UseHeapAlloc { get; init; }
 
     public override void Execute()
     {
@@ -119,37 +116,32 @@ internal sealed class StringHiding : FeatureBase
             };
         }
 
-        var marshal = UseHeapAlloc ? Module.AddReference(typeof(Marshal), "netstandard", "System.Runtime.InteropServices", "mscorlib") : null;
-
         // use the static constructor to decode the data at runtime
         var cctor = newClass.FindOrCreateStaticConstructor();
         var body = cctor.Body;
         body.Instructions.Clear();
 
+        var uint8 = Module.CorLibTypes.Byte;
         //  .locals init(
-        //      [0] void* ptr
+        //      [0] void* ptr,
+        //      [1] byte[] data (pinned)
         //  )
         var ptr = body.Variables.Add(new Local(voidPtr));
+        var localArray = body.Variables.Add(new Local(new PinnedSig(new SZArraySig(uint8))));
 
-        // ptr = Marshal.AllocHGlobal(data.Length)
+        // fixed (byte[] data = new byte[outSize])
         body.Instructions.Add(Emit.Load(data.Length));
-        if (UseHeapAlloc)
-        {
-            var alloc = new MemberRefUser(Module, nameof(Marshal.AllocHGlobal), MethodSig.CreateStatic(Module.CorLibTypes.IntPtr, Module.CorLibTypes.Int32), marshal);
-            body.Instructions.Add(Emit.Call(alloc));
-        }
-        else
-        {
-            if (data.Length > 1024 * 1024)
-            {
-                throw new NotSupportedException($"String data is over 1 MiB ({data.Length} bytes).");
-            }
-            body.Instructions.Add(Emit.LocAlloc());
-        }
+        body.Instructions.Add(Emit.NewArray(uint8.ToTypeDefOrRef()));
+        body.Instructions.Add(Emit.Store(localArray));
+
+        Decompress(cctor, compressedData.LongLength, initField, localArray);
+
+        // ptr = &data[0]
+        body.Instructions.Add(Emit.Load(localArray));
+        body.Instructions.Add(Emit.Load(0));
+        body.Instructions.Add(Emit.LoadElementAddress(uint8.ToTypeDefOrRef()));
+        body.Instructions.Add(Emit.Convert_U());
         body.Instructions.Add(Emit.Store(ptr));
-        Cancellation.ThrowIfCancellationRequested();
-        // deflate(ptr)
-        Decompress(cctor, compressedData.LongLength, data.LongLength, initField, ptr);
 
         int current = 0;
         foreach (var eString in encoded)
@@ -200,13 +192,6 @@ internal sealed class StringHiding : FeatureBase
             body.Instructions.Add(Emit.Store(eString.Field!));
         }
 
-        if (UseHeapAlloc)
-        {
-            // TODO: BUG: System.Runtime.InteropServices.COMException : The handle is invalid. (Exception from HRESULT: 0x80070006 (E_HANDLE))
-            var free = new MemberRefUser(Module, nameof(Marshal.FreeHGlobal), MethodSig.CreateStatic(Module.CorLibTypes.Void, Module.CorLibTypes.IntPtr), marshal);
-            body.Instructions.Add(Emit.Load(ptr));
-            body.Instructions.Add(Emit.Call(free));
-        }
         body.Instructions.Add(Emit.Return());
 
         body.Instructions.Optimize();
@@ -278,16 +263,18 @@ internal sealed class StringHiding : FeatureBase
         return compressStream.ToArray();
     }
 
-    private void Decompress(MethodDef method, long inSize, long outSize, FieldDef field, Local dest)
+    private void Decompress(MethodDef method, long inSize, FieldDef field, Local dataArrayLocal)
     {
         var mod = Module;
-        var ptr = new PtrSig(mod.CorLibTypes.Byte);
+        var uint8Ptr = new PtrSig(mod.CorLibTypes.Byte);
 
         var defStreamRef = mod.AddReference(typeof(DeflateStream), "netstandard", "System.IO.Compression", "System");
-        var memStreamRef = mod.AddCoreRef(typeof(UnmanagedMemoryStream));
-        var memCtor1 = new MemberRefUser(mod, ".ctor", MethodSig.CreateInstance(mod.CorLibTypes.Void, ptr, mod.CorLibTypes.Int64), memStreamRef);
-        var fileAccessSig = new ValueTypeSig(mod.AddCoreRef(typeof(FileAccess)));
-        var memCtor2 = new MemberRefUser(mod, ".ctor", MethodSig.CreateInstance(mod.CorLibTypes.Void, ptr, mod.CorLibTypes.Int64, mod.CorLibTypes.Int64, fileAccessSig), memStreamRef);
+        var uMemStreamRef = mod.AddCoreRef(typeof(UnmanagedMemoryStream));
+        var memStreamRef = mod.AddCoreRef(typeof(MemoryStream));
+        // void System.IO.UnmanagedMemoryStream::.ctor(uint8*, int64)
+        var newUnmanagedMemoryStream = new MemberRefUser(mod, ".ctor", MethodSig.CreateInstance(mod.CorLibTypes.Void, uint8Ptr, mod.CorLibTypes.Int64), uMemStreamRef);
+        // void System.IO.MemoryStream::.ctor(uint8[])
+        var newMemoryStream = new MemberRefUser(mod, ".ctor", MethodSig.CreateInstance(mod.CorLibTypes.Void, new SZArraySig(mod.CorLibTypes.Byte)), memStreamRef);
 
         var streamRef = mod.AddCoreRef(typeof(Stream));
         // Need to explicitly use ValueTypeSig because dnlib thinks that CompressionMode is a class IF we run on Linux.
@@ -300,31 +287,28 @@ internal sealed class StringHiding : FeatureBase
         var disposeMethod = new MemberRefUser(mod, nameof(IDisposable.Dispose), MethodSig.CreateInstance(mod.CorLibTypes.Void), disposableRef);
 
         var body = method.Body;
-        var local = body.Variables.Add(new Local(mod.CorLibTypes.Object));
+        var deflateStream = body.Variables.Add(new Local(mod.CorLibTypes.Object));
         var instr = body.Instructions;
 
         // new UnmanagedMemoryStream(&field, inSize)
         instr.Add(Emit.LoadAddress(field));
         instr.Add(Emit.Load(inSize));
-        instr.Add(Emit.NewObject(memCtor1));
+        instr.Add(Emit.NewObject(newUnmanagedMemoryStream));
 
-        // var temp = new DeflateStream(..., CompressionMode.Decompress)
-        instr.Add(Emit.Load(0));
+        // DeflateStream temp = new DeflateStream(..., CompressionMode.Decompress)
+        instr.Add(Emit.Load((int)CompressionMode.Decompress));
         instr.Add(Emit.NewObject(defCtor));
-        instr.Add(Emit.Store(local));
+        instr.Add(Emit.Store(deflateStream));
 
-        // temp.CopyTo(new UnmanagedMemoryStream(dest, 0L, outSize, FileAccess.Write))
-        instr.Add(Emit.Load(local)); // DeflateStream temp
-        instr.Add(Emit.Load(dest)); // byte* dest
-        instr.Add(Emit.Load(0)); // 0
-        instr.Add(Emit.Convert_I8()); // (long)0
-        instr.Add(Emit.Load(outSize)); // long outSize
-        instr.Add(Emit.Load(2)); // FileAccess.Write
-        instr.Add(Emit.NewObject(memCtor2)); // new UnmanagedMemoryStream(byte*, long, long, FileAccess)
+        // temp.CopyTo(new MemoryStream(data))
+        instr.Add(Emit.Load(deflateStream)); // DeflateStream temp
+
+        instr.Add(Emit.Load(dataArrayLocal)); // byte[] data
+        instr.Add(Emit.NewObject(newMemoryStream)); // new MemoryStream(data)
         instr.Add(Emit.CallVirtual(copyMethod)); // void Stream.CopyTo(Stream)
 
         // temp.Dispose()
-        instr.Add(Emit.Load(local)); // DeflateStream temp
+        instr.Add(Emit.Load(deflateStream)); // DeflateStream temp
         instr.Add(Emit.CallVirtual(disposeMethod)); // temp.Dispose()
     }
 
