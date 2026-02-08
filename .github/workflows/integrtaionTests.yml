@@ -7,18 +7,23 @@ on:
 
 jobs:
   build:
-  # TODO: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations
     strategy:
       matrix:
         os:
         - ubuntu-latest
         - windows-latest
+        - windows-11-arm
         repo:
         - Autofac
         - Bshox
         # - Moq # TODO: fix on linux
         # - NUnit # TODO: fix on linux
         # - Serilog # TODO: fix
+        include:
+        - os: "windows-latest"
+          repo: "Moq"
+        - os: "windows-latest"
+          repo: "NUnit"
     runs-on: ${{ matrix.os }}
 
     name: Testing ${{ matrix.repo }} on ${{ matrix.os }}
