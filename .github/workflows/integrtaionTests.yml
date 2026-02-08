@@ -30,7 +30,7 @@ jobs:
 
     steps:
     - name: ⤵️ Checkout Source
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: ⤵️ Checkout ${{ matrix.repo }} Submodule
       run: git submodule update --init --recursive Tests/Integration/${{ matrix.repo }}
