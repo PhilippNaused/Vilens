@@ -32,7 +32,7 @@ jobs:
 
     # cspell:ignore devel
     - name: 🛠️ Install mono
-      if: matrix.os == 'ubuntu-latest'
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get update
         sudo apt-get install -y mono-devel
