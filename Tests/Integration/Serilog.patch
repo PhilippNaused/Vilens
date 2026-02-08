@@ -1,5 +1,5 @@
 diff --git a/src/Serilog/Serilog.csproj b/src/Serilog/Serilog.csproj
-index 64ccaa2c..ac64ec38 100644
+index 76a7e966..361c9461 100644
 --- a/src/Serilog/Serilog.csproj
 +++ b/src/Serilog/Serilog.csproj
 @@ -10,5 +10,5 @@
