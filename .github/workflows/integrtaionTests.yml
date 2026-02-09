@@ -12,7 +12,6 @@ jobs:
         os:
         - ubuntu-latest
         - windows-latest
-        - windows-11-arm
         repo:
         - Autofac
         - Bshox
@@ -24,6 +23,13 @@ jobs:
           repo: "Moq"
         - os: "windows-latest"
           repo: "NUnit"
+        # Bshox is the most stable test repo (because I wrote it), so its the one we test on all platforms (e.g. ARM)
+        - os: "windows-11-arm"
+          repo: "Bshox"
+        - os: "ubuntu-24.04-arm"
+          repo: "Bshox"
+        # - os: "macos-latest"
+        #   repo: "Bshox"
     runs-on: ${{ matrix.os }}
 
     name: Testing ${{ matrix.repo }} on ${{ matrix.os }}
@@ -44,11 +50,17 @@ jobs:
           9.0.x
 
     # cspell:ignore devel
-    - name: 🛠️ Install mono
-      if: startsWith(matrix.os, 'ubuntu')
+    - name: 🛠️ Install mono (🐧)
+      if: runner.os == 'Linux'
       run: |
         sudo apt-get update
         sudo apt-get install -y mono-devel
+
+    - name: 🛠️ Install mono (🍎)
+      if: runner.os == 'macOS'
+      run: |
+        brew update
+        brew install mono
 
     - name: 🛠️ Restore dependencies
       run: dotnet restore src/Vilens.MSBuild
