@@ -12,14 +12,14 @@ index 00000000..2134ed94
 +}
 \ No newline at end of file
 diff --git a/src/Directory.Build.props b/src/Directory.Build.props
-index b0b9d94d..6ac5bfd2 100644
+index b0b9d94d..a4ac4ae3 100644
 --- a/src/Directory.Build.props
 +++ b/src/Directory.Build.props
 @@ -115,4 +115,8 @@
    </PropertyGroup>
  
 +  <PropertyGroup Label="Version">
-+    <NoWarn>$(NoWarn);NU1903</NoWarn>
++    <NoWarn>$(NoWarn);NU1903;CS0672;SYSLIB0051</NoWarn>
 +  </PropertyGroup>
 +
    <PropertyGroup Label="Version" Condition="$(VersionLabel) != ''">
@@ -35,7 +35,7 @@ index d6c81f23..27f36287 100644
      public static class It
      {
 diff --git a/src/Moq/Moq.csproj b/src/Moq/Moq.csproj
-index 10f63c3e..100d8eb7 100644
+index 10f63c3e..cf2f9b24 100644
 --- a/src/Moq/Moq.csproj
 +++ b/src/Moq/Moq.csproj
 @@ -2,5 +2,5 @@
