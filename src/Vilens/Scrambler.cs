@@ -18,6 +18,7 @@ public sealed class Scrambler
         Cancellation = cancellation;
         Log.Info("Selected features: {0}", settings.Features);
         Log.Info("Selected scope: {0}", settings.Scope);
+        Log.Info("AOT Safe Mode: {0}", settings.AotSafeMode);
         var sw = Stopwatch.StartNew();
 
         var modCtx = new ModuleContext(new NullResolver());

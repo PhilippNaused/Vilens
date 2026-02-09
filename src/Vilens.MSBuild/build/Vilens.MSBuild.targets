@@ -44,6 +44,8 @@
     <PropertyGroup>
       <VilensScope Condition="'$(VilensScope)' == ''">Auto</VilensScope>
       <VilensFeatures Condition="'$(VilensFeatures)' == ''">None</VilensFeatures>
+      <_VilensAotSafeMode>false</_VilensAotSafeMode>
+      <_VilensAotSafeMode Condition="('$(IsAotCompatible)' == 'true') OR ('$(PublishAot)' == 'true')">true</_VilensAotSafeMode>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(AssemblyOriginatorKeyFile)' != '' AND '$(SignAssembly)' == 'True'">
@@ -70,6 +72,7 @@
                              Assembly="@(IntermediateAssembly)"
                              PdbFile="@(_VilensPdbFile)"
                              StrongNamingKey="$(_StrongNamingKey)"
+                             AotSafeMode="$(_VilensAotSafeMode)"
                              LogFile="@(IntermediateAssembly->'%(FullPath).vilens.log')"
                              DelaySign="$(DelaySign)" />
 

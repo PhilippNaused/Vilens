@@ -27,7 +27,16 @@ internal sealed class Corruption : FeatureBase
         _methods = Database.Methods.Where(data => data.HasFeatures(VilensFeature.Corruption) && data is { Item.Body.HasVariables: true }).ToImmutableList();
         _voidPtr = new FnPtrSig(MethodSig.CreateStatic(Module.CorLibTypes.Void));
         Log.Debug("Found {0} methods in {1}.", _methods.Count, sw.Elapsed);
-        _invalidSignature = new FieldSig(new ArraySig(Module.CorLibTypes.Void, 0u));
+        if (Scrambler.Settings.AotSafeMode)
+        {
+            _invalidSignature = new FieldSig(_voidPtr);
+        }
+        else
+        {
+            // A 0-dim array can cause "System.BadImageFormatException: Invalid compressed integer".
+            // This is useful when it happens in the decompiler, but it can also occur during AOT compilation.
+            _invalidSignature = new FieldSig(new ArraySig(Module.CorLibTypes.Void, 0u));
+        }
         if (_methods.Count > 0)
         {
             var e = CreateEnum(Module.CorLibTypes.SByte);
