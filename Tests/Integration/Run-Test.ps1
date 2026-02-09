@@ -49,6 +49,9 @@ function Test-Obfuscation {
 
   $TestFolder = Join-Path $PSScriptRoot $TargetName
 
+  $NuGetConfig = Join-Path $PSScriptRoot NuGet.config
+  git restore $NuGetConfig
+
   Push-Location $TestFolder
   try {
 

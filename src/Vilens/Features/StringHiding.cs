@@ -1,5 +1,6 @@
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
+using dnlib.DotNet.Writer;
 using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Text;
@@ -168,7 +169,8 @@ internal sealed class StringHiding : FeatureBase
         foreach (var method in _methods)
         {
             bool updated = false;
-            var instructions = method.Item.Body.Instructions;
+            body = method.Item.Body;
+            var instructions = body.Instructions;
             for (int i = 0; i < instructions.Count; i++)
             {
                 Instruction? instr = instructions[i];
@@ -187,6 +189,15 @@ internal sealed class StringHiding : FeatureBase
             {
                 instructions.SimplifyBranches();
                 instructions.OptimizeBranches();
+                // update max stack height
+                if (MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out var max))
+                {
+                    body.MaxStack = (ushort)max;
+                }
+                Log.Trace("Cannot determine max stack size of [{0}]", method);
+
+                body.MaxStack += 2;
+                body.KeepOldMaxStack = true;
             }
         }
         Log.Info("Encoded {0} instructions with {1} unique strings into {2} bytes of data.", count, dict.Count, compressedData.Length);
