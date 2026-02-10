@@ -7,7 +7,7 @@
     NetTaskHost is only supported in MSBuild 18+ when Microsoft.NET.SDK is used
     See: https://github.com/dotnet/msbuild/issues/12723#issuecomment-3493247680
     -->
-    <_VilensTasks_NetTaskHost Condition=" ('$(MSBuildVersion)' &gt;= '18.0.0') AND ('$(MSBuildRuntimeType)' == 'Full') AND ('$(UsingMicrosoftNETSdk)' == 'true')">true</_VilensTasks_NetTaskHost>
+    <_VilensTasks_NetTaskHost Condition="('$(NETCoreSdkVersion)' != '') AND ('$(NETCoreSdkVersion)' &gt;= '10.0.100') AND ('$(MSBuildVersion)' &gt;= '18.0.0') AND ('$(MSBuildRuntimeType)' == 'Full') AND ('$(UsingMicrosoftNETSdk)' == 'true')">true</_VilensTasks_NetTaskHost>
     <_VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Full' ">net472</_VilensTasks_TFM>
     <_VilensTasks_TFM Condition=" ('$(MSBuildRuntimeType)' == 'Core') OR $(_VilensTasks_NetTaskHost) ">net8.0</_VilensTasks_TFM>
     <VilensTasksBasePath Condition=" '$(VilensTasksBasePath)' == '' ">$(MSBuildThisFileDirectory)..\tasks\</VilensTasksBasePath>
@@ -44,6 +44,8 @@
     <PropertyGroup>
       <VilensScope Condition="'$(VilensScope)' == ''">Auto</VilensScope>
       <VilensFeatures Condition="'$(VilensFeatures)' == ''">None</VilensFeatures>
+      <_VilensAotSafeMode>false</_VilensAotSafeMode>
+      <_VilensAotSafeMode Condition="('$(IsAotCompatible)' == 'true') OR ('$(PublishAot)' == 'true')">true</_VilensAotSafeMode>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(AssemblyOriginatorKeyFile)' != '' AND '$(SignAssembly)' == 'True'">
@@ -70,6 +72,7 @@
                              Assembly="@(IntermediateAssembly)"
                              PdbFile="@(_VilensPdbFile)"
                              StrongNamingKey="$(_StrongNamingKey)"
+                             AotSafeMode="$(_VilensAotSafeMode)"
                              LogFile="@(IntermediateAssembly->'%(FullPath).vilens.log')"
                              DelaySign="$(DelaySign)" />
 

@@ -11,4 +11,5 @@ public sealed class VilensSettings
 #pragma warning disable CA1819 // Properties should not return arrays
     public byte[]? StrongNamingKey { get; init; }
 #pragma warning restore CA1819 // Properties should not return arrays
+    public bool AotSafeMode { get; init; }
 }

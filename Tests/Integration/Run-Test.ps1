@@ -64,6 +64,9 @@ function Test-Obfuscation {
 
     dotnet nuget add source $NuGetSource -n LocalVilens
 
+    & $BuildCommand
+    & $TestCommand
+
     # Inject obfuscation
     $Files = & $FileListCommand
     if (-not $Files) {
@@ -96,8 +99,11 @@ function Test-Obfuscation {
       git clean -xdf
     }
     Pop-Location
-    $NuGetConfig = Join-Path $PSScriptRoot NuGet.config
-    git restore $NuGetConfig
+    if (-not $NoCleanup) {
+      $NuGetConfig = Join-Path $PSScriptRoot NuGet.config
+      git restore $NuGetConfig
+    }
+
     dotnet build-server shutdown
   }
 }

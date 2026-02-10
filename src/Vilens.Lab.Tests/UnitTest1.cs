@@ -6,7 +6,7 @@ using Vilens.Lab;
 
 namespace TestProject1;
 
-public class Tests
+public class UnitTest1
 {
     [Test]
     public void Test1()

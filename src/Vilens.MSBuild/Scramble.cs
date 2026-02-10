@@ -22,6 +22,8 @@ public sealed class Scramble : Microsoft.Build.Utilities.Task, ICancelableTask, 
     [Required]
     public required string Features { get; set; }
 
+    public bool AotSafeMode { get; set; }
+
     [Required]
     public required string Scope { get; set; }
 
@@ -116,7 +118,8 @@ public sealed class Scramble : Microsoft.Build.Utilities.Task, ICancelableTask, 
             Features = features,
             Scope = scope,
             DelaySign = DelaySign,
-            StrongNamingKey = snkBytes
+            StrongNamingKey = snkBytes,
+            AotSafeMode = AotSafeMode,
         };
 
         Scrambler.Scramble(data, pdbData, settings, out byte[] newData, out byte[] newPdbData, cts.Token);
