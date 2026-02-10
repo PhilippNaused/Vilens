@@ -15,28 +15,27 @@ public class ControlFlowClass3
             int count;
             try
             {
-                System.Runtime.CompilerServices.YieldAwaitable.YieldAwaiter awaiter3;
-                System.Runtime.CompilerServices.TaskAwaiter awaiter2;
+                System.Runtime.CompilerServices.YieldAwaitable.YieldAwaiter awaiter2;
                 System.Runtime.CompilerServices.TaskAwaiter awaiter;
                 switch (num)
                 {
                 default:
-                    awaiter3 = System.Threading.Tasks.Task.Yield().GetAwaiter();
-                    if (!awaiter3.IsCompleted)
+                    awaiter2 = System.Threading.Tasks.Task.Yield().GetAwaiter();
+                    if (!awaiter2.IsCompleted)
                     {
                         num = (<>1__state = 0);
-                        <>u__1 = awaiter3;
-                        <>t__builder.AwaitUnsafeOnCompleted(ref awaiter3, ref this);
+                        <>u__1 = awaiter2;
+                        <>t__builder.AwaitUnsafeOnCompleted(ref awaiter2, ref this);
                         return;
                     }
                     goto IL_0070;
                 case 0:
-                    awaiter3 = <>u__1;
+                    awaiter2 = <>u__1;
                     <>u__1 = default(System.Runtime.CompilerServices.YieldAwaitable.YieldAwaiter);
                     num = (<>1__state = -1);
                     goto IL_0070;
                 case 1:
-                    awaiter2 = <>u__2;
+                    awaiter = <>u__2;
                     <>u__2 = default(System.Runtime.CompilerServices.TaskAwaiter);
                     num = (<>1__state = -1);
                     goto IL_00da;
@@ -48,7 +47,7 @@ public class ControlFlowClass3
                         break;
                     }
                     IL_00da:
-                    awaiter2.GetResult();
+                    awaiter.GetResult();
                     list.Add(1);
                     awaiter = System.Threading.Tasks.Task.Delay(2).GetAwaiter();
                     if (!awaiter.IsCompleted)
@@ -60,14 +59,14 @@ public class ControlFlowClass3
                     }
                     break;
                     IL_0070:
-                    awaiter3.GetResult();
+                    awaiter2.GetResult();
                     list.Add(0);
-                    awaiter2 = System.Threading.Tasks.Task.Delay(1).GetAwaiter();
-                    if (!awaiter2.IsCompleted)
+                    awaiter = System.Threading.Tasks.Task.Delay(1).GetAwaiter();
+                    if (!awaiter.IsCompleted)
                     {
                         num = (<>1__state = 1);
-                        <>u__2 = awaiter2;
-                        <>t__builder.AwaitUnsafeOnCompleted(ref awaiter2, ref this);
+                        <>u__2 = awaiter;
+                        <>t__builder.AwaitUnsafeOnCompleted(ref awaiter, ref this);
                         return;
                     }
                     goto IL_00da;
