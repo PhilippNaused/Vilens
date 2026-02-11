@@ -4,8 +4,25 @@ using dnlib.DotNet.Emit;
 
 namespace Vilens.Helpers;
 
-internal static class StackHelper
+internal sealed class StackHelper
 {
+    private readonly InstructionStackHeight[] data;
+    private readonly MethodDef method;
+
+    private StackHelper(MethodDef method)
+    {
+        this.method = method;
+        data = method.Body.Instructions.Select(i => new InstructionStackHeight(i)).ToArray();
+    }
+
+    public static int?[] CalculateStackHeights(MethodDef method)
+    {
+        var helper = new StackHelper(method);
+        helper.ExploreAll();
+
+        return helper.data.Select(x => x.StackHeight).ToArray();
+    }
+
     [DebuggerDisplay("{StackHeight}", Name = "{Instruction}")]
     private struct InstructionStackHeight(Instruction instruction)
     {
@@ -13,121 +30,115 @@ internal static class StackHelper
         public Instruction Instruction { get; } = instruction;
     }
 
-    public static int?[] CalculateStackHeights(MethodDef method)
+    private void ExploreAll()
     {
-        var body = method.Body;
-        var instructions = body.Instructions;
-        var exceptionHandlers = body.ExceptionHandlers;
-        InstructionStackHeight[] data = instructions.Select(i => new InstructionStackHeight(i)).ToArray();
-
         Explore(0, 0);
 
-        foreach (var eh in exceptionHandlers)
+        foreach (var handler in method.Body.ExceptionHandlers)
         {
-            Debug.Assert(eh != null, "Exception handler is null.");
-            if (eh!.FilterStart is not null)
+            Debug.Assert(handler != null, "Exception handler is null.");
+            if (handler!.FilterStart is not null)
             {
-                var idx = instructions.IndexOf(eh.FilterStart);
+                var idx = IndexOf(handler.FilterStart);
                 Explore(idx, 1);
             }
-            if (eh!.HandlerStart is not null)
+            if (handler!.HandlerStart is not null)
             {
-                var idx = instructions.IndexOf(eh.HandlerStart);
-                bool pushed = eh.IsCatch || eh.IsFilter;
+                var idx = IndexOf(handler.HandlerStart);
+                bool pushed = handler.IsCatch || handler.IsFilter;
                 Explore(idx, pushed ? 1 : 0);
             }
         }
+    }
 
-        void Explore(int index, int stackHeight)
+    private int IndexOf(Instruction instr)
+    {
+        var index = method.Body.Instructions.IndexOf(instr);
+        if (index < 0)
+            throw new InvalidMethodException($"Instruction {instr} not found in method {method}.");
+        return index;
+    }
+
+    private void Explore(int index, int stackHeight)
+    {
+        // recursively iterate instructions, setting stack heights and checking for consistency
+    start:
+        ref var info = ref data[index];
+        if (info.StackHeight is not null)
         {
-            // recursively iterate instructions, setting stack heights and checking for consistency
-        start:
-            if (data[index].StackHeight.HasValue)
+            if (info.StackHeight != stackHeight)
+                throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {info.StackHeight} for {info.Instruction} in {method}.");
+            return; // already visited this instruction with the same stack height, no need to explore further
+        }
+        info.StackHeight = stackHeight;
+
+        var instr = info.Instruction;
+        instr.CalculateStackUsage(method.HasReturnType, out int pushes, out int pops);
+        if (pops == -1)
+        {
+            stackHeight = 0;
+        }
+        else
+        {
+            stackHeight -= pops;
+            if (stackHeight < 0)
+                throw new InvalidMethodException($"Stack is negative at {instr} in {method}.");
+            stackHeight += pushes;
+        }
+        switch (instr.OpCode.FlowControl)
+        {
+            case FlowControl.Break:
+            case FlowControl.Call:
+            case FlowControl.Meta:
+            case FlowControl.Next:
             {
-                if (data[index].StackHeight!.Value != stackHeight)
-                    throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {data[index].StackHeight!.Value} for {data[index].Instruction}.");
-                return; // already visited this instruction with the same stack height, no need to explore further
-            }
-            data[index].StackHeight = stackHeight;
-            var instr = data[index].Instruction;
-            instr.CalculateStackUsage(method.HasReturnType, out int pushes, out int pops);
-            if (pops == -1)
-            {
-                stackHeight = 0;
-            }
-            else
-            {
-                stackHeight -= pops;
-                if (stackHeight < 0)
-                    throw new InvalidMethodException($"Stack is negative at {instr}");
-                stackHeight += pushes;
-            }
-            switch (instr.OpCode.FlowControl)
-            {
-                case FlowControl.Break:
-                case FlowControl.Call:
-                case FlowControl.Meta:
-                case FlowControl.Next:
+                if (instr.OpCode.Code == Code.Jmp)
                 {
-                    if (instr.OpCode.Code == Code.Jmp)
+                    return; // method terminates here, no need to explore further
+                }
+                else
+                {
+                    index++;
+                    goto start; // just continue to the next instruction
+                }
+            }
+            case FlowControl.Return:
+            {
+                if (stackHeight != 0)
+                    throw new InvalidMethodException($"Returned from method via {instr} with stack height {stackHeight} in {method}.");
+                return; // method terminates here
+            }
+            case FlowControl.Throw:
+            {
+                return; // method terminates here
+            }
+            case FlowControl.Branch: // unconditional branch
+            {
+                var target = (Instruction)instr.Operand;
+                index = IndexOf(target);
+                goto start; // tail recursion
+            }
+            case FlowControl.Cond_Branch:
+            {
+                if (instr.OpCode.Code == Code.Switch)
+                {
+                    foreach (var target in (IList<Instruction>)instr.Operand)
                     {
-                        return; // method terminates here, no need to explore further
+                        Explore(IndexOf(target), stackHeight); // explore the branch target
                     }
-                    else
-                    {
-                        index++;
-                        goto start; // just continue to the next instruction
-                    }
+                    index++;
+                    goto start; // explore the next instruction
                 }
-                case FlowControl.Return:
-                {
-                    if (stackHeight != 0)
-                        throw new InvalidMethodException($"Returned from method via {instr} with stack height {stackHeight}.");
-                    return; // method terminates here
-                }
-                case FlowControl.Throw:
-                {
-                    return; // method terminates here
-                }
-                case FlowControl.Branch: // unconditional branch
+                else
                 {
                     var target = (Instruction)instr.Operand;
-                    var targetIndex = instructions.IndexOf(target);
-                    if (targetIndex < 0)
-                        throw new InvalidMethodException($"Invalid branch target {target} for {instr}.");
-                    index = targetIndex;
-                    goto start; // tail recursion
+                    Explore(IndexOf(target), stackHeight); // explore the branch target
+                    index++;
+                    goto start; // explore the next instruction
                 }
-                case FlowControl.Cond_Branch:
-                {
-                    if (instr.OpCode.Code == Code.Switch)
-                    {
-                        foreach (var target in (IList<Instruction>)instr.Operand)
-                        {
-                            var targetIndex = instructions.IndexOf(target);
-                            if (targetIndex < 0)
-                                throw new InvalidMethodException($"Invalid branch target {target} for {instr}.");
-                            Explore(targetIndex, stackHeight); // explore the branch target
-                        }
-                        index++;
-                        goto start; // explore the next instruction
-                    }
-                    else
-                    {
-                        var target = (Instruction)instr.Operand;
-                        var targetIndex = instructions.IndexOf(target);
-                        if (targetIndex < 0)
-                            throw new InvalidMethodException($"Invalid branch target {target} for {instr}.");
-                        Explore(targetIndex, stackHeight); // explore the branch target
-                        index++;
-                        goto start; // explore the next instruction
-                    }
-                }
-                default:
-                    throw new InvalidMethodException($"Unsupported flow control {instr.OpCode.FlowControl} for {instr}.");
             }
+            default:
+                throw new InvalidMethodException($"Unsupported flow control {instr.OpCode.FlowControl} for {instr} in {method}.");
         }
-
-        return data.Select(x => x.StackHeight).ToArray();
     }
 }

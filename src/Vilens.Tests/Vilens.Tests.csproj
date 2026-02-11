@@ -3,7 +3,7 @@
   <PropertyGroup>
     <EnableNUnitRunner>true</EnableNUnitRunner>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net472;net48;net8.0;net9.0;net10.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <AnalysisMode />
