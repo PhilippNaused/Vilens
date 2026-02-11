@@ -8,6 +8,7 @@
   "ignorePaths": [
     "*.DotSettings",
     "*.svg",
+    "*.il",
     ".config/cspell.json",
     ".config/dicts/**",
     ".config/dotnet-tools.json",
