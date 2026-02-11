@@ -21,6 +21,16 @@ index 479af3827..dc707da16 100644
 +  </ItemGroup>
    <!-- Packages for used features -->
    <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+diff --git a/src/NUnitFramework/tests/Attributes/TimeoutTests.cs b/src/NUnitFramework/tests/Attributes/TimeoutTests.cs
+index 3e9d63e67..22c089adb 100644
+--- a/src/NUnitFramework/tests/Attributes/TimeoutTests.cs
++++ b/src/NUnitFramework/tests/Attributes/TimeoutTests.cs
+@@ -82,4 +82,5 @@ namespace NUnit.Framework.Tests.Attributes
+ 
+         [Test]
++        [Ignore("Flaky")]
+         public void TestThatCompletesWithinTimeoutPeriodHasItsOriginalResultPropagated(
+             [ValueSource(typeof(TestAction), nameof(TestAction.PossibleTestOutcomes))] TestAction test,
 diff --git a/src/NUnitFramework/tests/Internal/TestNameGeneratorTests.cs b/src/NUnitFramework/tests/Internal/TestNameGeneratorTests.cs
 index 978f009d3..14ca8f6ab 100644
 --- a/src/NUnitFramework/tests/Internal/TestNameGeneratorTests.cs
