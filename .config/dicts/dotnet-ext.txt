@@ -8,6 +8,8 @@ Linq
 NETCOREAPP
 NETFRAMEWORK
 Parallelizable
+SYSLIB
+accessibilities
 buildtransitive
 cctor
 contentfiles
