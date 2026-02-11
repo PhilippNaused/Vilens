@@ -25,7 +25,19 @@ internal sealed class ControlFlow : FeatureBase
     /// <inheritdoc />
     public override void Execute()
     {
-        var result = Parallel.ForEach(_methods, method =>
+        var parallelOptions = new ParallelOptions
+        {
+            CancellationToken = Scrambler.Cancellation,
+            MaxDegreeOfParallelism = Environment.ProcessorCount, // use all available cores
+        };
+#if DEBUG
+        if (Debugger.IsAttached)
+        {
+            // Don't use parallelization when debugging to make it easier to step through the code.
+            parallelOptions.MaxDegreeOfParallelism = 1;
+        }
+#endif
+        var result = Parallel.ForEach(_methods, parallelOptions, method =>
         {
             Cancellation.ThrowIfCancellationRequested();
             if (method.WasTrimmed())
@@ -49,7 +61,7 @@ internal sealed class ControlFlow : FeatureBase
 
             try
             {
-                blocks = GetBlocks(body);
+                blocks = GetBlocks(method.Item);
             }
             catch (dnlib.DotNet.Emit.InvalidMethodException)
             {
@@ -67,17 +79,16 @@ internal sealed class ControlFlow : FeatureBase
 
             Obfuscate(method, blocks);
 
+            var maxStackHeights = StackHelper.CalculateStackHeights(method.Item).Max(x => x ?? 0);
+            body.MaxStack = (ushort)maxStackHeights;
+            // The max stack is always at least 2 because of the add and modulo operations.
+            Debug.Assert(body.MaxStack >= 2);
             // update max stack height
             if (!MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out _))
             {
                 Log.Trace("Cannot determine max stack size of [{0}]", method);
 
                 body.KeepOldMaxStack = true;
-                if (body.MaxStack < 2)
-                {
-                    // The max stack is always at least 2 because of the add and modulo operations.
-                    body.MaxStack = 2;
-                }
             }
 
             _ = Interlocked.Increment(ref _counter);
@@ -88,22 +99,17 @@ internal sealed class ControlFlow : FeatureBase
         Log.Info("Obfuscated {0} methods", _counter);
     }
 
-    private static List<List<Instruction>> GetBlocks(CilBody body)
+    private static List<List<Instruction>> GetBlocks(dnlib.DotNet.MethodDef method)
     {
+        var body = method.Body;
         var instr = body.Instructions.ToList();
-        var stackHeights = StackHelper.CalculateStackHeights(body);
-#if DEBUG
-        var x = MaxStackCalculator.GetMaxStack(instr, body.ExceptionHandlers, out var stack);
-        Debug.Assert(x, "Failed to find stack height"); // This should only happen after obfuscation.
-        var max = stackHeights.Values.Max();
-        Debug.Assert(max == stack, $"Found wrong stack height {max} != {stack}");
-#endif
+        var stackHeights = StackHelper.CalculateStackHeights(method);
         // Split instructions into blocks on every instruction with stack height 0.
         List<List<Instruction>> blocks = [];
         int j = instr.Count;
         for (int i = instr.Count - 1; i >= 0; i--)
         {
-            if (stackHeights[instr[i]] != 0)
+            if (stackHeights[i] != 0)
                 continue;
             var range = instr.GetRange(i, j - i);
             blocks.Add(range);

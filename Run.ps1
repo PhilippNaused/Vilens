@@ -32,6 +32,9 @@ $LogFile = "$TargetFile.vilens.log"
 if (Test-Path $LogFile) {
   Remove-Item $LogFile
 }
+if ($Debugger) {
+  $NoSelfObfuscate = $true
+}
 $VilensConsole = .\Publish.ps1 -Configuration $Configuration -NoSelfObfuscate:$NoSelfObfuscate
 $StartTime = Get-Date
 $ExtraArgs = @()

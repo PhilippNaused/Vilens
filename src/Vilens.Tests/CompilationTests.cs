@@ -1,6 +1,8 @@
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using dnlib.DotNet.Writer;
+using ICSharpCode.Decompiler;
+using ICSharpCode.Extension;
 using NUnit.Framework;
 using Vilens.Data;
 using Vilens.Helpers;
@@ -9,6 +11,48 @@ namespace Vilens.Tests;
 
 internal class CompilationTests
 {
+    [Test]
+    public void Dogfooding([Values] bool corruption)
+    {
+        var vilens = typeof(Scrambler).Assembly.Location;
+        var pbdPath = Path.ChangeExtension(vilens, "pdb");
+        var data = File.ReadAllBytes(vilens);
+        var pdbData = File.Exists(pbdPath) ? File.ReadAllBytes(pbdPath) : null;
+        const VilensFeature noCorruption = VilensFeature.All & ~VilensFeature.Corruption;
+        var settings = new VilensSettings
+        {
+            Features = corruption ? VilensFeature.All : noCorruption,
+            Scope = Visibility.Public,
+            AotSafeMode = false,
+        };
+
+        for (int i = 0; i < 3; i++)
+        {
+            Scrambler.Scramble(
+                data: data,
+                pdbData: pdbData,
+                settings,
+                newData: out var newData,
+                newPdbData: out var newPdb,
+                TestContext.CurrentContext.CancellationToken);
+            data = newData;
+            pdbData = newPdb;
+        }
+
+        Assert.That(data, Is.Not.Null);
+        var decompiler = ICSharpCodeExtensions.GetDecompiler(data, "Test.dll");
+        if (corruption)
+        {
+            var ex = Assert.Throws<DecompilerException>(() => decompiler.DecompileWholeModuleAsString());
+            Assert.That(ex.InnerException, Is.Not.Null);
+            Assert.That(ex.InnerException, Is.TypeOf<InvalidCastException>()); // This should happen because of the corruption
+        }
+        else
+        {
+            Assert.That(decompiler.DecompileWholeModuleAsString(), Is.Not.Null);
+        }
+    }
+
     [Test]
     public void Test1()
     {
