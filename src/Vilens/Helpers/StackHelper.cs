@@ -1,114 +1,133 @@
 using System.Diagnostics;
+using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 
 namespace Vilens.Helpers;
 
 internal static class StackHelper
 {
-    public static Dictionary<Instruction, int> CalculateStackHeights(CilBody body)
+    [DebuggerDisplay("{StackHeight}", Name = "{Instruction}")]
+    private struct InstructionStackHeight(Instruction instruction)
     {
+        public int? StackHeight { get; set; }
+        public Instruction Instruction { get; } = instruction;
+    }
+
+    public static int?[] CalculateStackHeights(MethodDef method)
+    {
+        var body = method.Body;
+        var instructions = body.Instructions;
         var exceptionHandlers = body.ExceptionHandlers;
-        var stackHeights = new Dictionary<Instruction, int>();
+        InstructionStackHeight[] data = instructions.Select(i => new InstructionStackHeight(i)).ToArray();
+
+        Explore(0, 0);
+
         foreach (var eh in exceptionHandlers)
         {
             Debug.Assert(eh != null, "Exception handler is null.");
-            Instruction instr;
-            if ((instr = eh!.TryStart) is not null)
-                stackHeights[instr] = 0;
-            if ((instr = eh.FilterStart) is not null)
-                stackHeights[instr] = 1;
-            if ((instr = eh.HandlerStart) is not null)
+            if (eh!.FilterStart is not null)
             {
+                var idx = instructions.IndexOf(eh.FilterStart);
+                Explore(idx, 1);
+            }
+            if (eh!.HandlerStart is not null)
+            {
+                var idx = instructions.IndexOf(eh.HandlerStart);
                 bool pushed = eh.IsCatch || eh.IsFilter;
-                stackHeights[instr] = pushed ? 1 : 0;
+                Explore(idx, pushed ? 1 : 0);
             }
         }
 
-        int stack = 0;
-        bool resetStack = false;
-        var instructions = body.Instructions;
-        for (int i = 0; i < instructions.Count; i++)
+        void Explore(int index, int stackHeight)
         {
-            var instr = instructions[i];
-            if (instr is null)
-                continue;
-
-            if (resetStack)
+            // recursively iterate instructions, setting stack heights and checking for consistency
+        start:
+            if (data[index].StackHeight.HasValue)
             {
-                _ = stackHeights.TryGetValue(instr, out stack);
-                resetStack = false;
+                if (data[index].StackHeight!.Value != stackHeight)
+                    throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {data[index].StackHeight!.Value} for {data[index].Instruction}.");
+                return; // already visited this instruction with the same stack height, no need to explore further
             }
-            SetStack(instr, stack, stackHeights);
-            var opCode = instr.OpCode;
-            var code = opCode.Code;
-            if (code == Code.Jmp)
+            data[index].StackHeight = stackHeight;
+            var instr = data[index].Instruction;
+            instr.CalculateStackUsage(method.HasReturnType, out int pushes, out int pops);
+            if (pops == -1)
             {
-                if (stack != 0)
-                    throw new InvalidMethodException($"Exited method via {instr} with stack height {stack}.");
+                stackHeight = 0;
             }
             else
             {
-                instr.CalculateStackUsage(out int pushes, out int pops);
-                if (pops == -1) // PopAll
-                    stack = 0;
-                else
-                {
-                    stack -= pops;
-                    if (stack < 0)
-                        throw new InvalidMethodException($"Stack is negative at {instr}");
-                    stack += pushes;
-                }
+                stackHeight -= pops;
+                if (stackHeight < 0)
+                    throw new InvalidMethodException($"Stack is negative at {instr}");
+                stackHeight += pushes;
             }
-            if (stack < 0)
-                throw new InvalidMethodException($"Stack is negative at {instr}");
-
-            switch (opCode.FlowControl)
+            switch (instr.OpCode.FlowControl)
             {
-                case FlowControl.Branch:
-                    SetStack((Instruction)instr.Operand, stack, stackHeights);
-                    resetStack = true;
-                    break;
-
+                case FlowControl.Break:
                 case FlowControl.Call:
-                    if (code == Code.Jmp)
-                        resetStack = true;
-                    break;
-
-                case FlowControl.Cond_Branch:
-                    if (code == Code.Switch)
+                case FlowControl.Meta:
+                case FlowControl.Next:
+                {
+                    if (instr.OpCode.Code == Code.Jmp)
                     {
-                        if (instr.Operand is IList<Instruction> targets)
-                        {
-                            for (int j = 0; j < targets.Count; j++)
-                                SetStack(targets[j], stack, stackHeights);
-                        }
+                        return; // method terminates here, no need to explore further
                     }
                     else
-                        SetStack((Instruction)instr.Operand, stack, stackHeights);
-                    break;
-
+                    {
+                        index++;
+                        goto start; // just continue to the next instruction
+                    }
+                }
                 case FlowControl.Return:
+                {
+                    if (stackHeight != 0)
+                        throw new InvalidMethodException($"Returned from method via {instr} with stack height {stackHeight}.");
+                    return; // method terminates here
+                }
                 case FlowControl.Throw:
-                    resetStack = true;
-                    break;
+                {
+                    return; // method terminates here
+                }
+                case FlowControl.Branch: // unconditional branch
+                {
+                    var target = (Instruction)instr.Operand;
+                    var targetIndex = instructions.IndexOf(target);
+                    if (targetIndex < 0)
+                        throw new InvalidMethodException($"Invalid branch target {target} for {instr}.");
+                    index = targetIndex;
+                    goto start; // tail recursion
+                }
+                case FlowControl.Cond_Branch:
+                {
+                    if (instr.OpCode.Code == Code.Switch)
+                    {
+                        foreach (var target in (IList<Instruction>)instr.Operand)
+                        {
+                            var targetIndex = instructions.IndexOf(target);
+                            if (targetIndex < 0)
+                                throw new InvalidMethodException($"Invalid branch target {target} for {instr}.");
+                            Explore(targetIndex, stackHeight); // explore the branch target
+                        }
+                        index++;
+                        goto start; // explore the next instruction
+                    }
+                    else
+                    {
+                        var target = (Instruction)instr.Operand;
+                        var targetIndex = instructions.IndexOf(target);
+                        if (targetIndex < 0)
+                            throw new InvalidMethodException($"Invalid branch target {target} for {instr}.");
+                        Explore(targetIndex, stackHeight); // explore the branch target
+                        index++;
+                        goto start; // explore the next instruction
+                    }
+                }
+                default:
+                    throw new InvalidMethodException($"Unsupported flow control {instr.OpCode.FlowControl} for {instr}.");
             }
         }
 
-        Debug.Assert(stackHeights.Count == instructions.Count);
-        Debug.Assert(stackHeights.Values.Min() == 0);
-        Debug.Assert(stackHeights[instructions[0]] == 0);
-        return stackHeights;
-    }
-
-    private static void SetStack(Instruction instr, int stack, Dictionary<Instruction, int> stackHeights)
-    {
-        Debug.Assert(instr != null);
-        if (stackHeights.TryGetValue(instr!, out int stack2))
-        {
-            if (stack != stack2)
-                throw new InvalidMethodException($"Inconsistent stack height {stack} != {stack2} for {instr}.");
-            return;
-        }
-        stackHeights[instr!] = stack;
+        return data.Select(x => x.StackHeight).ToArray();
     }
 }

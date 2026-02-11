@@ -25,15 +25,22 @@ internal class CompilationTests
             Scope = Visibility.Public,
             AotSafeMode = false,
         };
-        Scrambler.Scramble(data: data,
-            pdbData: pdbData,
-            settings,
-            newData: out var newData,
-            newPdbData: out _,
-            TestContext.CurrentContext.CancellationToken);
 
-        Assert.That(newData, Is.Not.Null);
-        var decompiler = ICSharpCodeExtensions.GetDecompiler(newData, "Test.dll");
+        for (int i = 0; i < 3; i++)
+        {
+            Scrambler.Scramble(
+                data: data,
+                pdbData: pdbData,
+                settings,
+                newData: out var newData,
+                newPdbData: out var newPdb,
+                TestContext.CurrentContext.CancellationToken);
+            data = newData;
+            pdbData = newPdb;
+        }
+
+        Assert.That(data, Is.Not.Null);
+        var decompiler = ICSharpCodeExtensions.GetDecompiler(data, "Test.dll");
         if (corruption)
         {
             var ex = Assert.Throws<DecompilerException>(() => decompiler.DecompileWholeModuleAsString());
