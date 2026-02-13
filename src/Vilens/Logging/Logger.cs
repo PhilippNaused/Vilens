@@ -100,14 +100,22 @@ internal sealed class Logger(string name)
     public void Info<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Info, message, null, arg1);
     public void Info([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Info, message, null, args);
 
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Warn<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Warn, message, null, arg1);
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Warn([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Warn, message, null, args);
 
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Error<T>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, T arg1) => Log(LogLevel.Error, message, null, arg1);
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Error([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Error, message, null, args);
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Error(Exception ex, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Error, message, ex, args);
 
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Fatal([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Fatal, message, null, args);
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Fatal(Exception ex, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string message, params ReadOnlySpan<object?> args) => Log(LogLevel.Fatal, message, ex, args);
+    [ExcludeFromCodeCoverage] // This is *supposed* to be dead code, so it's a good thing when it has no coverage
     public void Fatal(Exception ex) => Log(LogLevel.Fatal, "", ex);
 }
