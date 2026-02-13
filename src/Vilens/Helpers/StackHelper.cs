@@ -38,14 +38,12 @@ internal readonly struct StackHelper
         {
             if (handler!.FilterStart is not null)
             {
-                var idx = IndexOf(handler.FilterStart);
-                Explore(idx, 1);
+                Explore(handler.FilterStart, 1);
             }
             if (handler!.HandlerStart is not null)
             {
-                var idx = IndexOf(handler.HandlerStart);
                 bool pushed = handler.IsCatch || handler.IsFilter;
-                Explore(idx, pushed ? 1u : 0u);
+                Explore(handler.HandlerStart, pushed ? 1u : 0u);
             }
         }
     }
@@ -58,17 +56,22 @@ internal readonly struct StackHelper
         return index;
     }
 
+    private void Explore(Instruction instr, uint stackHeight)
+    {
+        Explore(IndexOf(instr), stackHeight);
+    }
+
     private void Explore(int index, uint stackHeight)
     {
     start:
         var previous = stackHeights[index];
-        var instr = instructions[index];
         if (previous is not null)
         {
             if (previous != stackHeight)
-                throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {previous} for {instr}.");
-            return; // already visited this instruction with the same stack height, no need to explore further
+                throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {previous} for {instructions[index]}.");
+            return; // already visited this instruction
         }
+        var instr = instructions[index];
         stackHeights[index] = stackHeight;
 
         instr.CalculateStackUsage(out int pushes, out int pops);
@@ -92,7 +95,7 @@ internal readonly struct StackHelper
             {
                 if (instr.OpCode.Code == Code.Jmp)
                 {
-                    return; // method terminates here, no need to explore further
+                    return; // method terminates here
                 }
                 else
                 {
@@ -122,15 +125,15 @@ internal readonly struct StackHelper
                 {
                     foreach (var target in (IList<Instruction>)instr.Operand)
                     {
-                        Explore(IndexOf(target), stackHeight); // explore the branch target
+                        Explore(target, stackHeight); // explore the branch target
                     }
                     index++;
-                    goto start; // explore the next instruction
+                    goto start; // explore the next instruction (fall-through)
                 }
                 else
                 {
                     var target = (Instruction)instr.Operand;
-                    Explore(IndexOf(target), stackHeight); // explore the branch target
+                    Explore(target, stackHeight); // explore the branch target
                     index++;
                     goto start; // explore the next instruction
                 }
