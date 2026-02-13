@@ -401,3 +401,7 @@ FodyWeavers.xsd
 !/Tests/Performance/TestAssemblies/*
 
 !/Directory.Build.rsp
+
+# Code coverage results
+/coverage/
+/coverage-report/

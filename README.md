@@ -1,7 +1,8 @@
 # Vilens
 
 [![NuGet Version](https://img.shields.io/nuget/vpre/Vilens.MSBuild)](https://www.nuget.org/packages/Vilens.MSBuild)  
-[![License](https://img.shields.io/github/license/PhilippNaused/Vilens)](/LICENSE)
+[![License](https://img.shields.io/github/license/PhilippNaused/Vilens)](/LICENSE)  
+[![Test Coverage](/docs/coverage/badge_linecoverage.svg)](/docs/coverage/SummaryGithub.md)  
 
 Vilens is an experimental assembly obfuscator for .NET.
 

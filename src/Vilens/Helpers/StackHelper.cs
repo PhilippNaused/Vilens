@@ -7,23 +7,23 @@ internal readonly struct StackHelper
 {
     private readonly IList<Instruction> instructions;
     private readonly IList<ExceptionHandler> exceptionHandlers;
-    private readonly uint?[] stackHeights;
+    private readonly ushort?[] stackHeights;
 
     private StackHelper(CilBody body)
     {
         instructions = body.Instructions;
         exceptionHandlers = body.ExceptionHandlers;
-        stackHeights = new uint?[instructions.Count];
+        stackHeights = new ushort?[instructions.Count];
     }
 
-    public static uint GetMaxStack(CilBody body)
+    public static ushort GetMaxStack(CilBody body)
     {
         var helper = new StackHelper(body);
         helper.ExploreAll();
         return helper.stackHeights.Max() ?? 0;
     }
 
-    public static uint?[] GetStackHeights(CilBody body)
+    public static ushort?[] GetStackHeights(CilBody body)
     {
         var helper = new StackHelper(body);
         helper.ExploreAll();
@@ -36,14 +36,14 @@ internal readonly struct StackHelper
 
         foreach (var handler in exceptionHandlers)
         {
-            if (handler!.FilterStart is not null)
+            if (handler.FilterStart is not null)
             {
                 Explore(handler.FilterStart, 1);
             }
-            if (handler!.HandlerStart is not null)
+            if (handler.HandlerStart is not null)
             {
                 bool pushed = handler.IsCatch || handler.IsFilter;
-                Explore(handler.HandlerStart, pushed ? 1u : 0u);
+                Explore(handler.HandlerStart, pushed ? (ushort)1 : (ushort)0);
             }
         }
     }
@@ -56,12 +56,12 @@ internal readonly struct StackHelper
         return index;
     }
 
-    private void Explore(Instruction instr, uint stackHeight)
+    private void Explore(Instruction instr, ushort stackHeight)
     {
         Explore(IndexOf(instr), stackHeight);
     }
 
-    private void Explore(int index, uint stackHeight)
+    private void Explore(int index, ushort stackHeight)
     {
     start:
         var previous = stackHeights[index];
@@ -83,8 +83,8 @@ internal readonly struct StackHelper
         {
             if (stackHeight < pops)
                 throw new InvalidMethodException($"Stack is negative at {instr}.");
-            stackHeight -= (uint)pops;
-            stackHeight += (uint)pushes;
+            stackHeight -= (ushort)pops;
+            stackHeight += (ushort)pushes;
         }
         switch (instr.OpCode.FlowControl)
         {

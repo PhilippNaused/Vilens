@@ -190,7 +190,7 @@ internal sealed class StringHiding : FeatureBase
                 instructions.SimplifyBranches();
                 instructions.OptimizeBranches();
                 // update max stack height
-                body.MaxStack = (ushort)StackHelper.GetMaxStack(body);
+                body.MaxStack = StackHelper.GetMaxStack(body);
                 if (!MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out _))
                 {
                     body.KeepOldMaxStack = true;
