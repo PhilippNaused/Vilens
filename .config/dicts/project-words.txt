@@ -16,3 +16,4 @@ nunitlite
 unobfuscated
 Dogfooding
 Diagnoser
+Coverable
