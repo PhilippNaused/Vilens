@@ -165,6 +165,7 @@ internal sealed class StringHiding : FeatureBase
         body.Instructions.Add(Emit.Return());
 
         body.Instructions.Optimize();
+        body.MaxStack = StackHelper.GetMaxStack(body);
         int count = 0;
         foreach (var method in _methods)
         {
