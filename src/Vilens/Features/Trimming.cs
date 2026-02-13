@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using dnlib.DotNet;
 using Vilens.Data;
 using Vilens.Helpers;
@@ -7,6 +8,7 @@ using Vilens.Logging;
 
 namespace Vilens.Features;
 
+[ExcludeFromCodeCoverage] // Unfinished feature.
 internal sealed class Trimming : FeatureBase
 {
     private readonly HashSet<IMemberRef> _toRemove;

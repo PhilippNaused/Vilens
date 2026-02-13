@@ -80,7 +80,7 @@ internal sealed class ControlFlow : FeatureBase
             Obfuscate(method, blocks);
 
             // update max stack height
-            body.MaxStack = (ushort)StackHelper.GetMaxStack(body);
+            body.MaxStack = StackHelper.GetMaxStack(body);
             // The max stack is always at least 2 because of the add and modulo operations.
             Debug.Assert(body.MaxStack >= 2);
             if (!MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out _))
