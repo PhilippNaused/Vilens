@@ -15,3 +15,5 @@ dnlib
 nunitlite
 unobfuscated
 Dogfooding
+Diagnoser
+Coverable

@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 
 namespace Vilens.Helpers;
 
 #pragma warning disable CA1724 // Type names should not match namespaces
+[ExcludeFromCodeCoverage] // Trivial wrapper around OpCodes, no need to test (most of them are unused)
 internal static class Emit
 #pragma warning restore CA1724 // Type names should not match namespaces
 {

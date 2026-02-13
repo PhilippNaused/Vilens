@@ -22,3 +22,5 @@ slnf
 slnx
 snupkg
 valuetype
+reportgenerator
+globaltool
