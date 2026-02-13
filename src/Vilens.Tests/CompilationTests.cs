@@ -150,7 +150,7 @@ internal class CompilationTests
                 if (mod)
                 {
                     list.Optimize();
-                    body.MaxStack = (ushort)StackHelper.GetMaxStack(body);
+                    body.MaxStack = StackHelper.GetMaxStack(body);
                 }
             }
         }, true);

@@ -22,6 +22,7 @@
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Project Path="src/Benchmark/Vilens.Benchmark.csproj" />
   <Project Path="src/ICSharpCodeExtensions/ICSharpCodeExtensions.csproj" />
   <Project Path="src/VeriGit/VeriGit.csproj" />
   <Project Path="src/Vilens.Lab.Tests/Vilens.Lab.Tests.csproj">
