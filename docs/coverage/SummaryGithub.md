@@ -7,26 +7,26 @@
 | Assemblies:        | 1                                    |
 | Classes:           | 23                                   |
 | Files:             | 24                                   |
-| **Line coverage:** | 86.6% (1786 of 2060)                 |
-| Covered lines:     | 1786                                 |
+| **Line coverage:** | 86.7% (1793 of 2067)                 |
+| Covered lines:     | 1793                                 |
 | Uncovered lines:   | 274                                  |
-| Coverable lines:   | 2060                                 |
-| Total lines:       | 3154                                 |
+| Coverable lines:   | 2067                                 |
+| Total lines:       | 3161                                 |
 
 </details>
 
 ## Coverage
-<details><summary>Vilens.dll - 86.6%</summary>
+<details><summary>Vilens.dll - 86.7%</summary>
 
 | **Name**                          |  **Line** |
 |:----------------------------------|----------:|
-| **Vilens.dll**                    | **86.6%** |
+| **Vilens.dll**                    | **86.7%** |
 | Vilens.Data.Database              |     85.7% |
 | Vilens.Data.FeatureExtensions     |     89.4% |
 | Vilens.Data.FeatureMap            |     91.2% |
 | Vilens.Data.MemberDataExtensions  |      100% |
 | Vilens.Data.VisibilityExtensions  |     82.2% |
-| Vilens.Features.AttributeCleaning |     96.4% |
+| Vilens.Features.AttributeCleaning |     96.6% |
 | Vilens.Features.ControlFlow       |     97.6% |
 | Vilens.Features.Corruption        |     97.5% |
 | Vilens.Features.DisOptimize       |     76.9% |
