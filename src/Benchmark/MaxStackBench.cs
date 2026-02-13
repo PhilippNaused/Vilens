@@ -16,11 +16,7 @@ public class MaxStackBench
     {
         var module = ModuleDefMD.Load(typeof(Scrambler).Module);
         module.LoadEverything();
-        method = module.FindNormalThrow("Vilens.Features.ControlFlow").FindMethod("Obfuscate");
-        if (method.Body.Instructions.Count != 310 || method.Body.ExceptionHandlers.Count != 3)
-        {
-            throw new InvalidOperationException($"{method.Body.Instructions.Count} {method.Body.ExceptionHandlers.Count}");
-        }
+        method = module.FindNormalThrow(typeof(Features.ControlFlow).FullName).FindMethod("Obfuscate");
     }
 
     [Benchmark(Baseline = true, Description = "dnlib")]
