@@ -150,15 +150,7 @@ internal class CompilationTests
                 if (mod)
                 {
                     list.Optimize();
-                    if (MaxStackCalculator.GetMaxStack(list, body.ExceptionHandlers, out var h))
-                    {
-                        body.MaxStack = (ushort)h;
-                    }
-                    else
-                    {
-                        body.MaxStack += 2;
-                        body.KeepOldMaxStack = true;
-                    }
+                    body.MaxStack = (ushort)StackHelper.GetMaxStack(body);
                 }
             }
         }, true);
