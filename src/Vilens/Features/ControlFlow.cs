@@ -79,15 +79,12 @@ internal sealed class ControlFlow : FeatureBase
 
             Obfuscate(method, blocks);
 
-            var maxStackHeights = StackHelper.CalculateStackHeights(method.Item).Max(x => x ?? 0);
-            body.MaxStack = (ushort)maxStackHeights;
+            // update max stack height
+            body.MaxStack = (ushort)StackHelper.GetMaxStack(body);
             // The max stack is always at least 2 because of the add and modulo operations.
             Debug.Assert(body.MaxStack >= 2);
-            // update max stack height
             if (!MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out _))
             {
-                Log.Trace("Cannot determine max stack size of [{0}]", method);
-
                 body.KeepOldMaxStack = true;
             }
 
@@ -103,7 +100,7 @@ internal sealed class ControlFlow : FeatureBase
     {
         var body = method.Body;
         var instr = body.Instructions.ToList();
-        var stackHeights = StackHelper.CalculateStackHeights(method);
+        var stackHeights = StackHelper.GetStackHeights(method.Body);
         // Split instructions into blocks on every instruction with stack height 0.
         List<List<Instruction>> blocks = [];
         int j = instr.Count;

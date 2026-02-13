@@ -1,42 +1,41 @@
-using System.Diagnostics;
-using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 
 namespace Vilens.Helpers;
 
-internal sealed class StackHelper
+//TODO: use [DebuggerTypeProxy]
+internal readonly struct StackHelper
 {
-    private readonly InstructionStackHeight[] data;
-    private readonly MethodDef method;
+    private readonly IList<Instruction> instructions;
+    private readonly IList<ExceptionHandler> exceptionHandlers;
+    private readonly uint?[] stackHeights;
 
-    private StackHelper(MethodDef method)
+    private StackHelper(CilBody body)
     {
-        this.method = method;
-        data = method.Body.Instructions.Select(i => new InstructionStackHeight(i)).ToArray();
+        instructions = body.Instructions;
+        exceptionHandlers = body.ExceptionHandlers;
+        stackHeights = new uint?[instructions.Count];
     }
 
-    public static int?[] CalculateStackHeights(MethodDef method)
+    public static uint GetMaxStack(CilBody body)
     {
-        var helper = new StackHelper(method);
+        var helper = new StackHelper(body);
         helper.ExploreAll();
-
-        return helper.data.Select(x => x.StackHeight).ToArray();
+        return helper.stackHeights.Max() ?? 0;
     }
 
-    [DebuggerDisplay("{StackHeight}", Name = "{Instruction}")]
-    private struct InstructionStackHeight(Instruction instruction)
+    public static uint?[] GetStackHeights(CilBody body)
     {
-        public int? StackHeight { get; set; }
-        public Instruction Instruction { get; } = instruction;
+        var helper = new StackHelper(body);
+        helper.ExploreAll();
+        return helper.stackHeights;
     }
 
     private void ExploreAll()
     {
         Explore(0, 0);
 
-        foreach (var handler in method.Body.ExceptionHandlers)
+        foreach (var handler in exceptionHandlers)
         {
-            Debug.Assert(handler != null, "Exception handler is null.");
             if (handler!.FilterStart is not null)
             {
                 var idx = IndexOf(handler.FilterStart);
@@ -46,44 +45,43 @@ internal sealed class StackHelper
             {
                 var idx = IndexOf(handler.HandlerStart);
                 bool pushed = handler.IsCatch || handler.IsFilter;
-                Explore(idx, pushed ? 1 : 0);
+                Explore(idx, pushed ? 1u : 0u);
             }
         }
     }
 
-    private int IndexOf(Instruction instr)
+    private readonly int IndexOf(Instruction instr)
     {
-        var index = method.Body.Instructions.IndexOf(instr);
+        var index = instructions.IndexOf(instr);
         if (index < 0)
-            throw new InvalidMethodException($"Instruction {instr} not found in method {method}.");
+            throw new InvalidMethodException($"Instruction {instr} not found.");
         return index;
     }
 
-    private void Explore(int index, int stackHeight)
+    private void Explore(int index, uint stackHeight)
     {
-        // recursively iterate instructions, setting stack heights and checking for consistency
     start:
-        ref var info = ref data[index];
-        if (info.StackHeight is not null)
+        var previous = stackHeights[index];
+        var instr = instructions[index];
+        if (previous is not null)
         {
-            if (info.StackHeight != stackHeight)
-                throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {info.StackHeight} for {info.Instruction} in {method}.");
+            if (previous != stackHeight)
+                throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {previous} for {instr}.");
             return; // already visited this instruction with the same stack height, no need to explore further
         }
-        info.StackHeight = stackHeight;
+        stackHeights[index] = stackHeight;
 
-        var instr = info.Instruction;
-        instr.CalculateStackUsage(method.HasReturnType, out int pushes, out int pops);
+        instr.CalculateStackUsage(out int pushes, out int pops);
         if (pops == -1)
         {
             stackHeight = 0;
         }
         else
         {
-            stackHeight -= pops;
-            if (stackHeight < 0)
-                throw new InvalidMethodException($"Stack is negative at {instr} in {method}.");
-            stackHeight += pushes;
+            if (stackHeight < pops)
+                throw new InvalidMethodException($"Stack is negative at {instr}.");
+            stackHeight -= (uint)pops;
+            stackHeight += (uint)pushes;
         }
         switch (instr.OpCode.FlowControl)
         {
@@ -104,8 +102,8 @@ internal sealed class StackHelper
             }
             case FlowControl.Return:
             {
-                if (stackHeight != 0)
-                    throw new InvalidMethodException($"Returned from method via {instr} with stack height {stackHeight} in {method}.");
+                if (stackHeight > 1)
+                    throw new InvalidMethodException($"Returned from method via {instr} with stack height {stackHeight}.");
                 return; // method terminates here
             }
             case FlowControl.Throw:
@@ -138,7 +136,7 @@ internal sealed class StackHelper
                 }
             }
             default:
-                throw new InvalidMethodException($"Unsupported flow control {instr.OpCode.FlowControl} for {instr} in {method}.");
+                throw new InvalidMethodException($"Unsupported flow control {instr.OpCode.FlowControl} for {instr}.");
         }
     }
 }
