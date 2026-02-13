@@ -132,6 +132,13 @@ internal sealed class AttributeCleaning : FeatureBase
                     ClearCustomAttributes(impl, _publicRemovableAttributes);
                 }
             }
+            if (member is MethodDef method)
+            {
+                foreach (var param in method.ParamDefs)
+                {
+                    ClearCustomAttributes(param, _publicRemovableAttributes);
+                }
+            }
         }
 
         if (member is TypeDef type2)
