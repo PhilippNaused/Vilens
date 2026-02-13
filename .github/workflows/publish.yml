@@ -33,11 +33,8 @@ jobs:
     - name: 🛠️ Restore dependencies
       run: dotnet restore
 
-    - name: 🔨 Build
-      run: dotnet build --no-restore --property:Version=${{ inputs.version }} --configuration Release
-
     - name: 📦 Pack
-      run: dotnet pack --no-build --property:Version=${{ inputs.version }} --output ./publish --configuration Release
+      run: dotnet pack --no-restore --property:Version=${{ inputs.version }} --output ./publish --configuration Release
 
     - uses: actions/upload-artifact@v5
       name: 🚀 Upload
