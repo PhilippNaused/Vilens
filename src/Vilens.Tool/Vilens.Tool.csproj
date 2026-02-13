@@ -7,6 +7,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Vilens</RootNamespace>
     <NoWarn>$(NoWarn);CA2007</NoWarn>
+    <IsPackable>false</IsPackable>
     <PublishAot Condition="'$(Aot)' != ''">true</PublishAot>
   </PropertyGroup>
 

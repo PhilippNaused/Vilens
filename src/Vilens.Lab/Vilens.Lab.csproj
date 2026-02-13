@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
     <Optimize>True</Optimize>
+    <IsPackable>false</IsPackable>
     <AnalysisMode />
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
