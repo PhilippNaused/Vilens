@@ -7,11 +7,11 @@
 | Assemblies:        | 1                                    |
 | Classes:           | 23                                   |
 | Files:             | 24                                   |
-| **Line coverage:** | 86.7% (1793 of 2067)                 |
-| Covered lines:     | 1793                                 |
+| **Line coverage:** | 86.7% (1797 of 2071)                 |
+| Covered lines:     | 1797                                 |
 | Uncovered lines:   | 274                                  |
-| Coverable lines:   | 2067                                 |
-| Total lines:       | 3161                                 |
+| Coverable lines:   | 2071                                 |
+| Total lines:       | 3209                                 |
 
 </details>
 
@@ -37,7 +37,7 @@
 | Vilens.Helpers.DnLibExtensions    |     82.4% |
 | Vilens.Helpers.MathHelper         |     90.6% |
 | Vilens.Helpers.NamingHelper       |     95.9% |
-| Vilens.Helpers.StackHelper        |     89.3% |
+| Vilens.Helpers.StackHelper        |     89.7% |
 | Vilens.Helpers.Xoshiro128         |     75.8% |
 | Vilens.Logging.LogFile            |        0% |
 | Vilens.Logging.Logger             |     25.7% |

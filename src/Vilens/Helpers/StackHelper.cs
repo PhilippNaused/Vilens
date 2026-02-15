@@ -1,26 +1,43 @@
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using dnlib.DotNet.Emit;
 
 namespace Vilens.Helpers;
 
-//TODO: use [DebuggerTypeProxy]
-internal readonly struct StackHelper
+[DebuggerTypeProxy(typeof(StackHelperDebugView))]
+internal struct StackHelper
 {
+    [ExcludeFromCodeCoverage]
+    private sealed class StackHelperDebugView(StackHelper helper)
+    {
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public StackInfo[] Instructions => helper.instructions
+            .Select((instr, index) => new StackInfo(instr, helper.stackHeights[index]))
+            .ToArray();
+
+        [DebuggerDisplay("{StackHeight}", Name = "{Instruction}")]
+        public readonly record struct StackInfo(Instruction Instruction, uint? StackHeight);
+    }
+
     private readonly IList<Instruction> instructions;
     private readonly IList<ExceptionHandler> exceptionHandlers;
     private readonly ushort?[] stackHeights;
+    private ushort maxStack;
 
     private StackHelper(CilBody body)
     {
         instructions = body.Instructions;
         exceptionHandlers = body.ExceptionHandlers;
         stackHeights = new ushort?[instructions.Count];
+        maxStack = 0;
     }
 
     public static ushort GetMaxStack(CilBody body)
     {
         var helper = new StackHelper(body);
         helper.ExploreAll();
-        return helper.stackHeights.Max() ?? 0;
+        return helper.maxStack;
     }
 
     public static ushort?[] GetStackHeights(CilBody body)
@@ -46,13 +63,15 @@ internal readonly struct StackHelper
                 Explore(handler.HandlerStart, pushed ? (ushort)1 : (ushort)0);
             }
         }
+
+        Debug.Assert((stackHeights.Max() ?? 0) == maxStack);
     }
 
     private readonly int IndexOf(Instruction instr)
     {
         var index = instructions.IndexOf(instr);
         if (index < 0)
-            throw new InvalidMethodException($"Instruction {instr} not found.");
+            ThrowInstructionNotFound(instr);
         return index;
     }
 
@@ -65,14 +84,16 @@ internal readonly struct StackHelper
     {
     start:
         var previous = stackHeights[index];
-        if (previous is not null)
+        if (previous is ushort prev)
         {
-            if (previous != stackHeight)
-                throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {previous} for {instructions[index]}.");
+            if (prev != stackHeight)
+                ThrowInconsistentStackHeight(index, stackHeight, prev);
             return; // already visited this instruction
         }
         var instr = instructions[index];
         stackHeights[index] = stackHeight;
+        if (stackHeight > maxStack)
+            maxStack = stackHeight;
 
         instr.CalculateStackUsage(out int pushes, out int pops);
         if (pops == -1)
@@ -106,7 +127,7 @@ internal readonly struct StackHelper
             case FlowControl.Return:
             {
                 if (stackHeight > 1)
-                    throw new InvalidMethodException($"Returned from method via {instr} with stack height {stackHeight}.");
+                    ThrowBadStackAtReturn(stackHeight, instr);
                 return; // method terminates here
             }
             case FlowControl.Throw:
@@ -139,7 +160,34 @@ internal readonly struct StackHelper
                 }
             }
             default:
-                throw new InvalidMethodException($"Unsupported flow control {instr.OpCode.FlowControl} for {instr}.");
+                ThrowUnknownFlowControl(instr);
+                return;
         }
+    }
+
+    // These are the cold paths. They should never be called on a valid method.
+
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining), ExcludeFromCodeCoverage]
+    private static void ThrowUnknownFlowControl(Instruction instr)
+    {
+        throw new InvalidMethodException($"Unsupported flow control {instr.OpCode.FlowControl} for {instr}.");
+    }
+
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining), ExcludeFromCodeCoverage]
+    private static void ThrowBadStackAtReturn(ushort stackHeight, Instruction instr)
+    {
+        throw new InvalidMethodException($"Returned from method via {instr} with stack height {stackHeight}.");
+    }
+
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining), ExcludeFromCodeCoverage]
+    private readonly void ThrowInconsistentStackHeight(int index, ushort stackHeight, ushort previous)
+    {
+        throw new InvalidMethodException($"Inconsistent stack height {stackHeight} != {previous} for {instructions[index]}.");
+    }
+
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining), ExcludeFromCodeCoverage]
+    private static void ThrowInstructionNotFound(Instruction instr)
+    {
+        throw new InvalidMethodException($"Instruction {instr} not found.");
     }
 }
