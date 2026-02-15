@@ -57,7 +57,7 @@
              PackagePath="build\" />
     <Content Include="build\Vilens.MSBuild.targets"
              PackagePath="build\" />
-    <Content Include="README.md"
+    <Content Include="..\..\README.md"
              PackagePath="\" />
   </ItemGroup>
 

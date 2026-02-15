@@ -2,7 +2,6 @@
 
 [![NuGet Version](https://img.shields.io/nuget/vpre/Vilens.MSBuild)](https://www.nuget.org/packages/Vilens.MSBuild)  
 [![License](https://img.shields.io/github/license/PhilippNaused/Vilens)](/LICENSE)  
-[![Test Coverage](/docs/coverage/badge_linecoverage.svg)](/docs/coverage/SummaryGithub.md)  
 
 Vilens is an experimental assembly obfuscator for .NET.
 
@@ -141,26 +140,6 @@ After:
 ```
 Error decompiling @06000227 Vilens.Data.VisibilityExtensions.Max
  ---> System.InvalidCastException: Cast from String to Int64 not supported.
-   at ICSharpCode.Decompiler.Util.CSharpPrimitiveCast.CSharpPrimitiveCastUnchecked(TypeCode targetType, Object input) in CSharpPrimitiveCast.cs:line 767
-   at ICSharpCode.Decompiler.CSharp.Syntax.TypeSystemAstBuilder.<ConvertEnumValue>g__PrepareConstant|146_1(IField field) in TypeSystemAstBuilder.cs:line 1375
-   at System.Linq.Enumerable.IEnumerableWhereIterator`1.ToArray() in offset 71
-   at ICSharpCode.Decompiler.CSharp.Syntax.TypeSystemAstBuilder.ConvertEnumValue(IType type, Int64 val) in TypeSystemAstBuilder.cs:line 1290
-   at ICSharpCode.Decompiler.CSharp.Syntax.TypeSystemAstBuilder.ConvertConstantValue(IType expectedType, IType type, Object constantValue) in TypeSystemAstBuilder.cs:line 1119
-   at ICSharpCode.Decompiler.CSharp.Syntax.TypeSystemAstBuilder.ConvertConstantValue(ResolveResult rr) in TypeSystemAstBuilder.cs:line 991
-   at ICSharpCode.Decompiler.CSharp.ExpressionBuilder.VisitLdcI4(LdcI4 inst, TranslationContext context) in ExpressionBuilder.cs:line 551
-   at ICSharpCode.Decompiler.CSharp.ExpressionBuilder.VisitStLoc(StLoc inst, TranslationContext context) in ExpressionBuilder.cs:line 758
-   at ICSharpCode.Decompiler.CSharp.StatementBuilder.VisitStLoc(StLoc inst) in StatementBuilder.cs:line 115
-   at ICSharpCode.Decompiler.CSharp.StatementBuilder.ConvertBlockContainer(BlockStatement blockStatement, BlockContainer container, IEnumerable`1 blocks, Boolean isLoop) in StatementBuilder.cs:line 1442
-   at ICSharpCode.Decompiler.CSharp.StatementBuilder.ConvertBlockContainer(BlockContainer container, Boolean isLoop) in StatementBuilder.cs:line 1342
-   at ICSharpCode.Decompiler.CSharp.StatementBuilder.VisitBlockContainer(BlockContainer container) in StatementBuilder.cs:line 1228
-   at ICSharpCode.Decompiler.CSharp.CSharpDecompiler.DecompileBody(IMethod method, EntityDeclaration entityDecl, DecompileRun decompileRun, ITypeResolveContext decompilationContext, ExtensionInfo extensionInfo) in CSharpDecompiler.cs:line 1811
--- continuing with outer exception (ICSharpCode.Decompiler.DecompilerException) --
-   at ICSharpCode.Decompiler.CSharp.CSharpDecompiler.DecompileBody(IMethod method, EntityDeclaration entityDecl, DecompileRun decompileRun, ITypeResolveContext decompilationContext, ExtensionInfo extensionInfo) in CSharpDecompiler.cs:line 1826
-   at ICSharpCode.Decompiler.CSharp.CSharpDecompiler.DoDecompile(IMethod method, DecompileRun decompileRun, ITypeResolveContext decompilationContext, ExtensionInfo extensionInfo) in CSharpDecompiler.cs:line 1666
-   at ICSharpCode.Decompiler.CSharp.CSharpDecompiler.Decompile(IEnumerable`1 definitions) in CSharpDecompiler.cs:line 1041
-   at ICSharpCode.Decompiler.CSharp.CSharpDecompiler.Decompile(EntityHandle[] definitions) in CSharpDecompiler.cs:line 1000
-   at ICSharpCode.ILSpy.CSharpLanguage.DecompileMethod(IMethod method, ITextOutput output, DecompilationOptions options) in offset 220
-   at ICSharpCode.ILSpy.TextView.DecompilerTextView.<>c__DisplayClass58_0.<DecompileAsync>b__0() in offset 35
 ```
 
 After (if invalid code is removed):
