@@ -222,7 +222,7 @@ internal sealed class ControlFlow : FeatureBase
     /// </summary>
     private static void Obfuscate(IMethodData method, List<List<Instruction>> blocks)
     {
-        var random = new Xoshiro128(method.FullName.Length); // use length of full name to be deterministic
+        var random = new Xoshiro128(method.Name.Data); // use name as seed to be deterministic.
         var body = method.Item.Body;
 
         int p = MathHelper.GetPrime(blocks.Count);
@@ -319,7 +319,7 @@ internal sealed class ControlFlow : FeatureBase
 
         // Since all blocks end with unconditional jumps, we can randomize their order for extra confusion.
         IList<Instruction>[] allBlocks = [.. blocks, .. extraBlocks];
-        Shuffle(random, allBlocks.AsSpan());
+        random.Shuffle(allBlocks.AsSpan());
 
         foreach (var block in allBlocks)
         {
@@ -328,21 +328,6 @@ internal sealed class ControlFlow : FeatureBase
 
         // Update the opcodes e.g. replace br with br.s and vice verse depending on the instruction offset.
         inst.Optimize();
-    }
-
-    private static void Shuffle<T>(Random random, Span<T> values)
-    {
-        int n = values.Length;
-
-        for (int i = 0; i < n - 1; i++)
-        {
-            int j = random.Next(i, n);
-
-            if (j != i)
-            {
-                (values[i], values[j]) = (values[j], values[i]);
-            }
-        }
     }
 
     private static List<Instruction[]> CreateJumpRedirects(List<List<Instruction>> blocks, Random random, int p, Local state)
