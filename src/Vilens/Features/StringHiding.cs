@@ -1,9 +1,8 @@
+using System.IO.Compression;
+using System.Text;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using dnlib.DotNet.Writer;
-using System.Collections.Immutable;
-using System.IO.Compression;
-using System.Text;
 using Vilens.Data;
 using Vilens.Helpers;
 using Vilens.Logging;
@@ -32,15 +31,16 @@ internal sealed class StringHiding : FeatureBase
         Log.Debug("Removed {0} methods that were trimmed", removed);
 
         Log.Debug("Searching for strings");
-        var strings = _methods.SelectMany(m => m.Item.Body.Instructions.Where(i => i.Operand is string).Select(i => (string)i.Operand)).Distinct(StringComparer.Ordinal).ToList();
-        Log.Debug("Found {0} unique strings", strings.Count);
+        var strings = _methods.SelectMany(m => m.Item.Body.Instructions.Where(i => i.Operand is string).Select(i => (string)i.Operand)).Distinct(StringComparer.Ordinal).ToArray();
+        Log.Debug("Found {0} unique strings", strings.Length);
         Cancellation.ThrowIfCancellationRequested();
-        if (strings.Count == 0)
+        if (strings.Length == 0)
         {
             Log.Debug("Nothing to do");
             return;
         }
 
+        Scrambler.GetRandom().Shuffle(strings);
         Encode(strings, out var data, out var dict);
         var valueType = Module.AddCoreRef(typeof(ValueType));
         var compressedData = Compress(data);
@@ -165,6 +165,7 @@ internal sealed class StringHiding : FeatureBase
         body.Instructions.Add(Emit.Return());
 
         body.Instructions.Optimize();
+        body.MaxStack = StackHelper.GetMaxStack(body);
         int count = 0;
         foreach (var method in _methods)
         {
@@ -200,7 +201,7 @@ internal sealed class StringHiding : FeatureBase
         Log.Info("Encoded {0} instructions with {1} unique strings into {2} bytes of data.", count, dict.Count, compressedData.Length);
     }
 
-    private static void Encode(List<string> strings, out byte[] data, out Dictionary<string, int> values)
+    private static void Encode(string[] strings, out byte[] data, out Dictionary<string, int> values)
     {
         values = [];
         using var stream = new MemoryStream();
