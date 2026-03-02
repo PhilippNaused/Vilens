@@ -7,21 +7,21 @@
 | Assemblies:        | 1                                    |
 | Classes:           | 23                                   |
 | Files:             | 24                                   |
-| **Line coverage:** | 86.7% (1797 of 2071)                 |
-| Covered lines:     | 1797                                 |
+| **Line coverage:** | 86.5% (1770 of 2044)                 |
+| Covered lines:     | 1770                                 |
 | Uncovered lines:   | 274                                  |
-| Coverable lines:   | 2071                                 |
+| Coverable lines:   | 2044                                 |
 | Total lines:       | 3209                                 |
 
 </details>
 
 ## Coverage
-<details><summary>Vilens.dll - 86.7%</summary>
+<details><summary>Vilens.dll - 86.5%</summary>
 
 | **Name**                          |  **Line** |
 |:----------------------------------|----------:|
-| **Vilens.dll**                    | **86.7%** |
-| Vilens.Data.Database              |     85.7% |
+| **Vilens.dll**                    | **86.5%** |
+| Vilens.Data.Database              |     82.8% |
 | Vilens.Data.FeatureExtensions     |     89.4% |
 | Vilens.Data.FeatureMap            |     91.2% |
 | Vilens.Data.MemberDataExtensions  |      100% |
@@ -40,9 +40,9 @@
 | Vilens.Helpers.StackHelper        |     89.7% |
 | Vilens.Helpers.Xoshiro128         |     75.8% |
 | Vilens.Logging.LogFile            |        0% |
-| Vilens.Logging.Logger             |     25.7% |
+| Vilens.Logging.Logger             |     23.4% |
 | Vilens.NullResolver               |      100% |
-| Vilens.Scrambler                  |     72.8% |
+| Vilens.Scrambler                  |     71.8% |
 | Vilens.VilensSettings             |      100% |
 
 </details>
