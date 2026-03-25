@@ -15,7 +15,7 @@
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable"
                       Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))"
-                      VersionOverride="9.0.0" />
+                      VersionOverride="10.0.5" />
   </ItemGroup>
 
   <ItemGroup>
