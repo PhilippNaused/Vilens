@@ -2,5 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "ignorePaths": [
+    // Ignore all .csproj files, as they only contain version overrides that must not be updated by Renovate.
+    "**/*.csproj"
   ]
 }
