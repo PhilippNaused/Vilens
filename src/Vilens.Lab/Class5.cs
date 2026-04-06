@@ -16,7 +16,7 @@ public class Class5
         var class5 = mod.FindNormalThrow(typeof(Class5).FullName);
 
         var lamClass = class5.NestedTypes.Single();
-        lamClass.Name = UTF8String.Empty;
+        lamClass.Name = "a";
         lamClass.Attributes |= TypeAttributes.NestedAssembly;
         lamClass.CustomAttributes.Clear();
         foreach (var meth in lamClass.Methods.Where(m => !m.IsRuntimeSpecialName))
