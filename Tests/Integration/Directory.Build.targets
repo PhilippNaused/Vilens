@@ -1,3 +1,8 @@
 <Project>
   <!-- This is a dummy file to prevent the integration tests from importing the root file -->
+
+  <PropertyGroup>
+    <NuGetAudit>false</NuGetAudit>
+  </PropertyGroup>
+
 </Project>
