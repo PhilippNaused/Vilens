@@ -1,8 +1,8 @@
 diff --git a/src/NUnitFramework/Directory.Build.props b/src/NUnitFramework/Directory.Build.props
-index 028bc08eb..8b73d6fd9 100644
+index 7d87e27a0..65eb7884e 100644
 --- a/src/NUnitFramework/Directory.Build.props
 +++ b/src/NUnitFramework/Directory.Build.props
-@@ -9,5 +9,5 @@
+@@ -21,5 +21,5 @@
      <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
      <NUnitLibraryFrameworks>net462;net6.0;net8.0</NUnitLibraryFrameworks>
 -    <NUnitRuntimeFrameworks>net462;net6.0;net8.0;net9.0;net10.0</NUnitRuntimeFrameworks>
@@ -10,7 +10,7 @@ index 028bc08eb..8b73d6fd9 100644
      <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
      <!--<OutputPath>..\..\..\bin\$(Configuration)\</OutputPath>-->
 diff --git a/src/NUnitFramework/Directory.Packages.props b/src/NUnitFramework/Directory.Packages.props
-index 479af3827..dc707da16 100644
+index 40c167f4f..74a273dc1 100644
 --- a/src/NUnitFramework/Directory.Packages.props
 +++ b/src/NUnitFramework/Directory.Packages.props
 @@ -4,4 +4,7 @@
@@ -22,10 +22,10 @@ index 479af3827..dc707da16 100644
    <!-- Packages for used features -->
    <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
 diff --git a/src/NUnitFramework/tests/Attributes/TimeoutTests.cs b/src/NUnitFramework/tests/Attributes/TimeoutTests.cs
-index ef28ccee6..ade1c1e04 100644
+index e516374c2..651f9155d 100644
 --- a/src/NUnitFramework/tests/Attributes/TimeoutTests.cs
 +++ b/src/NUnitFramework/tests/Attributes/TimeoutTests.cs
-@@ -80,4 +80,5 @@ namespace NUnit.Framework.Tests.Attributes
+@@ -109,4 +109,5 @@ namespace NUnit.Framework.Tests.Attributes
  
          [Test]
 +        [Ignore("Flaky")]
@@ -52,7 +52,7 @@ index a656c3957..24c2917f8 100644
      internal sealed class NuspecDependenciesTests
      {
 diff --git a/src/NUnitFramework/windows-tests/windows-tests.csproj b/src/NUnitFramework/windows-tests/windows-tests.csproj
-index 82f09cace..b1f508460 100644
+index 20ffb2224..9e42d4c5e 100644
 --- a/src/NUnitFramework/windows-tests/windows-tests.csproj
 +++ b/src/NUnitFramework/windows-tests/windows-tests.csproj
 @@ -2,5 +2,5 @@
