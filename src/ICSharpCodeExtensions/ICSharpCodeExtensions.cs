@@ -100,7 +100,7 @@ public static class ICSharpCodeExtensions
         var file = typeInfo!.ParentModule!.MetadataFile;
         var handle = (TypeDefinitionHandle)typeInfo.MetadataToken;
 
-        var text = new PlainTextOutput();
+        using var text = new PlainTextOutput();
         var dis = new ReflectionDisassembler(text, CancellationToken.None);
         dis.DisassembleType(file, handle);
         return text.ToString().Trim().NormalizeLineTerminators();
@@ -108,7 +108,7 @@ public static class ICSharpCodeExtensions
 
     public static string Disassemble(this CSharpDecompiler decompiler)
     {
-        var text = new PlainTextOutput();
+        using var text = new PlainTextOutput();
         var dis = new ReflectionDisassembler(text, CancellationToken.None);
         dis.WriteModuleContents(decompiler.TypeSystem.MainModule.MetadataFile);
         return text.ToString().Trim().NormalizeLineTerminators();
