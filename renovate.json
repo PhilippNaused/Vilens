@@ -8,5 +8,9 @@
     "ignorePaths": [
       "**/*.csproj"
     ]
-  }
+  },
+  "assignAutomerge": true,
+  "assignees": [
+    "PhilippNaused"
+  ]
 }
