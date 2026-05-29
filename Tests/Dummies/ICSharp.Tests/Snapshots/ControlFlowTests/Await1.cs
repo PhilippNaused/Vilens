@@ -104,30 +104,30 @@ public class ControlFlowClass3
     [System.Runtime.CompilerServices.AsyncStateMachine(typeof(ClassLibrary2.ControlFlowClass3.<Test1>d__0))]
     public static System.Threading.Tasks.Task<int> Test1(System.Collections.Generic.IList<int> list)
     {
-        uint num = 100362457u;
-        int num2 = 378532787;
+        uint num = 100134548u;
+        int num2 = 910841507;
         ClassLibrary2.ControlFlowClass3.<Test1>d__0 stateMachine = default(ClassLibrary2.ControlFlowClass3.<Test1>d__0);
         while (true)
         {
             switch (num = (uint)(num2 + (int)num) % 5u)
             {
-            case 2u:
-                return stateMachine.<>t__builder.Task;
+            default:
+                stateMachine.<>t__builder = System.Runtime.CompilerServices.AsyncTaskMethodBuilder<int>.Create();
+                num2 = 398144052;
+                break;
             case 3u:
-                stateMachine.<>1__state = -1;
-                num2 = 1556752077;
+                return stateMachine.<>t__builder.Task;
+            case 1u:
+                stateMachine.<>t__builder.Start(ref stateMachine);
+                num2 = 629336637;
+                break;
+            case 2u:
+                stateMachine.list = list;
+                num2 = 624542237;
                 break;
             case 4u:
-                stateMachine.<>t__builder = System.Runtime.CompilerServices.AsyncTaskMethodBuilder<int>.Create();
-                num2 = 945183647;
-                break;
-            case 1u:
-                stateMachine.list = list;
-                num2 = 1264343497;
-                break;
-            default:
-                stateMachine.<>t__builder.Start(ref stateMachine);
-                num2 = 219709442;
+                stateMachine.<>1__state = -1;
+                num2 = 1356128842;
                 break;
             }
         }

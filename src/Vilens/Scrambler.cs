@@ -5,6 +5,7 @@ using dnlib.DotNet.Writer;
 using dnlib.Threading;
 using Vilens.Data;
 using Vilens.Features;
+using Vilens.Helpers;
 using Vilens.Logging;
 
 namespace Vilens;
@@ -83,6 +84,12 @@ public sealed class Scrambler
             }
             throw op;
         }
+    }
+
+    internal Xoshiro128 GetRandom()
+    {
+        // Use the name of the module as the seed to make the randomness deterministic.
+        return new Xoshiro128(Module.Name.Data);
     }
 
     internal void Execute()

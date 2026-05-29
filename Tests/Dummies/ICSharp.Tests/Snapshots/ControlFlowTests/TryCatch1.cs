@@ -1,24 +1,20 @@
 public static void TryCatch1(System.Collections.Generic.IList<int> list)
 {
-    uint num = 100282826u;
-    int num2 = 1965290142;
+    uint num = 1617446252u;
+    int num2 = 515166423;
     int num3 = default(int);
     while (true)
     {
         switch (num = (uint)(num2 + (int)num) % 5u)
         {
-        case 1u:
+        case 2u:
             if (num3 >= 12)
             {
                 return;
             }
-            num = 1604418702u;
-            goto case 2u;
-        case 4u:
-            num3++;
-            num2 = 1380354022;
-            break;
-        case 2u:
+            num = 931118676u;
+            goto default;
+        default:
             try
             {
                 list.Add(num3);
@@ -26,30 +22,32 @@ public static void TryCatch1(System.Collections.Generic.IList<int> list)
             catch (System.InvalidOperationException ex) when (ex.InnerException != null)
             {
                 list.Add(ex.Message.Length);
-                goto IL_00b2;
+                goto IL_0035;
             }
             catch (System.Threading.Tasks.TaskCanceledException)
             {
                 list.Add(num3 + 7);
-                goto IL_003f;
+                goto IL_0095;
             }
-            num = 920394319u;
-            goto case 4u;
-        default:
-            num = 1501102081u;
-            goto case 1u;
+            num = 1954377649u;
+            break;
+        case 0u:
+            num3 = 0;
+            num2 = 1553032828;
+            continue;
         case 3u:
-            {
-                num3 = 0;
-                num2 = 986371727;
-                break;
-            }
-            IL_003f:
-            num = 404428996u;
+            num = 1733975997u;
+            goto case 2u;
+        case 4u:
+            break;
+            IL_0095:
+            num = 1158543322u;
             return;
-            IL_00b2:
-            num = 675159401u;
+            IL_0035:
+            num = 1947163727u;
             return;
         }
+        num3++;
+        num2 = 1369362513;
     }
 }

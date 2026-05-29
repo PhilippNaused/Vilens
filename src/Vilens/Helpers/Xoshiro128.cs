@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Vilens.Helpers;
 
@@ -9,15 +10,40 @@ namespace Vilens.Helpers;
 /// </summary>
 internal sealed class Xoshiro128 : Random
 {
-    private uint _s0, _s1, _s2, _s3;
+    private uint _s0;
+    private uint _s1;
+    private uint _s2;
+    private uint _s3;
+
+    public const int Size = 4 * sizeof(uint); // 16
 
     public Xoshiro128(int seed)
     {
-        _s0 = (uint)seed;
+        _s0 = unchecked((uint)seed);
         _s1 = 1;
         _s2 = 1;
         _s3 = 1;
         _ = NextUInt32();
+    }
+
+    public Xoshiro128(ReadOnlySpan<byte> seed)
+    {
+        if (seed.Length > Size)
+        {
+            seed = seed[..Size];
+        }
+        Span<uint> temp = stackalloc uint[4];
+        seed.CopyTo(MemoryMarshal.AsBytes(temp));
+
+        _s0 = temp[0];
+        _s1 = temp[1];
+        _s2 = temp[2];
+        _s3 = temp[3];
+
+        if (_s0 == 0 && _s1 == 0 && _s2 == 0 && _s3 == 0)
+        {
+            _s0 = 1;
+        }
     }
 
     public override int Next()
@@ -34,6 +60,34 @@ internal sealed class Xoshiro128 : Random
             }
         }
     }
+
+#if !NETCOREAPP
+    /// <summary>
+    ///   Performs an in-place shuffle of a span.
+    /// </summary>
+    /// <param name="values">The span to shuffle.</param>
+    /// <typeparam name="T">The type of span.</typeparam>
+    /// <remarks>
+    ///   This method uses <see cref="Next(int, int)" /> to choose values for shuffling.
+    ///   This method is an O(n) operation.
+    /// </remarks>
+    public void Shuffle<T>(Span<T> values)
+    {
+        int n = values.Length;
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            int j = Next(i, n);
+
+            if (j != i)
+            {
+                T temp = values[i];
+                values[i] = values[j];
+                values[j] = temp;
+            }
+        }
+    }
+#endif
 
     public override int Next(int maxValue)
     {
