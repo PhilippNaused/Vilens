@@ -6,6 +6,8 @@ using System.Text;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.CSharp.OutputVisitor;
+using ICSharpCode.Decompiler.CSharp.Syntax;
+using ICSharpCode.Decompiler.CSharp.Transforms;
 using ICSharpCode.Decompiler.Disassembler;
 using ICSharpCode.Decompiler.Metadata;
 using ICSharpCode.Decompiler.TypeSystem;
@@ -62,7 +64,9 @@ public static class ICSharpCodeExtensions
 #pragma warning restore CA2000 // Dispose objects before losing scope
         var resolver = new UniversalAssemblyResolver(fileName, false,
             peFile.DetectTargetFrameworkId(), peFile.DetectRuntimePack());
-        return new CSharpDecompiler(peFile, resolver, _compilerSettings);
+        var decompiler = new CSharpDecompiler(peFile, resolver, _compilerSettings);
+        decompiler.AstTransforms.Add(new CustomVisitor());
+        return decompiler;
     }
 
     private static CSharpDecompiler GetDecompiler(string path)
@@ -148,5 +152,20 @@ public static class ICSharpCodeExtensions
     private static int Convert(this EntityHandle handle)
     {
         return (int)_tokenProp.GetValue(handle)!;
+    }
+
+    internal class CustomVisitor : DepthFirstAstVisitor, IAstTransform
+    {
+        public void Run(AstNode rootNode, TransformContext context)
+        {
+            rootNode.AcceptVisitor(this);
+        }
+
+        public override void VisitTypeDeclaration(TypeDeclaration declaration)
+        {
+            var baseTypes = declaration.BaseTypes.OrderBy(bt => bt.ToString());
+            declaration.BaseTypes.ReplaceWith(baseTypes);
+            base.VisitTypeDeclaration(declaration);
+        }
     }
 }
