@@ -1,9 +1,10 @@
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Text;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using dnlib.DotNet.Writer;
-using System.Collections.Immutable;
-using System.IO.Compression;
-using System.Text;
 using Vilens.Data;
 using Vilens.Helpers;
 using Vilens.Logging;
@@ -191,7 +192,12 @@ internal sealed class StringHiding : FeatureBase
                 instructions.OptimizeBranches();
                 // update max stack height
                 body.MaxStack = StackHelper.GetMaxStack(body);
-                if (!MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out _))
+                if (MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out var maxStack))
+                {
+                    // verify that dnlib's MaxStackCalculator returns the same max stack height as our StackHelper.
+                    Debug.Assert(maxStack == body.MaxStack, "maxStack == body.MaxStack");
+                }
+                else
                 {
                     body.KeepOldMaxStack = true;
                 }
