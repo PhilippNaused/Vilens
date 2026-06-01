@@ -53,8 +53,11 @@ jobs:
     - name: 🔨 Build
       run: dotnet build
 
+    - name: 🧪 Test
+      run: dotnet test --no-progress --no-build
+
     - name: 🔨 Build Dummy projects
       run: dotnet build Tests/Dummies/Dummies.slnx
 
-    - name: 🧪 Test
-      run: dotnet test --no-progress --no-build
+    - name: 🧪 Test Dummy projects
+      run: dotnet test --solution Tests/Dummies/Dummies.slnx --no-progress --no-build
