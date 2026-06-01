@@ -83,7 +83,12 @@ internal sealed class ControlFlow : FeatureBase
             body.MaxStack = StackHelper.GetMaxStack(body);
             // The max stack is always at least 2 because of the add and modulo operations.
             Debug.Assert(body.MaxStack >= 2);
-            if (!MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out _))
+            if (MaxStackCalculator.GetMaxStack(body.Instructions, body.ExceptionHandlers, out var maxStack))
+            {
+                // verify that dnlib's MaxStackCalculator returns the same max stack height as our StackHelper.
+                Debug.Assert(maxStack == body.MaxStack, "maxStack == body.MaxStack");
+            }
+            else
             {
                 body.KeepOldMaxStack = true;
             }

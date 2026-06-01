@@ -51,7 +51,7 @@ internal class RegressionTest
         Assert.That(stackHeights, Is.EqualTo(expected));
 
         var success = dnlib.DotNet.Writer.MaxStackCalculator.GetMaxStack(method.Body.Instructions, method.Body.ExceptionHandlers, out _);
-        Assert.That(success, Is.False); // dnlib's MaxStackCalculator2 should fail to calculate the max stack for this method, because is has a similar bug to Mono's JIT compiler.
+        Assert.That(success, Is.False); // dnlib's MaxStackCalculator should fail to calculate the max stack for this method, because is has a similar limitation to Mono's JIT compiler.
 
         method.Body.KeepOldMaxStack = !success;
 
