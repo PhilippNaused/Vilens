@@ -12,5 +12,13 @@
   "assignAutomerge": true,
   "assignees": [
     "PhilippNaused"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "Microsoft.Build.Utilities.Core"
+      ],
+      "enabled": false
+    }
   ]
 }
