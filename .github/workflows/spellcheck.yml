@@ -12,4 +12,4 @@ jobs:
         with:
           lfs: false
           submodules: false
-      - uses: streetsidesoftware/cspell-action@v8
+      - uses: streetsidesoftware/cspell-action@v9
