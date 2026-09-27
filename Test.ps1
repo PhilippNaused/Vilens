@@ -16,5 +16,6 @@ cspell lint $PSScriptRoot
 dotnet build --configuration $Configuration
 dotnet test --no-build --configuration $Configuration
 
-dotnet build '.\Tests\Dummies\Dummies.slnx' --configuration $Configuration
-dotnet test --solution '.\Tests\Dummies\Dummies.slnx' --no-build --configuration $Configuration
+$slnx = Get-Item '.\Tests\Dummies\Dummies.slnx'
+dotnet build $slnx --configuration $Configuration
+dotnet test --solution $slnx --no-build --configuration $Configuration

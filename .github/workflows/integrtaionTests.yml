@@ -24,11 +24,6 @@ jobs:
           repo: "Moq"
         - os: "windows-latest"
           repo: "NUnit"
-        # Bshox is the most stable test repo (because I wrote it), so its the one we test on all platforms (e.g. ARM)
-        - os: "windows-11-arm"
-          repo: "Bshox"
-        - os: "ubuntu-24.04-arm"
-          repo: "Bshox"
         - os: "macos-latest"
           repo: "Bshox"
     runs-on: ${{ matrix.os }}

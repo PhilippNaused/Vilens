@@ -13,10 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         os:
+        - macos-latest
         - ubuntu-latest
-        - ubuntu-24.04-arm
         - windows-latest
-        # - windows-11-arm
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -39,13 +38,6 @@ jobs:
         dotnet-version: |
           8.0.x
           9.0.x
-
-    # cspell:ignore devel
-    - name: 🛠️ Install mono
-      if: startsWith(matrix.os, 'ubuntu')
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y mono-devel
 
     - name: 🛠️ Restore dependencies
       run: dotnet restore
