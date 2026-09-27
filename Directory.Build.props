@@ -5,7 +5,8 @@
     <NuGetAudit>True</NuGetAudit>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <AnalysisLevel>10.0</AnalysisLevel>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <IsWindows>$([System.OperatingSystem]::IsWindows())</IsWindows>
     <AnalysisMode>All</AnalysisMode>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
