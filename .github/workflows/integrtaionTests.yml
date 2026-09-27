@@ -55,19 +55,6 @@ jobs:
           8.0.x
           9.0.x
 
-    # cspell:ignore devel
-    - name: 🛠️ Install mono (🐧)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y mono-devel
-
-    - name: 🛠️ Install mono (🍎)
-      if: runner.os == 'macOS'
-      run: |
-        brew update
-        brew install mono
-
     - name: 🛠️ Restore dependencies
       run: dotnet restore src/Vilens.MSBuild
 
