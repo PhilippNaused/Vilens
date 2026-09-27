@@ -2,7 +2,7 @@ public static void Loop1(System.Collections.Generic.IList<int> list)
 {
     uint num = 100271843u;
     int num2 = 1466146002;
-    int num3 = default(int);
+    int num3 = default;
     while (true)
     {
         switch (num = (uint)(num2 + (int)num) % 5u)

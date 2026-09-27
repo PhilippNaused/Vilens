@@ -17,26 +17,26 @@ public class EventClass
         [System.Runtime.CompilerServices.CompilerGenerated]
         add
         {
-            System.EventHandler eventHandler = this.a;
+            System.EventHandler eventHandler = this.m_a;
             System.EventHandler eventHandler2;
             do
             {
                 eventHandler2 = eventHandler;
                 System.EventHandler value2 = (System.EventHandler)System.Delegate.Combine(eventHandler2, value);
-                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.a, value2, eventHandler2);
+                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.m_a, value2, eventHandler2);
             }
             while ((object)eventHandler != eventHandler2);
         }
         [System.Runtime.CompilerServices.CompilerGenerated]
         remove
         {
-            System.EventHandler eventHandler = this.a;
+            System.EventHandler eventHandler = this.m_a;
             System.EventHandler eventHandler2;
             do
             {
                 eventHandler2 = eventHandler;
                 System.EventHandler value2 = (System.EventHandler)System.Delegate.Remove(eventHandler2, value);
-                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.a, value2, eventHandler2);
+                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.m_a, value2, eventHandler2);
             }
             while ((object)eventHandler != eventHandler2);
         }
@@ -46,26 +46,26 @@ public class EventClass
         [System.Runtime.CompilerServices.CompilerGenerated]
         add
         {
-            System.EventHandler eventHandler = this.b;
+            System.EventHandler eventHandler = this.m_b;
             System.EventHandler eventHandler2;
             do
             {
                 eventHandler2 = eventHandler;
                 System.EventHandler value2 = (System.EventHandler)System.Delegate.Combine(eventHandler2, value);
-                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.b, value2, eventHandler2);
+                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.m_b, value2, eventHandler2);
             }
             while ((object)eventHandler != eventHandler2);
         }
         [System.Runtime.CompilerServices.CompilerGenerated]
         remove
         {
-            System.EventHandler eventHandler = this.b;
+            System.EventHandler eventHandler = this.m_b;
             System.EventHandler eventHandler2;
             do
             {
                 eventHandler2 = eventHandler;
                 System.EventHandler value2 = (System.EventHandler)System.Delegate.Remove(eventHandler2, value);
-                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.b, value2, eventHandler2);
+                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.m_b, value2, eventHandler2);
             }
             while ((object)eventHandler != eventHandler2);
         }
@@ -75,26 +75,26 @@ public class EventClass
         [System.Runtime.CompilerServices.CompilerGenerated]
         add
         {
-            System.EventHandler eventHandler = this.c;
+            System.EventHandler eventHandler = this.m_c;
             System.EventHandler eventHandler2;
             do
             {
                 eventHandler2 = eventHandler;
                 System.EventHandler value2 = (System.EventHandler)System.Delegate.Combine(eventHandler2, value);
-                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.c, value2, eventHandler2);
+                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.m_c, value2, eventHandler2);
             }
             while ((object)eventHandler != eventHandler2);
         }
         [System.Runtime.CompilerServices.CompilerGenerated]
         remove
         {
-            System.EventHandler eventHandler = this.c;
+            System.EventHandler eventHandler = this.m_c;
             System.EventHandler eventHandler2;
             do
             {
                 eventHandler2 = eventHandler;
                 System.EventHandler value2 = (System.EventHandler)System.Delegate.Remove(eventHandler2, value);
-                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.c, value2, eventHandler2);
+                eventHandler = System.Threading.Interlocked.CompareExchange(ref this.m_c, value2, eventHandler2);
             }
             while ((object)eventHandler != eventHandler2);
         }

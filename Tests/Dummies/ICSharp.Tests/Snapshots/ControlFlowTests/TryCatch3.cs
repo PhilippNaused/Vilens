@@ -2,7 +2,7 @@ public static void TryCatch3(System.Collections.Generic.IList<int> list)
 {
     uint num = 100282826u;
     int num2 = 1380354022;
-    int num3 = default(int);
+    int num3 = default;
     while (true)
     {
         switch (num = (uint)(num2 + (int)num) % 5u)

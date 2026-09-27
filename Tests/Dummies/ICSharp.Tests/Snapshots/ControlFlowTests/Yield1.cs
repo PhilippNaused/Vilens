@@ -40,8 +40,8 @@ public class ControlFlowClass2
         {
             uint num = 100192212u;
             int num2 = 375760892;
-            int num3 = default(int);
-            int num4 = default(int);
+            int num3 = default;
+            int num4 = default;
             while (true)
             {
                 switch (num = (uint)(num2 + (int)num) % 23u)
@@ -169,13 +169,13 @@ public class ControlFlowClass2
         {
             uint num = 100461309u;
             int num2 = 302859090;
-            ClassLibrary2.ControlFlowClass2.<Test1>d__0 <Test1>d__1 = default(ClassLibrary2.ControlFlowClass2.<Test1>d__0);
+            ClassLibrary2.ControlFlowClass2.<Test1>d__0 obj = default;
             while (true)
             {
                 switch (num = (uint)(num2 + (int)num) % 7u)
                 {
                 case 2u:
-                    <Test1>d__1.list = <>3__list;
+                    obj.list = <>3__list;
                     num2 = 843551536;
                     break;
                 case 6u:
@@ -199,15 +199,15 @@ public class ControlFlowClass2
                     num2 = 1234272482;
                     break;
                 default:
-                    <Test1>d__1 = new ClassLibrary2.ControlFlowClass2.<Test1>d__0(0);
+                    obj = new ClassLibrary2.ControlFlowClass2.<Test1>d__0(0);
                     num2 = 293950610;
                     break;
                 case 5u:
-                    <Test1>d__1 = this;
+                    obj = this;
                     num = 1262219016u;
                     goto case 2u;
                 case 4u:
-                    return <Test1>d__1;
+                    return obj;
                 }
             }
         }
