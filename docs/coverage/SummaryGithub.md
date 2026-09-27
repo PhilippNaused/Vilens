@@ -7,11 +7,11 @@
 | Assemblies:        | 1                                    |
 | Classes:           | 23                                   |
 | Files:             | 24                                   |
-| **Line coverage:** | 86.6% (1791 of 2068)                 |
-| Covered lines:     | 1791                                 |
+| **Line coverage:** | 86.6% (1800 of 2077)                 |
+| Covered lines:     | 1800                                 |
 | Uncovered lines:   | 277                                  |
-| Coverable lines:   | 2068                                 |
-| Total lines:       | 3256                                 |
+| Coverable lines:   | 2077                                 |
+| Total lines:       | 3274                                 |
 
 </details>
 
@@ -33,7 +33,7 @@
 | Vilens.Features.FeatureBase       |      100% |
 | Vilens.Features.PropertyInline    |     88.8% |
 | Vilens.Features.Renaming          |     78.9% |
-| Vilens.Features.StringHiding      |     97.8% |
+| Vilens.Features.StringHiding      |     97.9% |
 | Vilens.Helpers.DnLibExtensions    |     82.4% |
 | Vilens.Helpers.MathHelper         |     90.6% |
 | Vilens.Helpers.NamingHelper       |     95.9% |
