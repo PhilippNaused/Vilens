@@ -36,7 +36,7 @@ function Test-Obfuscation {
 
     # Command that returns the .csproj files of the project that should be obfuscated
     [Parameter()]
-    [scriptblock]$FileListCommand = { Get-ChildItem src -Recurse -Filter '*.csproj' -Exclude '*Test*', '*Benchmark*' },
+    [scriptblock]$FileListCommand = { Get-ChildItem src -Recurse -Filter '*.csproj' -Exclude '*Test*', '*Benchmark*', '*Harness.csproj' },
 
     # Names of the files that should be obfuscated
     [Parameter(Mandatory)]
