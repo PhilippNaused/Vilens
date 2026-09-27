@@ -36,7 +36,7 @@ function Test-Obfuscation {
 
     # Command that returns the .csproj files of the project that should be obfuscated
     [Parameter()]
-    [scriptblock]$FileListCommand = { Get-ChildItem src -Recurse -Filter '*.csproj' -Exclude '*Test*', '*Benchmark*' },
+    [scriptblock]$FileListCommand = { Get-ChildItem src -Recurse -Filter '*.csproj' -Exclude '*Test*', '*Benchmark*', '*Harness.csproj' },
 
     # Names of the files that should be obfuscated
     [Parameter(Mandatory)]
@@ -67,8 +67,9 @@ function Test-Obfuscation {
 
     dotnet nuget add source $NuGetSource -n LocalVilens
 
-    & $BuildCommand
-    & $TestCommand
+    # Dummy run without obfuscation. Uncomment for debugging.
+    # & $BuildCommand
+    # & $TestCommand
 
     # Inject obfuscation
     $Files = & $FileListCommand
@@ -121,7 +122,7 @@ try {
       Test-Obfuscation -FileNames 'Moq.dll'
     }
     'Autofac' {
-      Test-Obfuscation -FileNames 'Autofac.dll' -BuildCommand { dotnet build Autofac.sln -c $Configuration } -TestCommand { dotnet test Autofac.sln -c $Configuration --filter 'FullyQualifiedName !~ Benchmark' } # Benchmarks are too slow
+      Test-Obfuscation -FileNames 'Autofac.dll' -BuildCommand { dotnet build Autofac.sln -c $Configuration -p:TreatWarningsAsErrors=false } -TestCommand { dotnet test Autofac.sln -c $Configuration --filter 'FullyQualifiedName !~ Benchmark' } # Benchmarks are too slow
     }
     'Serilog' {
       Test-Obfuscation -FileNames 'Serilog.dll' -TestCommand { dotnet test -c $Configuration --filter 'FullyQualifiedName !~ Performance' } # Benchmarks are too slow

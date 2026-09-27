@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "nuget": {
+    // Ignore all .csproj files, as they only contain version overrides that must not be updated by Renovate.
+    "ignorePaths": [
+      "**/*.csproj"
+    ]
+  },
+  "assignAutomerge": true,
+  "assignees": [
+    "PhilippNaused"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "Microsoft.Build.Utilities.Core"
+      ],
+      "enabled": false
+    }
+  ]
+}

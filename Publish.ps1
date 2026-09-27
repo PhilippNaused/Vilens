@@ -15,9 +15,9 @@ param (
   [Parameter()]
   [switch]$Aot,
 
-  [ValidateSet('net9.0', 'net10.0')]
+  [ValidateSet('net10.0')]
   [Parameter()]
-  [string]$Framework = 'net9.0'
+  [string]$Framework = 'net10.0'
 )
 
 $ErrorActionPreference = "Stop"

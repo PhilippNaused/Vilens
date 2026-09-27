@@ -1,25 +1,14 @@
-diff --git a/.config/dicts/project-words.txt b/.config/dicts/project-words.txt
-index 58f0fec..e796a2a 100644
---- a/.config/dicts/project-words.txt
-+++ b/.config/dicts/project-words.txt
-@@ -6,3 +6,4 @@ varint
- unflushed
- Reentrancy
--sharpfuzz
-\ No newline at end of file
-+sharpfuzz
-+Vilens
 diff --git a/Test.ps1 b/Test.ps1
-index effcc8a..93c0def 100644
+index 13d4dc3..b0eb23e 100644
 --- a/Test.ps1
 +++ b/Test.ps1
-@@ -12,8 +12,7 @@ $ErrorActionPreference = 'Stop'
- $PSNativeCommandUseErrorActionPreference = $true
+@@ -16,8 +16,7 @@ $env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
+ $env:DOTNET_NOLOGO = 1
  
 -cspell lint $PSScriptRoot
  
  # Run regular tests using MTP
--dotnet test --disable-logo --configuration $Configuration
-+dotnet test --disable-logo --configuration $Configuration --solution "$PSScriptRoot/tests/UnitTests.slnf"
+-dotnet test --configuration $Configuration
++dotnet test --configuration $Configuration --solution "$PSScriptRoot/tests/UnitTests.slnf"
  
  # Publish AOT tests

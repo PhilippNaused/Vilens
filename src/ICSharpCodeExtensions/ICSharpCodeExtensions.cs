@@ -6,7 +6,10 @@ using System.Text;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.CSharp.OutputVisitor;
+using ICSharpCode.Decompiler.CSharp.Syntax;
+using ICSharpCode.Decompiler.CSharp.Transforms;
 using ICSharpCode.Decompiler.Disassembler;
+using ICSharpCode.Decompiler.Documentation;
 using ICSharpCode.Decompiler.Metadata;
 using ICSharpCode.Decompiler.TypeSystem;
 
@@ -40,6 +43,8 @@ public static class ICSharpCodeExtensions
             LoadInMemory = true, // faster than loading from disk
             FileScopedNamespaces = true,
             SortCustomAttributes = true, // sort attributes by name
+            ExpandXmlDocumentationComments = false,
+            ThrowOnAssemblyResolveErrors = false,
         };
         var format = _compilerSettings.CSharpFormattingOptions;
         format.IndentationString = "    "; // 4 spaces is the de facto standard for C#
@@ -62,7 +67,12 @@ public static class ICSharpCodeExtensions
 #pragma warning restore CA2000 // Dispose objects before losing scope
         var resolver = new UniversalAssemblyResolver(fileName, false,
             peFile.DetectTargetFrameworkId(), peFile.DetectRuntimePack());
-        return new CSharpDecompiler(peFile, resolver, _compilerSettings);
+        var decompiler = new CSharpDecompiler(peFile, resolver, _compilerSettings)
+        {
+            DocumentationProvider = NullDocProvider.Instance
+        };
+        decompiler.AstTransforms.Add(new CustomVisitor());
+        return decompiler;
     }
 
     private static CSharpDecompiler GetDecompiler(string path)
@@ -100,7 +110,7 @@ public static class ICSharpCodeExtensions
         var file = typeInfo!.ParentModule!.MetadataFile;
         var handle = (TypeDefinitionHandle)typeInfo.MetadataToken;
 
-        var text = new PlainTextOutput();
+        using var text = new PlainTextOutput();
         var dis = new ReflectionDisassembler(text, CancellationToken.None);
         dis.DisassembleType(file, handle);
         return text.ToString().Trim().NormalizeLineTerminators();
@@ -108,7 +118,7 @@ public static class ICSharpCodeExtensions
 
     public static string Disassemble(this CSharpDecompiler decompiler)
     {
-        var text = new PlainTextOutput();
+        using var text = new PlainTextOutput();
         var dis = new ReflectionDisassembler(text, CancellationToken.None);
         dis.WriteModuleContents(decompiler.TypeSystem.MainModule.MetadataFile);
         return text.ToString().Trim().NormalizeLineTerminators();
@@ -148,5 +158,30 @@ public static class ICSharpCodeExtensions
     private static int Convert(this EntityHandle handle)
     {
         return (int)_tokenProp.GetValue(handle)!;
+    }
+
+    internal sealed class NullDocProvider : IDocumentationProvider
+    {
+        public static NullDocProvider Instance = new();
+
+        public string GetDocumentation(IEntity entity)
+        {
+            return null!;
+        }
+    }
+
+    internal class CustomVisitor : DepthFirstAstVisitor, IAstTransform
+    {
+        public void Run(AstNode rootNode, TransformContext context)
+        {
+            rootNode.AcceptVisitor(this);
+        }
+
+        public override void VisitTypeDeclaration(TypeDeclaration declaration)
+        {
+            var baseTypes = declaration.BaseTypes.OrderBy(bt => bt.ToString());
+            declaration.BaseTypes.ReplaceWith(baseTypes);
+            base.VisitTypeDeclaration(declaration);
+        }
     }
 }

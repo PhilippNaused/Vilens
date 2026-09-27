@@ -34,7 +34,7 @@ public class ControlFlowClass
     {
         uint num = 100134548u;
         int num2 = 605824388;
-        int num3 = default(int);
+        int num3 = default;
         while (true)
         {
             switch (num = (uint)(num2 + (int)num) % 5u)

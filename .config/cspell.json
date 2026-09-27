@@ -9,7 +9,7 @@
     "*.DotSettings",
     "*.svg",
     "*.il",
-    ".gitignore",
+    ".git*",
     ".config/cspell.json",
     ".config/dicts/**",
     ".config/dotnet-tools.json",

@@ -1,5 +1,15 @@
+diff --git a/src/Autofac/Core/Registration/DefaultRegisteredServicesTracker.cs b/src/Autofac/Core/Registration/DefaultRegisteredServicesTracker.cs
+index 57092a89..3d9c7f8d 100644
+--- a/src/Autofac/Core/Registration/DefaultRegisteredServicesTracker.cs
++++ b/src/Autofac/Core/Registration/DefaultRegisteredServicesTracker.cs
+@@ -56,4 +56,5 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
+     /// drained from then on costs a lookup against it.
+     /// </remarks>
++    [System.Reflection.Obfuscation(Feature = "Renaming")] // Is accessed via reflection.
+     private DeferredImplementationMap? _deferredSourceImplementations;
+ 
 diff --git a/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs b/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
-index 6d842273..b7fc22f1 100644
+index d1070cdd..a287731a 100644
 --- a/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
 +++ b/src/Autofac/Features/OpenGenerics/OpenGenericRegistrationSource.cs
 @@ -17,4 +17,5 @@ internal class OpenGenericRegistrationSource : IRegistrationSource

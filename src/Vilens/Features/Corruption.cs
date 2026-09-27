@@ -9,10 +9,15 @@ namespace Vilens.Features;
 
 internal sealed class Corruption : FeatureBase
 {
-    private readonly TypeSig? _enum16;
-    private readonly TypeSig? _enum32;
-    private readonly TypeSig? _enum64;
-    private readonly TypeSig? _enum8;
+    private readonly TypeSig? _enum_bool;
+    private readonly TypeSig? _enum_i8;
+    private readonly TypeSig? _enum_u8;
+    private readonly TypeSig? _enum_i16;
+    private readonly TypeSig? _enum_u16;
+    private readonly TypeSig? _enum_i32;
+    private readonly TypeSig? _enum_u32;
+    private readonly TypeSig? _enum_i64;
+    private readonly TypeSig? _enum_u64;
     private readonly ITypeDefOrRef _enumType;
 
     private readonly FieldSig _invalidSignature;
@@ -39,14 +44,15 @@ internal sealed class Corruption : FeatureBase
         }
         if (_methods.Count > 0)
         {
-            var e = CreateEnum(Module.CorLibTypes.SByte);
-            _enum8 = new ValueTypeSig(e);
-            e = CreateEnum(Module.CorLibTypes.UInt16);
-            _enum16 = new ValueTypeSig(e);
-            e = CreateEnum(Module.CorLibTypes.UInt32);
-            _enum32 = new ValueTypeSig(e);
-            e = CreateEnum(Module.CorLibTypes.UInt64);
-            _enum64 = new ValueTypeSig(e);
+            _enum_bool = CreateEnum(Module.CorLibTypes.Boolean);
+            _enum_i8 = CreateEnum(Module.CorLibTypes.SByte);
+            _enum_u8 = CreateEnum(Module.CorLibTypes.Byte);
+            _enum_i16 = CreateEnum(Module.CorLibTypes.Int16);
+            _enum_u16 = CreateEnum(Module.CorLibTypes.UInt16);
+            _enum_i32 = CreateEnum(Module.CorLibTypes.Int32);
+            _enum_u32 = CreateEnum(Module.CorLibTypes.UInt32);
+            _enum_i64 = CreateEnum(Module.CorLibTypes.Int64);
+            _enum_u64 = CreateEnum(Module.CorLibTypes.UInt64);
         }
     }
 
@@ -100,7 +106,7 @@ internal sealed class Corruption : FeatureBase
         return type;
     }
 
-    private TypeDefUser CreateEnum(TypeSig typeSig)
+    private ValueTypeSig CreateEnum(TypeSig typeSig)
     {
         var type = new TypeDefUser(UTF8String.Empty, _enumType)
         {
@@ -110,7 +116,7 @@ internal sealed class Corruption : FeatureBase
         type.Fields.Add(CreateInvalidField());
         Module.AddAsNonNestedType(type);
         NamingHelper.Rename(type, Scrambler.Settings.NamingScheme);
-        return type;
+        return new ValueTypeSig(type);
     }
 
     private TypeSig? GetReplacementType(TypeSig sig)
@@ -119,19 +125,19 @@ internal sealed class Corruption : FeatureBase
 
         TypeSig? newType = type switch
         {
-            ElementType.I1 => _enum8,
-            ElementType.U1 => _enum8,
-            ElementType.Boolean => _enum8,
+            ElementType.I1 => _enum_i8,
+            ElementType.U1 => _enum_u8,
+            ElementType.Boolean => _enum_bool,
 
-            ElementType.I2 => _enum16,
-            ElementType.U2 => _enum16,
-            ElementType.Char => _enum16,
+            ElementType.I2 => _enum_i16,
+            ElementType.U2 => _enum_u16,
+            ElementType.Char => _enum_u16,
 
-            ElementType.I4 => _enum32,
-            ElementType.U4 => _enum32,
+            ElementType.I4 => _enum_i32,
+            ElementType.U4 => _enum_u32,
 
-            ElementType.I8 => _enum64,
-            ElementType.U8 => _enum64,
+            ElementType.I8 => _enum_i64,
+            ElementType.U8 => _enum_u64,
 
             ElementType.I => _voidPtr,
             ElementType.U => _voidPtr,

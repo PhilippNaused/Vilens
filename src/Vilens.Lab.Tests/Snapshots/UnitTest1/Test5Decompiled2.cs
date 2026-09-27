@@ -1,7 +1,7 @@
 [System.Serializable]
-protected internal sealed class 
+protected internal sealed class a
 {
-    public static readonly Vilens.Lab.Class5.  = new Vilens.Lab.Class5.();
+    public static readonly Vilens.Lab.Class5.a ;
     public static System.Func<int, bool> ;
     public static System.Func<dnlib.DotNet.MethodDef, bool> ;
     public static System.Func<dnlib.DotNet.FieldDef, bool> ;
@@ -9,6 +9,10 @@ protected internal sealed class
     public static System.Func<dnlib.DotNet.Emit.Instruction, bool> ;
     public static System.Func<dnlib.DotNet.Emit.Instruction, bool> ;
     public static System.Func<dnlib.DotNet.Emit.Instruction, bool> ;
+    static a()
+    {
+        Vilens.Lab.Class5.a. = new Vilens.Lab.Class5.a();
+    }
     internal bool (int i)
     {
         return i == 7;

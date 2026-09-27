@@ -32,18 +32,18 @@ public class ControlFlowClass3
                     goto IL_0070;
                 case 0:
                     awaiter3 = <>u__1;
-                    <>u__1 = default(System.Runtime.CompilerServices.YieldAwaitable.YieldAwaiter);
+                    <>u__1 = default;
                     num = (<>1__state = -1);
                     goto IL_0070;
                 case 1:
                     awaiter2 = <>u__2;
-                    <>u__2 = default(System.Runtime.CompilerServices.TaskAwaiter);
+                    <>u__2 = default;
                     num = (<>1__state = -1);
                     goto IL_00da;
                 case 2:
                     {
                         awaiter = <>u__2;
-                        <>u__2 = default(System.Runtime.CompilerServices.TaskAwaiter);
+                        <>u__2 = default;
                         num = (<>1__state = -1);
                         break;
                     }
@@ -106,7 +106,7 @@ public class ControlFlowClass3
     {
         uint num = 100134548u;
         int num2 = 910841507;
-        ClassLibrary2.ControlFlowClass3.<Test1>d__0 stateMachine = default(ClassLibrary2.ControlFlowClass3.<Test1>d__0);
+        ClassLibrary2.ControlFlowClass3.<Test1>d__0 stateMachine = default;
         while (true)
         {
             switch (num = (uint)(num2 + (int)num) % 5u)
