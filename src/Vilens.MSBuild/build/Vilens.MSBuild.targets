@@ -10,7 +10,7 @@
     <_NetCoreVersion Condition=" '$(NETCoreSdkVersion)' != '' ">$(NETCoreSdkVersion.Split('-')[0])</_NetCoreVersion>
     <_VilensTasks_NetTaskHost Condition="('$(_NetCoreVersion)' != '') AND ('$(_NetCoreVersion)' &gt;= '10.0.100') AND ('$(MSBuildVersion)' &gt;= '18.0.0') AND ('$(MSBuildRuntimeType)' == 'Full') AND ('$(UsingMicrosoftNETSdk)' == 'true')">true</_VilensTasks_NetTaskHost>
     <_VilensTasks_TFM Condition=" '$(MSBuildRuntimeType)' == 'Full' ">net472</_VilensTasks_TFM>
-    <_VilensTasks_TFM Condition=" ('$(MSBuildRuntimeType)' == 'Core') OR $(_VilensTasks_NetTaskHost) ">net8.0</_VilensTasks_TFM>
+    <_VilensTasks_TFM Condition=" ('$(MSBuildRuntimeType)' == 'Core') OR $(_VilensTasks_NetTaskHost) ">net10.0</_VilensTasks_TFM>
     <VilensTasksBasePath Condition=" '$(VilensTasksBasePath)' == '' ">$(MSBuildThisFileDirectory)..\tasks\</VilensTasksBasePath>
     <VilensTaskPath Condition=" '$(VilensTaskPath)' == '' ">$(VilensTasksBasePath)\$(_VilensTasks_TFM)\Vilens.MSBuild.dll</VilensTaskPath>
     <VilensTaskPath>$([System.IO.Path]::GetFullPath('$(VilensTaskPath)'))</VilensTaskPath>
