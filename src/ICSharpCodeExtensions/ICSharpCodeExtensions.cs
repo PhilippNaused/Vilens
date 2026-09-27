@@ -9,6 +9,7 @@ using ICSharpCode.Decompiler.CSharp.OutputVisitor;
 using ICSharpCode.Decompiler.CSharp.Syntax;
 using ICSharpCode.Decompiler.CSharp.Transforms;
 using ICSharpCode.Decompiler.Disassembler;
+using ICSharpCode.Decompiler.Documentation;
 using ICSharpCode.Decompiler.Metadata;
 using ICSharpCode.Decompiler.TypeSystem;
 
@@ -42,6 +43,8 @@ public static class ICSharpCodeExtensions
             LoadInMemory = true, // faster than loading from disk
             FileScopedNamespaces = true,
             SortCustomAttributes = true, // sort attributes by name
+            ExpandXmlDocumentationComments = false,
+            ThrowOnAssemblyResolveErrors = false,
         };
         var format = _compilerSettings.CSharpFormattingOptions;
         format.IndentationString = "    "; // 4 spaces is the de facto standard for C#
@@ -64,7 +67,10 @@ public static class ICSharpCodeExtensions
 #pragma warning restore CA2000 // Dispose objects before losing scope
         var resolver = new UniversalAssemblyResolver(fileName, false,
             peFile.DetectTargetFrameworkId(), peFile.DetectRuntimePack());
-        var decompiler = new CSharpDecompiler(peFile, resolver, _compilerSettings);
+        var decompiler = new CSharpDecompiler(peFile, resolver, _compilerSettings)
+        {
+            DocumentationProvider = NullDocProvider.Instance
+        };
         decompiler.AstTransforms.Add(new CustomVisitor());
         return decompiler;
     }
@@ -152,6 +158,16 @@ public static class ICSharpCodeExtensions
     private static int Convert(this EntityHandle handle)
     {
         return (int)_tokenProp.GetValue(handle)!;
+    }
+
+    internal sealed class NullDocProvider : IDocumentationProvider
+    {
+        public static NullDocProvider Instance = new();
+
+        public string GetDocumentation(IEntity entity)
+        {
+            return null!;
+        }
     }
 
     internal class CustomVisitor : DepthFirstAstVisitor, IAstTransform
