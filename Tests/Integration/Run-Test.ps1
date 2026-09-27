@@ -67,8 +67,9 @@ function Test-Obfuscation {
 
     dotnet nuget add source $NuGetSource -n LocalVilens
 
-    & $BuildCommand
-    & $TestCommand
+    # Dummy run without obfuscation. Uncomment for debugging.
+    # & $BuildCommand
+    # & $TestCommand
 
     # Inject obfuscation
     $Files = & $FileListCommand
