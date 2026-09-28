@@ -38,119 +38,118 @@ public class ControlFlowClass2
         }
         private bool MoveNext()
         {
-            uint num = 100192212u;
-            int num2 = 375760892;
-            int num3 = default;
+            uint num = 1290929669u;
+            int num2 = 339567531;
             int num4 = default;
+            int num3 = default;
             while (true)
             {
                 switch (num = (uint)(num2 + (int)num) % 23u)
                 {
-                case 0u:
-                    <>2__current = list[<i>5__2];
-                    num2 = 33234726;
-                    break;
-                case 3u:
-                case 5u:
-                    num3 = <>1__state;
-                    num2 = 292008071;
+                case 15u:
+                    num4 = <i>5__2;
+                    num2 = 348100071;
                     break;
                 case 18u:
                     return true;
-                case 12u:
-                    if (<i>5__2 >= list.Count)
-                    {
-                        num2 = 872674006;
-                        break;
-                    }
-                    num = 1503375910u;
-                    goto case 0u;
-                case 4u:
-                    return true;
                 case 22u:
-                    return false;
-                case 11u:
                     <>1__state = -1;
-                    num2 = 481525288;
+                    num2 = 2092502066;
                     break;
-                default:
-                    <>1__state = 2;
-                    num2 = 2079632632;
-                    break;
-                case 17u:
-                    return true;
-                case 21u:
-                    <i>5__2 = 0;
-                    num = 1079264846u;
-                    goto case 12u;
-                case 13u:
+                case 12u:
+                    return false;
+                case 9u:
                     <>2__current = 0;
-                    num2 = 408010848;
-                    break;
-                case 15u:
-                    <>1__state = 1;
-                    num2 = 1416034010;
+                    num2 = 1995981347;
                     break;
                 case 8u:
-                    num4 = <i>5__2;
-                    num2 = 139756696;
+                    <i>5__2 = num4 + 1;
+                    num2 = 21620407;
                     break;
-                case 14u:
-                    <>2__current = int.MaxValue;
-                    num2 = 1801453014;
+                case 11u:
+                    <>1__state = -1;
+                    num2 = 2059005165;
                     break;
-                case 16u:
+                case 10u:
                     <>1__state = 3;
-                    num2 = 585965160;
+                    num2 = 683737599;
+                    break;
+                case 3u:
+                    return true;
+                case 7u:
+                    switch (num3)
+                    {
+                    case 2:
+                        goto IL_0103;
+                    case 0:
+                        goto IL_0134;
+                    case 1:
+                        goto IL_0180;
+                    case 3:
+                        goto IL_018b;
+                    }
+                    num2 = 1695325669;
                     break;
                 case 19u:
                     <>1__state = -1;
-                    num2 = 1463793004;
+                    num2 = 1825481726;
+                    break;
+                case 17u:
+                    <>2__current = int.MaxValue;
+                    num2 = 1228136444;
+                    break;
+                case 4u:
+                    <i>5__2 = 0;
+                    num = 1438839981u;
+                    goto case 1u;
+                case 1u:
+                    if (<i>5__2 >= list.Count)
+                    {
+                        num2 = 748755908;
+                        break;
+                    }
+                    num = 563857440u;
+                    goto case 20u;
+                case 5u:
+                case 6u:
+                    return true;
+                case 14u:
+                    num3 = <>1__state;
+                    num2 = 1832319764;
+                    break;
+                case 16u:
+                    <>1__state = -1;
+                    num2 = 883426014;
+                    break;
+                case 13u:
+                    <>1__state = 2;
+                    num2 = 1151743968;
                     break;
                 case 20u:
-                    <>1__state = -1;
-                    num2 = 407400980;
+                    <>2__current = list[<i>5__2];
+                    num2 = 1850077650;
                     break;
-                case 6u:
-                    <>1__state = -1;
-                    num2 = 1674538784;
-                    break;
-                case 9u:
+                case 0u:
+                case 21u:
                     return false;
-                case 10u:
-                    <i>5__2 = num4 + 1;
-                    num2 = 2124247457;
-                    break;
-                case 7u:
+                default:
                     {
-                        switch (num3)
-                        {
-                        case 2:
-                            break;
-                        case 3:
-                            goto IL_00f1;
-                        case 0:
-                            goto IL_018d;
-                        default:
-                            goto IL_01e5;
-                        case 1:
-                            goto IL_01ef;
-                        }
-                        num = 897954759u;
-                        goto case 6u;
+                        <>1__state = 1;
+                        num2 = 747950195;
+                        break;
                     }
-                    IL_01ef:
-                    num = 2145820531u;
+                    IL_018b:
+                    num = 337821719u;
                     goto case 19u;
-                    IL_01e5:
-                    num2 = 395232071;
-                    break;
-                    IL_018d:
-                    num = 1272545276u;
+                    IL_0180:
+                    num = 900905434u;
                     goto case 11u;
-                    IL_00f1:
-                    num = 552593696u;
-                    goto case 20u;
+                    IL_0134:
+                    num = 1913829119u;
+                    goto case 16u;
+                    IL_0103:
+                    num = 2090411257u;
+                    goto case 22u;
                 }
             }
         }
@@ -167,48 +166,48 @@ public class ControlFlowClass2
         [System.Diagnostics.DebuggerHidden]
         System.Collections.Generic.IEnumerator<int> System.Collections.Generic.IEnumerable<int>.GetEnumerator()
         {
-            uint num = 100461309u;
-            int num2 = 302859090;
+            uint num = 1288618440u;
+            int num2 = 1257660708;
             ClassLibrary2.ControlFlowClass2.<Test1>d__0 obj = default;
             while (true)
             {
                 switch (num = (uint)(num2 + (int)num) % 7u)
                 {
-                case 2u:
-                    obj.list = <>3__list;
-                    num2 = 843551536;
-                    break;
-                case 6u:
-                    if (<>1__state != -2)
-                    {
-                        num = 221466847u;
-                        goto default;
-                    }
-                    num2 = 1554335589;
-                    break;
-                case 3u:
-                    <>1__state = 0;
-                    num2 = 1121830271;
-                    break;
-                case 1u:
-                    if (<>l__initialThreadId != System.Environment.CurrentManagedThreadId)
-                    {
-                        num = 13271041u;
-                        goto default;
-                    }
-                    num2 = 1234272482;
-                    break;
-                default:
-                    obj = new ClassLibrary2.ControlFlowClass2.<Test1>d__0(0);
-                    num2 = 293950610;
-                    break;
-                case 5u:
-                    obj = this;
-                    num = 1262219016u;
-                    goto case 2u;
                 case 4u:
                     return obj;
+                default:
+                    if (<>l__initialThreadId != System.Environment.CurrentManagedThreadId)
+                    {
+                        num = 1204498874u;
+                        break;
+                    }
+                    num2 = 595546346;
+                    continue;
+                case 2u:
+                    obj = this;
+                    num = 921502226u;
+                    goto case 1u;
+                case 0u:
+                    if (<>1__state == -2)
+                    {
+                        num2 = 656849014;
+                        continue;
+                    }
+                    num = 284961500u;
+                    break;
+                case 1u:
+                    obj.list = <>3__list;
+                    num2 = 1754145494;
+                    continue;
+                case 6u:
+                    <>1__state = 0;
+                    num2 = 1813395874;
+                    continue;
+                case 5u:
+                    break;
                 }
+                obj = new ClassLibrary2.ControlFlowClass2.<Test1>d__0(0);
+                num2 = 310942390;
             }
         }
         [System.Diagnostics.DebuggerHidden]

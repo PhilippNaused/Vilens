@@ -3,15 +3,15 @@
 
 |                    |                                      |
 |:-------------------|:-------------------------------------|
-| Parser:            | MultiReport (5x DynamicCodeCoverage) |
+| Parser:            | MultiReport (3x DynamicCodeCoverage) |
 | Assemblies:        | 1                                    |
 | Classes:           | 23                                   |
 | Files:             | 24                                   |
-| **Line coverage:** | 86.6% (1778 of 2052)                 |
-| Covered lines:     | 1778                                 |
-| Uncovered lines:   | 274                                  |
-| Coverable lines:   | 2052                                 |
-| Total lines:       | 3220                                 |
+| **Line coverage:** | 86.6% (1800 of 2077)                 |
+| Covered lines:     | 1800                                 |
+| Uncovered lines:   | 277                                  |
+| Coverable lines:   | 2077                                 |
+| Total lines:       | 3274                                 |
 
 </details>
 
@@ -27,22 +27,22 @@
 | Vilens.Data.MemberDataExtensions  |      100% |
 | Vilens.Data.VisibilityExtensions  |     82.2% |
 | Vilens.Features.AttributeCleaning |     96.6% |
-| Vilens.Features.ControlFlow       |     97.6% |
+| Vilens.Features.ControlFlow       |     97.5% |
 | Vilens.Features.Corruption        |     97.5% |
 | Vilens.Features.DisOptimize       |     76.9% |
 | Vilens.Features.FeatureBase       |      100% |
 | Vilens.Features.PropertyInline    |     88.8% |
 | Vilens.Features.Renaming          |     78.9% |
-| Vilens.Features.StringHiding      |     97.8% |
+| Vilens.Features.StringHiding      |     97.9% |
 | Vilens.Helpers.DnLibExtensions    |     82.4% |
 | Vilens.Helpers.MathHelper         |     90.6% |
 | Vilens.Helpers.NamingHelper       |     95.9% |
 | Vilens.Helpers.StackHelper        |     89.7% |
-| Vilens.Helpers.Xoshiro128         |     75.8% |
+| Vilens.Helpers.Xoshiro128         |     80.4% |
 | Vilens.Logging.LogFile            |        0% |
 | Vilens.Logging.Logger             |     23.4% |
 | Vilens.NullResolver               |      100% |
-| Vilens.Scrambler                  |     71.8% |
+| Vilens.Scrambler                  |     72.6% |
 | Vilens.VilensSettings             |      100% |
 
 </details>
