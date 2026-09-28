@@ -3,7 +3,7 @@
 
 |                    |                                      |
 |:-------------------|:-------------------------------------|
-| Parser:            | MultiReport (5x DynamicCodeCoverage) |
+| Parser:            | MultiReport (3x DynamicCodeCoverage) |
 | Assemblies:        | 1                                    |
 | Classes:           | 23                                   |
 | Files:             | 24                                   |
