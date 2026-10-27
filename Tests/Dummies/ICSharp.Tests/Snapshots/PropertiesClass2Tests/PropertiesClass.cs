@@ -1,75 +1,69 @@
 public class PropertiesClass2
 {
-    private int <Prop1>k__BackingField;
-    private int <Prop2>k__BackingField;
-    private int <Prop3>k__BackingField;
-    private int <Prop4>k__BackingField;
-    private int <Prop5>k__BackingField;
-    private int <Prop6>k__BackingField;
     public int Prop1
     {
         get
         {
-            return <Prop1>k__BackingField;
+            return field;
         }
         set
         {
-            <Prop1>k__BackingField = value;
+            field = value;
         }
     }
     internal int Prop2
     {
         get
         {
-            return <Prop2>k__BackingField;
+            return field;
         }
         set
         {
-            <Prop2>k__BackingField = value;
+            field = value;
         }
     }
     protected int Prop3
     {
         get
         {
-            return <Prop3>k__BackingField;
+            return field;
         }
         set
         {
-            <Prop3>k__BackingField = value;
+            field = value;
         }
     }
     protected internal int Prop4
     {
         get
         {
-            return <Prop4>k__BackingField;
+            return field;
         }
         set
         {
-            <Prop4>k__BackingField = value;
+            field = value;
         }
     }
     private protected int Prop5
     {
         get
         {
-            return <Prop5>k__BackingField;
+            return field;
         }
         set
         {
-            <Prop5>k__BackingField = value;
+            field = value;
         }
     }
     private int Prop6
     {
         get
         {
-            return <Prop6>k__BackingField;
+            return field;
         }
         set
         {
-            <Prop6>k__BackingField = value;
+            field = value;
         }
     }
     public void Use()
